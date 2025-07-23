@@ -11,7 +11,7 @@ import { useAuth } from "@/lib/hooks/use-auth"
 export function CommandCenter() {
   const { user, profile } = useAuth()
   const [selectedMessage, setSelectedMessage] = useState<any>(null)
-  const [activeView, setActiveView] = useState<'digest' | 'messages' | 'actions' | 'analytics'>('digest')
+  const [activeView, setActiveView] = useState<'digest' | 'messages' | 'actions'>('digest')
   const [isContextPanelOpen, setIsContextPanelOpen] = useState(true)
 
   return (

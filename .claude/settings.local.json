@@ -21,7 +21,9 @@
       "Bash(git add:*)",
       "Bash(git reset:*)",
       "mcp__git-commands__git_status",
-      "Bash(git branch:*)"
+      "Bash(git branch:*)",
+      "Bash(git checkout:*)",
+      "Bash(git push:*)"
     ],
     "deny": []
   }

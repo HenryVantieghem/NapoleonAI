@@ -4,11 +4,10 @@ import { motion, AnimatePresence } from "framer-motion"
 import { StrategicDigest } from "./strategic-digest"
 import { MessagesList } from "./messages-list"
 import { ActionItems } from "./action-items"
-import { Analytics } from "./analytics"
 import { Maximize2, PanelRightOpen } from "lucide-react"
 
 interface MainPanelProps {
-  activeView: 'digest' | 'messages' | 'actions' | 'analytics'
+  activeView: 'digest' | 'messages' | 'actions'
   selectedMessage: any
   onMessageSelect: (message: any) => void
   onToggleContext: () => void
@@ -45,10 +44,6 @@ export function MainPanel({
             selectedMessage={selectedMessage}
           />
         )
-      case 'analytics':
-        return (
-          <Analytics />
-        )
       default:
         return <StrategicDigest onMessageSelect={onMessageSelect} selectedMessage={selectedMessage} />
     }
@@ -59,7 +54,6 @@ export function MainPanel({
       case 'digest': return 'Strategic Daily Digest'
       case 'messages': return 'All Messages'
       case 'actions': return 'Action Items'
-      case 'analytics': return 'Analytics Dashboard'
       default: return 'Dashboard'
     }
   }
@@ -69,7 +63,6 @@ export function MainPanel({
       case 'digest': return 'AI-powered priority insights for executive decision making'
       case 'messages': return 'Unified view of all communication channels'
       case 'actions': return 'Outstanding action items requiring your attention'
-      case 'analytics': return 'Communication patterns and productivity metrics'
       default: return ''
     }
   }

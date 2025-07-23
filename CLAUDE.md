@@ -396,4 +396,4 @@ VERCEL_URL=
 - Security and privacy are non-negotiable
 - Performance must be flawless for executive users
 
-Build this as a production-ready application that an executive would pay $300-500/month for. Focus on quality, luxury experience, and immediate value delivery.22
+Build this as a production-ready application that an executive would pay $300-500/month for. Focus on quality, luxury experience, and immediate value delivery.

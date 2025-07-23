@@ -10,8 +10,8 @@ import { useState, useEffect } from "react"
 interface DashboardHeaderProps {
   user: User | null
   profile: UserWithProfile | null
-  activeView: 'digest' | 'messages' | 'actions' | 'analytics'
-  onViewChange: (view: 'digest' | 'messages' | 'actions' | 'analytics') => void
+  activeView: 'digest' | 'messages' | 'actions'
+  onViewChange: (view: 'digest' | 'messages' | 'actions') => void
 }
 
 export function DashboardHeader({
@@ -58,8 +58,7 @@ export function DashboardHeader({
   const views = [
     { id: 'digest', label: 'Strategic Digest', icon: Crown },
     { id: 'messages', label: 'All Messages', icon: Bell },
-    { id: 'actions', label: 'Action Items', icon: Settings },
-    { id: 'analytics', label: 'Analytics', icon: Sun }
+    { id: 'actions', label: 'Action Items', icon: Settings }
   ] as const
 
   return (

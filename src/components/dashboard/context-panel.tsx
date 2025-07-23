@@ -17,7 +17,6 @@ import {
   Link
 } from "lucide-react"
 import { useState } from "react"
-import CalendarWidget from "./calendar-widget"
 import { useAuth } from "@/lib/hooks/use-auth"
 
 interface ContextPanelProps {
@@ -27,7 +26,7 @@ interface ContextPanelProps {
 
 export function ContextPanel({ selectedMessage, onClose }: ContextPanelProps) {
   const { user } = useAuth()
-  const [activeTab, setActiveTab] = useState<'details' | 'thread' | 'actions' | 'insights' | 'calendar'>('details')
+  const [activeTab, setActiveTab] = useState<'details' | 'thread' | 'actions' | 'insights'>('details')
 
   // Mock data for demonstration
   const contextData = {
@@ -84,8 +83,7 @@ export function ContextPanel({ selectedMessage, onClose }: ContextPanelProps) {
     { id: 'details' as const, label: 'Details', icon: User },
     { id: 'thread' as const, label: 'Thread', icon: MessageSquare },
     { id: 'actions' as const, label: 'Actions', icon: CheckCircle },
-    { id: 'insights' as const, label: 'AI Insights', icon: TrendingUp },
-    { id: 'calendar' as const, label: 'Calendar', icon: Calendar }
+    { id: 'insights' as const, label: 'AI Insights', icon: TrendingUp }
   ]
 
   if (!selectedMessage) {
@@ -337,16 +335,6 @@ export function ContextPanel({ selectedMessage, onClose }: ContextPanelProps) {
           </motion.div>
         )}
 
-        {activeTab === 'calendar' && user && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-            className="p-6"
-          >
-            <CalendarWidget userId={user.id} />
-          </motion.div>
-        )}
       </div>
     </motion.div>
   )
