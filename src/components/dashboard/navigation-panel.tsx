@@ -16,8 +16,8 @@ import {
 import { useState } from "react"
 
 interface NavigationPanelProps {
-  activeView: 'digest' | 'messages' | 'actions' | 'analytics'
-  onViewChange: (view: 'digest' | 'messages' | 'actions' | 'analytics') => void
+  activeView: 'digest' | 'messages' | 'actions'
+  onViewChange: (view: 'digest' | 'messages' | 'actions') => void
   onMessageSelect: (message: any) => void
   selectedMessage: any
 }

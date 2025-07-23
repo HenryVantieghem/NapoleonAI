@@ -57,24 +57,32 @@ export class TeamsAPI {
 
       if (chatId) {
         // Get messages from specific chat
-        const response = await this.client
+        let query = this.client
           .api(`/chats/${chatId}/messages`)
           .top(limit)
           .orderby(orderBy)
-          .filter(filter)
-          .get()
+        
+        if (filter) {
+          query = query.filter(filter)
+        }
+          
+        const response = await query.get()
 
         allMessages = await this.convertTeamsMessages(response.value || [], 'chat', chatId)
         hasMore = !!response['@odata.nextLink']
         nextLink = response['@odata.nextLink']
       } else if (teamId && channelId) {
         // Get messages from specific team channel
-        const response = await this.client
+        let query = this.client
           .api(`/teams/${teamId}/channels/${channelId}/messages`)
           .top(limit)
           .orderby(orderBy)
-          .filter(filter)
-          .get()
+        
+        if (filter) {
+          query = query.filter(filter)
+        }
+          
+        const response = await query.get()
 
         allMessages = await this.convertTeamsMessages(response.value || [], 'channel', channelId, teamId)
         hasMore = !!response['@odata.nextLink']
@@ -452,25 +460,8 @@ export class TeamsAPI {
         subject,
         content,
         sender: senderName,
-        senderEmail,
         channel: 'teams',
-        timestamp: new Date(msg.createdDateTime),
-        isRead: true, // Teams doesn't provide unread status per message
-        threadId: msg.id,
-        hasAttachments: (msg.attachments && msg.attachments.length > 0) || false,
-        attachmentCount: msg.attachments ? msg.attachments.length : 0,
-        externalId: msg.id,
-        externalThreadId: msg.id,
-        metadata: {
-          teamsType: type,
-          teamsContextId: contextId,
-          teamsTeamId: teamId,
-          teamsContextName: contextName,
-          messageType: msg.messageType,
-          importance: msg.importance,
-          locale: msg.locale,
-          reactions: msg.reactions || []
-        }
+        timestamp: new Date(msg.createdDateTime)
       }
 
       messages.push(message)

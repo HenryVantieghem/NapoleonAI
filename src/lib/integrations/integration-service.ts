@@ -81,7 +81,7 @@ export class IntegrationService {
   static generateOAuthUrl(provider: IntegrationProvider, state?: string): string {
     const config = oauthConfigs[provider]
     
-    const params = new URLSearchParams({
+    const authParams = {
       client_id: config.clientId,
       redirect_uri: config.redirectUri,
       response_type: 'code',
@@ -90,7 +90,14 @@ export class IntegrationService {
       prompt: provider === 'gmail' ? 'consent' : undefined,
       response_mode: provider === 'teams' ? 'query' : undefined,
       state: state || crypto.randomUUID()
-    }.filter(([_, v]) => v !== undefined) as Record<string, string>)
+    }
+    
+    // Filter out undefined values
+    const filteredParams = Object.fromEntries(
+      Object.entries(authParams).filter(([_, v]) => v !== undefined)
+    ) as Record<string, string>
+    
+    const params = new URLSearchParams(filteredParams)
     
     return `${config.authUrl}?${params.toString()}`
   }
@@ -115,8 +122,8 @@ export class IntegrationService {
     return data.map(account => ({
       id: account.id,
       provider: account.provider as IntegrationProvider,
-      account_email: account.account_email,
-      account_name: account.account_name,
+      account_email: account.account_email || '',
+      account_name: account.account_name || '',
       status: account.status,
       connected_at: account.created_at
     }))

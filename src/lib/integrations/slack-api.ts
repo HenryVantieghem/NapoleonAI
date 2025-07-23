@@ -174,15 +174,22 @@ export class SlackAPI {
     error?: string
   }> {
     try {
-      const response = await this.client.chat.postMessage({
+      const messageParams: any = {
         channel: channelId,
         text,
-        thread_ts: options.threadTs,
         as_user: options.asUser,
         username: options.username,
         icon_emoji: options.iconEmoji,
-        blocks: options.blocks
-      })
+        blocks: options.blocks || []
+      }
+      
+      // Only add thread_ts and reply_broadcast if threadTs is provided
+      if (options.threadTs) {
+        messageParams.thread_ts = options.threadTs
+        messageParams.reply_broadcast = false
+      }
+      
+      const response = await this.client.chat.postMessage(messageParams)
 
       return {
         success: true,
@@ -384,24 +391,8 @@ export class SlackAPI {
         subject: `Message in ${channelName || channelId}`,
         content,
         sender: userInfo?.realName || userInfo?.name || 'Unknown User',
-        senderEmail: userInfo?.email,
-        senderRole: userInfo?.title,
         channel: 'slack',
-        timestamp: new Date(parseFloat(msg.ts) * 1000),
-        isRead: true, // Slack doesn't have unread status per message
-        threadId: msg.thread_ts || msg.ts,
-        hasAttachments: (msg.files && msg.files.length > 0) || false,
-        attachmentCount: msg.files ? msg.files.length : 0,
-        externalId: msg.ts,
-        externalThreadId: msg.thread_ts,
-        metadata: {
-          slackChannel: channelId,
-          slackChannelName: channelName,
-          slackUser: msg.user,
-          slackTeam: msg.team,
-          permalink: msg.permalink,
-          reactions: msg.reactions || []
-        }
+        timestamp: new Date(parseFloat(msg.ts) * 1000)
       }
 
       messages.push(message)

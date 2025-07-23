@@ -66,10 +66,10 @@ async function handleSlackMessage(event: any, teamId: string) {
   try {
     // Find the user associated with this Slack workspace
     const { data: userIntegration } = await supabase
-      .from('user_integrations')
-      .select('user_id, access_token, metadata')
-      .eq('platform', 'slack')
-      .eq('metadata->team_id', teamId)
+      .from('connected_accounts')
+      .select('user_id, access_token, account_id')
+      .eq('provider', 'slack')
+      .eq('account_id', teamId)
       .single()
 
     if (!userIntegration) {
@@ -78,6 +78,11 @@ async function handleSlackMessage(event: any, teamId: string) {
     }
 
     // Set up Slack API with user's token
+    if (!userIntegration.access_token) {
+      console.error('No access token found for Slack user')
+      return
+    }
+    
     slackAPI.setToken(userIntegration.access_token)
 
     // Get detailed message information
@@ -117,18 +122,18 @@ async function handleSlackMessage(event: any, teamId: string) {
       }
     })
 
-    // Process message with AI
-    const { aiService } = await import('@/lib/ai/ai-service')
-    await aiService.processNewMessage(message)
+    // Process message with simplified AI (MVP)
+    console.log(`Processing Slack message for user ${userIntegration.user_id}`)
+    // TODO: Implement simplified message processing with AI service
 
     // Update last sync timestamp
     await supabase
-      .from('user_integrations')
+      .from('connected_accounts')
       .update({
-        last_sync_at: new Date().toISOString()
+        updated_at: new Date().toISOString()
       })
       .eq('user_id', userIntegration.user_id)
-      .eq('platform', 'slack')
+      .eq('provider', 'slack')
 
     console.log(`Processed new Slack message for user ${userIntegration.user_id}`)
 

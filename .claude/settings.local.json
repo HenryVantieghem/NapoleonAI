@@ -23,7 +23,8 @@
       "mcp__git-commands__git_status",
       "Bash(git branch:*)",
       "Bash(git checkout:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(mv:*)"
     ],
     "deny": []
   }

@@ -6,7 +6,7 @@ import { AuthLoading } from "./auth-loading"
 import { AuthError } from "./auth-error"
 import { motion, AnimatePresence } from "framer-motion"
 import { useRouter } from "next/navigation"
-import { UserProfileClientService } from "@/lib/services/user-profile-client"
+// Removed complex user profile service for MVP
 
 interface AuthWrapperProps {
   children: React.ReactNode
@@ -39,20 +39,24 @@ export function AuthWrapper({
       }
 
       try {
-        // Get user profile (will create if doesn't exist)
-        const profile = await UserProfileClientService.getUserProfile(clerkUser.id)
-        
-        if (profile) {
-          setUserProfile(profile)
-          
-          // Check executive status - profile should have user data joined
-          const role = (profile as any).users?.role || clerkUser.publicMetadata?.role || ''
-          const executiveRoles = ['CEO', 'COO', 'CFO', 'CTO', 'CMO', 'CHRO', 'President', 'VP', 'Director', 'Executive', 'Founder', 'Partner']
-          const isExec = executiveRoles.some(execRole => 
-            role.toLowerCase().includes(execRole.toLowerCase())
-          )
-          setIsExecutive(isExec)
+        // Simplified profile management for MVP
+        const profile = {
+          user_id: clerkUser.id,
+          preferences: {},
+          onboarding_completed: false,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
         }
+        
+        setUserProfile(profile)
+        
+        // Check executive status from Clerk metadata
+        const role = String(clerkUser.publicMetadata?.role || 'executive')
+        const executiveRoles = ['CEO', 'COO', 'CFO', 'CTO', 'CMO', 'CHRO', 'President', 'VP', 'Director', 'Executive', 'Founder', 'Partner']
+        const isExec = executiveRoles.some(execRole => 
+          role.toLowerCase().includes(execRole.toLowerCase())
+        )
+        setIsExecutive(isExec)
       } catch (err) {
         console.error('Error loading user data:', err)
         setError('Failed to load user profile')

@@ -1,476 +1,311 @@
-import { messageAnalyzer } from './message-analyzer'
-import { businessImpactAnalyzer } from './business-impact-analyzer'
-import { aiProcessingPipeline } from './processing-pipeline'
 import { supabase } from '@/lib/supabase/client'
-import { 
-  Message, 
-  AnalysisResult, 
-  ExecutiveSummary, 
-  ActionItem, 
-  CommunicationInsights,
-  DashboardData,
-  DecisionContext,
-  PriorityLevel
-} from '@/types/ai'
-import { AIError } from './openai-client'
+import { openai } from './openai-client'
+import type { Message, ActionItem, VipContact } from '@/types/database'
 
-export class AIService {
+export interface SimplePriorityResult {
+  score: number // 0-100
+  reason: string
+  isUrgent: boolean
+  isVip: boolean
+}
+
+export interface SimpleAnalysisResult {
+  priority: SimplePriorityResult
+  summary: string
+  actionItems: SimpleActionItem[]
+  sentiment: 'positive' | 'neutral' | 'negative' | 'urgent'
+}
+
+export interface SimpleActionItem {
+  title: string
+  description: string
+  priority: 'low' | 'medium' | 'high' | 'urgent'
+  dueDate?: string
+}
+
+export class SimpleAIService {
   /**
-   * Process a new message with full AI analysis
+   * Process a message with simplified AI analysis for MVP
    */
-  async processNewMessage(message: Message): Promise<{
-    analysis: AnalysisResult
-    summary: string
-    actionItems: ActionItem[]
-    businessImpact: any
-    decisionContext?: DecisionContext
-  }> {
+  async processMessage(message: Message, userId: string): Promise<SimpleAnalysisResult> {
     try {
-      // Run AI analysis in parallel
-      const [analysis, summary, actionItems, businessImpact] = await Promise.all([
-        messageAnalyzer.analyzeMessage(message),
-        messageAnalyzer.generateExecutiveSummary(message),
-        messageAnalyzer.extractActionItems(message),
-        businessImpactAnalyzer.assessBusinessImpact(message)
-      ])
+      // Get VIP contacts for priority scoring
+      const { data: vipContacts } = await supabase
+        .from('vip_contacts')
+        .select('email, priority_level')
+        .eq('user_id', userId)
 
-      // Generate decision context for high-priority messages
-      let decisionContext: DecisionContext | undefined
-      if (analysis.priority === 'critical' || analysis.priority === 'high') {
-        decisionContext = await businessImpactAnalyzer.generateDecisionContext(message)
-      }
+      const isVip = this.checkIfVip(message.sender_email, vipContacts || [])
+      
+      // Simplified AI analysis
+      const prompt = `
+Analyze this executive message for priority and extract action items:
 
-      // Queue for additional processing
-      await aiProcessingPipeline.processMessage(message)
+FROM: ${message.sender_name || message.sender_email}
+SUBJECT: ${message.subject || 'N/A'}
+CONTENT: ${message.content}
 
-      return {
-        analysis,
-        summary,
-        actionItems: actionItems.map(item => ({
-          ...item,
-          id: `${message.id}-${Date.now()}-${Math.random()}`,
-          messageId: message.id,
-          status: 'pending' as const,
-          businessImpact: this.mapPriorityToBusinessImpact(item.priority),
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          category: (item.category as any) || 'review',
-          dueDate: item.dueDate ? new Date(item.dueDate) : undefined
-        })),
-        businessImpact,
-        decisionContext
-      }
-    } catch (error) {
-      throw new AIError(
-        'Failed to process new message',
-        'PROCESS_MESSAGE_ERROR',
-        error as Error
-      )
+Please respond with a JSON object containing:
+{
+  "priorityScore": number (0-100, where 100 is urgent),
+  "priorityReason": "brief explanation why this priority",
+  "summary": "1-2 sentence summary",
+  "sentiment": "positive|neutral|negative|urgent",
+  "actionItems": [
+    {
+      "title": "Brief action title",
+      "description": "What needs to be done",
+      "priority": "low|medium|high|urgent",
+      "dueDate": "YYYY-MM-DD or null"
     }
-  }
+  ]
+}
 
-  /**
-   * Get strategic digest data for dashboard
-   */
-  async getStrategicDigest(userId: string): Promise<{
-    priorityMessages: Array<Message & { analysis: AnalysisResult; summary: string }>
-    actionItems: ActionItem[]
-    insights: CommunicationInsights
-    decisions: DecisionContext[]
-    metrics: {
-      totalMessages: number
-      pendingActions: number
-      criticalDecisions: number
-      avgResponseTime: number
-    }
-  }> {
-    try {
-      // Get priority messages with analysis
-      const { data: priorityData } = await supabase
-        .from('messages')
-        .select(`
-          *,
-          message_analysis(*),
-          executive_summaries(summary)
-        `)
-        .eq('user_id', userId)
-        .in('message_analysis.priority', ['critical', 'high'])
-        .order('created_at', { ascending: false })
-        .limit(10)
+Focus on:
+- Deadlines and time sensitivity
+- Decision requests
+- Meeting requests  
+- Important approvals
+- Critical issues
+`
 
-      // Get pending action items
-      const { data: actionItems } = await supabase
-        .from('action_items')
-        .select('*')
-        .eq('user_id', userId)
-        .eq('status', 'pending')
-        .order('priority', { ascending: false })
-        .order('due_date', { ascending: true })
-        .limit(20)
-
-      // Get latest insights
-      const { data: insightsData } = await supabase
-        .from('communication_insights')
-        .select('*')
-        .eq('user_id', userId)
-        .order('generated_at', { ascending: false })
-        .limit(1)
-
-      // Get pending decisions
-      const { data: decisions } = await supabase
-        .from('decision_contexts')
-        .select('*')
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false })
-        .limit(5)
-
-      // Calculate metrics
-      const { data: metricsData } = await supabase
-        .from('communication_insights')
-        .select('*')
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false })
-        .limit(1)
-
-      const priorityMessages = priorityData?.map(msg => ({
-        id: msg.id,
-        sender: msg.sender_email,
-        channel: msg.source,
-        timestamp: new Date(msg.message_date),
-        content: msg.content,
-        subject: msg.subject || '',
-        priority: this.mapScoreToPriority(msg.priority_score),
-        isVIP: msg.is_vip,
-        analysis: null as any,
-        summary: msg.ai_summary || ''
-      })) || []
-
-      const insights = insightsData?.[0] || this.getDefaultInsights()
-      const metrics = metricsData?.[0] || this.getDefaultMetrics()
-
-      return {
-        priorityMessages,
-        actionItems: actionItems || [],
-        insights,
-        decisions: decisions || [],
-        metrics
-      }
-    } catch (error) {
-      throw new AIError(
-        'Failed to get strategic digest',
-        'DIGEST_ERROR',
-        error as Error
-      )
-    }
-  }
-
-  /**
-   * Generate real-time insights for dashboard
-   */
-  async generateRealTimeInsights(userId: string): Promise<CommunicationInsights> {
-    try {
-      // Get recent messages for analysis
-      const { data: recentMessages } = await supabase
-        .from('messages')
-        .select('*')
-        .eq('user_id', userId)
-        .gte('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
-        .order('created_at', { ascending: false })
-        .limit(50)
-
-      if (!recentMessages || recentMessages.length === 0) {
-        return this.getDefaultInsights()
-      }
-
-      // Generate insights using AI
-      const insights = await messageAnalyzer.generateInsights(recentMessages)
-
-      // Save insights to database
-      await supabase.from('communication_insights').insert({
-        user_id: userId,
-        patterns: insights.patterns,
-        recommendations: insights.recommendations,
-        trends: insights.trends,
-        delegation_opportunities: insights.delegationOpportunities,
-        generated_at: new Date().toISOString()
+      const response = await openai.chat.completions.create({
+        model: 'gpt-4',
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.3,
+        max_tokens: 1000
       })
 
-      return {
-        patterns: insights.patterns || [],
-        recommendations: insights.recommendations || [],
-        trends: insights.trends || [],
-        delegationOpportunities: insights.delegationOpportunities || [],
-        efficiencyMetrics: await this.calculateEfficiencyMetrics(userId),
-        generatedAt: new Date()
-      }
-    } catch (error) {
-      throw new AIError(
-        'Failed to generate real-time insights',
-        'INSIGHTS_ERROR',
-        error as Error
-      )
-    }
-  }
-
-  /**
-   * Analyze message sentiment and extract key topics
-   */
-  async analyzeMessageSentiment(message: Message): Promise<{
-    sentiment: 'positive' | 'neutral' | 'negative' | 'urgent'
-    confidence: number
-    topics: string[]
-    urgencyLevel: 'immediate' | 'today' | 'thisWeek' | 'normal'
-    emotionalTone: string[]
-  }> {
-    try {
-      const analysis = await messageAnalyzer.analyzeMessage(message)
+      const aiResult = JSON.parse(response.choices[0].message.content || '{}')
       
+      // Apply VIP boost to priority
+      let finalScore = aiResult.priorityScore || 0
+      if (isVip.isVip) {
+        finalScore = Math.min(100, finalScore + isVip.boost)
+      }
+
       return {
-        sentiment: analysis.sentiment,
-        confidence: analysis.confidence,
-        topics: analysis.topics,
-        urgencyLevel: analysis.urgency,
-        emotionalTone: this.extractEmotionalTone(message.content)
+        priority: {
+          score: finalScore,
+          reason: isVip.isVip ? `VIP Contact: ${aiResult.priorityReason}` : aiResult.priorityReason,
+          isUrgent: finalScore >= 80,
+          isVip: isVip.isVip
+        },
+        summary: aiResult.summary || 'No summary available',
+        actionItems: aiResult.actionItems || [],
+        sentiment: aiResult.sentiment || 'neutral'
       }
     } catch (error) {
-      throw new AIError(
-        'Failed to analyze message sentiment',
-        'SENTIMENT_ERROR',
-        error as Error
-      )
-    }
-  }
-
-  /**
-   * Get AI-powered recommendations for message handling
-   */
-  async getMessageRecommendations(message: Message): Promise<{
-    actions: Array<{
-      type: 'respond' | 'delegate' | 'schedule' | 'escalate' | 'archive'
-      priority: PriorityLevel
-      description: string
-      reasoning: string
-      timeframe?: string
-    }>
-    suggestedResponses: string[]
-    delegationCandidates: string[]
-    schedulingSuggestions: string[]
-  }> {
-    try {
-      const analysis = await messageAnalyzer.analyzeMessage(message)
+      console.error('AI processing error:', error)
       
-      // Generate contextual recommendations based on analysis
-      const actions = this.generateActionRecommendations(analysis, message)
-      const suggestedResponses = await this.generateResponseSuggestions(message)
-      
-      return {
-        actions,
-        suggestedResponses,
-        delegationCandidates: this.identifyDelegationCandidates(message),
-        schedulingSuggestions: this.generateSchedulingSuggestions(analysis)
-      }
-    } catch (error) {
-      throw new AIError(
-        'Failed to get message recommendations',
-        'RECOMMENDATIONS_ERROR',
-        error as Error
-      )
+      // Fallback analysis without AI
+      return this.getFallbackAnalysis(message)
     }
   }
 
   /**
-   * Calculate communication efficiency metrics
+   * Check if sender is a VIP contact
    */
-  async calculateEfficiencyMetrics(userId: string): Promise<{
-    averageResponseTime: number
-    messageVolume: number
-    priorityDistribution: Record<PriorityLevel, number>
-    channelDistribution: Record<string, number>
-    actionItemCompletion: number
-    delegationRate: number
-    decisionSpeed: number
-  }> {
-    try {
-      const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
-
-      // Get message volume and channel distribution
-      const { data: messages } = await supabase
-        .from('messages')
-        .select('channel, created_at, message_analysis(priority)')
-        .eq('user_id', userId)
-        .gte('created_at', thirtyDaysAgo.toISOString())
-
-      // Get action item completion rates
-      const { data: actionItems } = await supabase
-        .from('action_items')
-        .select('status, completed_at, created_at')
-        .eq('user_id', userId)
-        .gte('created_at', thirtyDaysAgo.toISOString())
-
-      // Calculate metrics
-      const messageVolume = messages?.length || 0
-      const channelDistribution = this.calculateChannelDistribution(messages || [])
-      const priorityDistribution = this.calculatePriorityDistribution(messages || [])
-      const actionItemCompletion = this.calculateCompletionRate(actionItems || [])
-
-      return {
-        averageResponseTime: 720, // 12 hours default - would calculate from actual response data
-        messageVolume,
-        priorityDistribution,
-        channelDistribution,
-        actionItemCompletion,
-        delegationRate: 0.15, // 15% - would calculate from delegation data
-        decisionSpeed: 48 // 48 hours average - would calculate from decision data
-      }
-    } catch (error) {
-      throw new AIError(
-        'Failed to calculate efficiency metrics',
-        'METRICS_ERROR',
-        error as Error
-      )
+  private checkIfVip(senderEmail: string, vipContacts: { email: string; priority_level: number }[]): { isVip: boolean; boost: number } {
+    const vip = vipContacts.find(contact => 
+      contact.email.toLowerCase() === senderEmail.toLowerCase()
+    )
+    
+    if (vip) {
+      // Convert priority level (1-10) to score boost (10-40)
+      const boost = Math.min(40, vip.priority_level * 4)
+      return { isVip: true, boost }
     }
+    
+    return { isVip: false, boost: 0 }
   }
 
   /**
-   * Private helper methods
+   * Simple keyword-based priority scoring when AI fails
    */
-  private mapPriorityToBusinessImpact(priority: PriorityLevel): 'very-high' | 'high' | 'medium' | 'low' {
-    switch (priority) {
-      case 'critical': return 'very-high'
-      case 'high': return 'high'
-      case 'medium': return 'medium'
-      case 'low': return 'low'
-      default: return 'medium'
+  private getFallbackAnalysis(message: Message): SimpleAnalysisResult {
+    const content = (message.content + ' ' + (message.subject || '')).toLowerCase()
+    let score = 30 // Base score
+    
+    // Urgency keywords
+    if (content.includes('urgent') || content.includes('asap') || content.includes('immediately')) {
+      score += 40
     }
-  }
+    
+    // Meeting/deadline keywords
+    if (content.includes('meeting') || content.includes('deadline') || content.includes('due')) {
+      score += 20
+    }
+    
+    // Decision keywords
+    if (content.includes('approve') || content.includes('decision') || content.includes('sign off')) {
+      score += 25
+    }
+    
+    // Issue keywords
+    if (content.includes('problem') || content.includes('issue') || content.includes('error')) {
+      score += 30
+    }
 
-  private mapScoreToPriority(score: number): PriorityLevel {
-    if (score >= 90) return 'critical'
-    if (score >= 70) return 'high'
-    if (score >= 40) return 'medium'
-    return 'low'
-  }
-
-  private getDefaultInsights(): CommunicationInsights {
     return {
-      patterns: [],
-      recommendations: [],
-      trends: [],
-      delegationOpportunities: [],
-      efficiencyMetrics: {
-        averageResponseTime: 720,
-        messageVolume: 0,
-        priorityDistribution: { critical: 0, high: 0, medium: 0, low: 0 },
-        channelDistribution: {},
-        actionItemCompletion: 0,
-        delegationRate: 0,
-        decisionSpeed: 48
+      priority: {
+        score: Math.min(100, score),
+        reason: 'Keyword-based priority scoring',
+        isUrgent: score >= 80,
+        isVip: false
       },
-      generatedAt: new Date()
+      summary: this.extractSimpleSummary(message),
+      actionItems: this.extractSimpleActions(message),
+      sentiment: this.detectSentiment(content)
     }
   }
 
-  private getDefaultMetrics() {
-    return {
-      totalMessages: 0,
-      pendingActions: 0,
-      criticalDecisions: 0,
-      avgResponseTime: 720
-    }
+  private extractSimpleSummary(message: Message): string {
+    const content = message.content
+    if (content.length <= 100) return content
+    
+    // Take first sentence or first 100 chars
+    const firstSentence = content.split('.')[0]
+    return firstSentence.length <= 150 ? firstSentence : content.substring(0, 100) + '...'
   }
 
-  private extractEmotionalTone(content: string): string[] {
-    // Simple keyword-based emotional tone detection
-    const tones = []
-    const lowerContent = content.toLowerCase()
+  private extractSimpleActions(message: Message): SimpleActionItem[] {
+    const content = message.content.toLowerCase()
+    const actions: SimpleActionItem[] = []
     
-    if (lowerContent.includes('urgent') || lowerContent.includes('asap') || lowerContent.includes('immediately')) {
-      tones.push('urgent')
-    }
-    if (lowerContent.includes('concern') || lowerContent.includes('worried') || lowerContent.includes('issue')) {
-      tones.push('concerned')
-    }
-    if (lowerContent.includes('excellent') || lowerContent.includes('great') || lowerContent.includes('success')) {
-      tones.push('positive')
-    }
-    
-    return tones
-  }
-
-  private generateActionRecommendations(analysis: AnalysisResult, message: Message) {
-    const actions = []
-    
-    if (analysis.actionRequired) {
+    // Simple pattern matching for actions
+    if (content.includes('please review') || content.includes('please check')) {
       actions.push({
-        type: 'respond' as const,
-        priority: analysis.priority,
-        description: 'Requires immediate response',
-        reasoning: 'Message contains action items requiring executive decision',
-        timeframe: analysis.timeToDecision ? `${analysis.timeToDecision} hours` : 'Today'
+        title: 'Review Request',
+        description: 'Review the content mentioned in this message',
+        priority: 'medium'
       })
     }
     
-    if (analysis.priority === 'medium' || analysis.priority === 'low') {
+    if (content.includes('meeting') || content.includes('schedule')) {
       actions.push({
-        type: 'delegate' as const,
-        priority: 'medium' as const,
-        description: 'Consider delegation to appropriate team member',
-        reasoning: 'Lower priority item that could be handled by others'
+        title: 'Schedule Meeting',
+        description: 'Schedule or confirm meeting mentioned in message',
+        priority: 'medium'
+      })
+    }
+    
+    if (content.includes('approve') || content.includes('sign off')) {
+      actions.push({
+        title: 'Approval Required',
+        description: 'Provide approval for request in message',
+        priority: 'high'
       })
     }
     
     return actions
   }
 
-  private async generateResponseSuggestions(message: Message): Promise<string[]> {
-    // Generate AI-powered response suggestions
-    return [
-      'Thank you for bringing this to my attention. I will review and provide direction by [timeframe].',
-      'Please schedule a brief meeting to discuss this further.',
-      'I approve this proposal. Please proceed with implementation.'
-    ]
-  }
-
-  private identifyDelegationCandidates(message: Message): string[] {
-    // Identify potential delegation candidates based on message content and sender
-    return ['Direct Report', 'Department Head', 'Subject Matter Expert']
-  }
-
-  private generateSchedulingSuggestions(analysis: AnalysisResult): string[] {
-    const suggestions = []
-    
-    if (analysis.decisionRequired) {
-      suggestions.push('Schedule decision review meeting')
+  private detectSentiment(content: string): 'positive' | 'neutral' | 'negative' | 'urgent' {
+    if (content.includes('urgent') || content.includes('critical') || content.includes('problem')) {
+      return 'urgent'
     }
     
-    if (analysis.stakeholderLevel === 'executive' || analysis.stakeholderLevel === 'board') {
-      suggestions.push('Add to next leadership team meeting')
+    if (content.includes('thank') || content.includes('great') || content.includes('excellent')) {
+      return 'positive'
     }
     
-    return suggestions
+    if (content.includes('issue') || content.includes('concern') || content.includes('disappointed')) {
+      return 'negative'
+    }
+    
+    return 'neutral'
   }
 
-  private calculateChannelDistribution(messages: any[]): Record<string, number> {
-    return messages.reduce((acc, msg) => {
-      acc[msg.channel] = (acc[msg.channel] || 0) + 1
-      return acc
-    }, {})
+  /**
+   * Get simplified daily digest for dashboard
+   */
+  async getDailyDigest(userId: string): Promise<{
+    totalMessages: number
+    highPriorityCount: number
+    vipMessagesCount: number
+    actionItemsCount: number
+    topPriorityMessages: Message[]
+  }> {
+    try {
+      const today = new Date()
+      const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000)
+      
+      // Get today's messages
+      const { data: messages } = await supabase
+        .from('messages')
+        .select('*')
+        .eq('user_id', userId)
+        .gte('message_date', yesterday.toISOString())
+        .order('priority_score', { ascending: false })
+        .limit(20)
+
+      const messageList = messages || []
+      
+      // Get pending action items
+      const { data: actionItems } = await supabase
+        .from('action_items')
+        .select('id')
+        .eq('user_id', userId)
+        .eq('status', 'pending')
+
+      return {
+        totalMessages: messageList.length,
+        highPriorityCount: messageList.filter(m => m.priority_score >= 70).length,
+        vipMessagesCount: messageList.filter(m => m.is_vip).length,
+        actionItemsCount: actionItems?.length || 0,
+        topPriorityMessages: messageList.slice(0, 5)
+      }
+    } catch (error) {
+      console.error('Error getting daily digest:', error)
+      return {
+        totalMessages: 0,
+        highPriorityCount: 0,
+        vipMessagesCount: 0,
+        actionItemsCount: 0,
+        topPriorityMessages: []
+      }
+    }
   }
 
-  private calculatePriorityDistribution(messages: any[]): Record<PriorityLevel, number> {
-    return messages.reduce((acc, msg) => {
-      const priority = msg.message_analysis?.[0]?.priority || 'medium'
-      acc[priority as PriorityLevel] = (acc[priority as PriorityLevel] || 0) + 1
-      return acc
-    }, { critical: 0, high: 0, medium: 0, low: 0 })
-  }
+  /**
+   * Save processed message analysis to database
+   */
+  async saveMessageAnalysis(messageId: string, analysis: SimpleAnalysisResult, userId: string): Promise<void> {
+    try {
+      // Update message with AI analysis
+      await supabase
+        .from('messages')
+        .update({
+          priority_score: analysis.priority.score,
+          ai_summary: analysis.summary,
+          sentiment: analysis.sentiment,
+          is_vip: analysis.priority.isVip,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', messageId)
 
-  private calculateCompletionRate(actionItems: any[]): number {
-    if (actionItems.length === 0) return 0
-    const completed = actionItems.filter(item => item.status === 'completed').length
-    return (completed / actionItems.length) * 100
+      // Save action items
+      if (analysis.actionItems.length > 0) {
+        const actionItemsToInsert = analysis.actionItems.map(item => ({
+          message_id: messageId,
+          user_id: userId,
+          title: item.title,
+          description: item.description,
+          priority: item.priority,
+          due_date: item.dueDate ? new Date(item.dueDate).toISOString() : null,
+          status: 'pending' as const
+        }))
+
+        await supabase
+          .from('action_items')
+          .insert(actionItemsToInsert)
+      }
+    } catch (error) {
+      console.error('Error saving message analysis:', error)
+    }
   }
 }
 
-// Singleton instance
-export const aiService = new AIService()
+// Export singleton instance for MVP
+export const aiService = new SimpleAIService()

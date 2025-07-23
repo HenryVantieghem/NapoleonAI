@@ -78,7 +78,7 @@ export class GmailAPI {
 
       return {
         messages,
-        nextPageToken: listResponse.data.nextPageToken,
+        nextPageToken: listResponse.data.nextPageToken || undefined,
         resultSizeEstimate: listResponse.data.resultSizeEstimate || 0
       }
     } catch (error) {
@@ -200,7 +200,7 @@ export class GmailAPI {
 
       return {
         success: true,
-        messageId: response.data.id
+        messageId: response.data.id || ''
       }
     } catch (error) {
       return {
@@ -304,8 +304,8 @@ export class GmailAPI {
 
       return {
         success: true,
-        historyId: response.data.historyId,
-        expiration: response.data.expiration
+        historyId: response.data.historyId || '',
+        expiration: response.data.expiration || ''
       }
     } catch (error) {
       return {
@@ -348,7 +348,7 @@ export class GmailAPI {
 
       return {
         messages: messages.filter(Boolean) as Message[],
-        nextPageToken: response.data.nextPageToken,
+        nextPageToken: response.data.nextPageToken || undefined,
         historyId: response.data.historyId || startHistoryId
       }
     } catch (error) {

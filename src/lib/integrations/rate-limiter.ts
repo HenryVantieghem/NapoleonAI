@@ -91,7 +91,9 @@ class RateLimiter {
   private startCleanupTimer(): void {
     setInterval(() => {
       const now = Date.now()
-      for (const [key, window] of this.windows.entries()) {
+      for (const key of Array.from(this.windows.keys())) {
+        const window = this.windows.get(key)
+        if (!window) continue
         if (now >= window.resetTime) {
           this.windows.delete(key)
         }

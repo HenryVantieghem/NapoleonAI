@@ -1,6 +1,6 @@
 import { openai, AI_MODELS, AI_CONFIG, EXECUTIVE_CONTEXT, AIError } from './openai-client'
-import { Message, AnalysisResult, PriorityLevel, BusinessImpact } from '@/types/ai'
-import { calendarService, CalendarEvent } from '../integrations/calendar-api'
+import { Message, AnalysisResult, PriorityLevel, BusinessImpactLevel } from '@/types/ai'
+// Removed calendar integration for MVP
 
 export class MessageAnalyzer {
   /**
@@ -8,16 +8,8 @@ export class MessageAnalyzer {
    */
   async analyzeMessage(message: Message, userId?: string): Promise<AnalysisResult> {
     try {
-      // Get calendar context if userId is provided
+      // Simplified for MVP - no calendar integration
       let calendarContext = ''
-      if (userId) {
-        const context = await calendarService.findMeetingContext(
-          userId, 
-          message.content, 
-          message.senderEmail
-        )
-        calendarContext = this.formatCalendarContext(context)
-      }
 
       const analysisPrompt = this.buildAnalysisPrompt(message, calendarContext)
       
@@ -41,22 +33,12 @@ export class MessageAnalyzer {
       const result = JSON.parse(response.choices[0].message.content || '{}')
       
       return {
-        messageId: message.id,
         priority: this.validatePriority(result.priority),
-        urgency: result.urgency,
-        businessImpact: this.assessBusinessImpact(result),
-        sentiment: result.sentiment,
-        topics: result.topics || [],
-        actionRequired: result.actionRequired || false,
-        decisionRequired: result.decisionRequired || false,
-        financialImpact: result.financialImpact || 0,
-        stakeholderLevel: result.stakeholderLevel || 'unknown',
-        timeToDecision: result.timeToDecision || null,
-        riskLevel: result.riskLevel || 'low',
         confidence: result.confidence || 0.8,
-        reasoning: result.reasoning || '',
-        suggestedActions: result.suggestedActions || [],
-        createdAt: new Date(),
+        sentiment: result.sentiment || 'neutral',
+        topics: result.topics || [],
+        urgencyLevel: result.urgency || 'normal',
+        requiresAction: result.actionRequired || false
       }
     } catch (error) {
       throw new AIError(
@@ -86,7 +68,7 @@ export class MessageAnalyzer {
             content: `Create an executive summary for this message:
             
             Subject: ${message.subject}
-            From: ${message.sender} (${message.senderRole || 'Unknown role'})
+            From: ${message.sender}
             Content: ${message.content}
             
             Focus on: What decision is needed? What's the business impact? What action should the executive take?`
@@ -212,7 +194,7 @@ export class MessageAnalyzer {
     return `Analyze this executive communication for priority and business impact:
 
 Subject: ${message.subject}
-From: ${message.sender} (${message.senderRole || 'Unknown role'})
+From: ${message.sender}
 Channel: ${message.channel}
 Timestamp: ${message.timestamp}
 Content: ${message.content}
@@ -284,7 +266,7 @@ Always provide structured, data-driven analysis that helps executives prioritize
   /**
    * Assess business impact based on analysis results
    */
-  private assessBusinessImpact(result: any): BusinessImpact {
+  private assessBusinessImpact(result: any): BusinessImpactLevel {
     const financial = result.financialImpact || 0
     const stakeholder = result.stakeholderLevel || 'staff'
     const risk = result.riskLevel || 'low'
@@ -311,43 +293,11 @@ Always provide structured, data-driven analysis that helps executives prioritize
   }
 
   /**
-   * Format calendar context for AI analysis
+   * Format calendar context for AI analysis (removed for MVP)
    */
-  private formatCalendarContext(context: {
-    upcomingMeetings: CalendarEvent[]
-    recentMeetings: CalendarEvent[]
-    meetingsWithSender: CalendarEvent[]
-  }): string {
-    let formatted = ''
-
-    if (context.upcomingMeetings.length > 0) {
-      formatted += 'Upcoming Meetings:\n'
-      context.upcomingMeetings.slice(0, 5).forEach(meeting => {
-        formatted += `- ${meeting.title} (${meeting.startTime.toLocaleString()})\n`
-        if (meeting.attendees.length > 0) {
-          formatted += `  Attendees: ${meeting.attendees.map(a => a.name).join(', ')}\n`
-        }
-      })
-      formatted += '\n'
-    }
-
-    if (context.recentMeetings.length > 0) {
-      formatted += 'Recent Meetings:\n'
-      context.recentMeetings.slice(0, 3).forEach(meeting => {
-        formatted += `- ${meeting.title} (${meeting.startTime.toLocaleDateString()})\n`
-      })
-      formatted += '\n'
-    }
-
-    if (context.meetingsWithSender.length > 0) {
-      formatted += 'Meetings with Sender:\n'
-      context.meetingsWithSender.slice(0, 3).forEach(meeting => {
-        formatted += `- ${meeting.title} (${meeting.startTime.toLocaleDateString()})\n`
-      })
-      formatted += '\n'
-    }
-
-    return formatted
+  private formatCalendarContext(context: any): string {
+    // Simplified for MVP - no calendar integration
+    return ''
   }
 }
 

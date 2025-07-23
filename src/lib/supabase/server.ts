@@ -103,7 +103,7 @@ export async function getMessages(userId: string, options?: {
     .order('message_date', { ascending: false })
   
   if (options?.status) {
-    query = query.eq('status', options.status)
+    query = query.eq('status', options.status as 'unread' | 'read' | 'archived' | 'snoozed')
   }
   
   if (options?.isVip !== undefined) {
@@ -149,11 +149,11 @@ export async function getActionItems(userId: string, options?: {
     .order('due_date', { ascending: true, nullsFirst: false })
   
   if (options?.status) {
-    query = query.eq('status', options.status)
+    query = query.eq('status', options.status as 'pending' | 'in_progress' | 'completed' | 'cancelled')
   }
   
   if (options?.priority) {
-    query = query.eq('priority', options.priority)
+    query = query.eq('priority', options.priority as 'low' | 'medium' | 'high' | 'urgent')
   }
   
   if (options?.limit) {
@@ -205,23 +205,6 @@ export async function getConnectedAccounts(userId: string) {
 }
 
 export async function getRelationshipInsights(userId: string, contactEmail?: string) {
-  const supabase = createClient()
-  
-  let query = supabase
-    .from('relationship_insights')
-    .select('*')
-    .eq('user_id', userId)
-  
-  if (contactEmail) {
-    query = query.eq('contact_email', contactEmail)
-  }
-  
-  const { data, error } = await query
-  
-  if (error) {
-    console.error('Error fetching relationship insights:', error)
-    return contactEmail ? null : []
-  }
-  
-  return contactEmail ? data?.[0] || null : data
+  // Simplified for MVP - no relationship insights table
+  return []
 }

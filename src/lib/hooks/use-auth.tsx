@@ -28,7 +28,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const { isLoaded, isSignedIn, user, signOut: clerkSignOut } = useClerkAuth()
+  const { isLoaded, isSignedIn, signOut: clerkSignOut } = useClerkAuth()
   const { user: clerkUser } = useClerkUser()
   
   const [profile, setProfile] = useState<UserWithProfile | null>(null)
@@ -47,8 +47,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setIsLoading(true)
         
         // Load user profile if authenticated
-        if (isSignedIn && user) {
-          await loadUserProfile(user.id)
+        if (isSignedIn && clerkUser) {
+          await loadUserProfile(clerkUser.id)
           await checkExecutiveStatus()
         }
       } catch (error: any) {
@@ -60,15 +60,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     initializeAuth()
-  }, [isLoaded, isSignedIn, user])
+  }, [isLoaded, isSignedIn, clerkUser])
 
   // Handle auth state changes with Clerk
   useEffect(() => {
     if (!isLoaded) return
 
-    if (isSignedIn && user) {
+    if (isSignedIn && clerkUser) {
       // User signed in, load profile
-      loadUserProfile(user.id)
+      loadUserProfile(clerkUser.id)
       checkExecutiveStatus()
       setError(null)
     } else {
@@ -77,7 +77,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsExecutive(false)
       setError(null)
     }
-  }, [isSignedIn, user, isLoaded])
+  }, [isSignedIn, clerkUser, isLoaded])
 
   const loadUserProfile = async (userId: string) => {
     try {
@@ -91,7 +91,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .single()
 
       if (error && error.code !== 'PGRST116') throw error
-      if (profile) setProfile(profile)
+      if (profile) {
+        // Map the joined data to the expected UserWithProfile format
+        const userWithProfile = {
+          ...profile.users,
+          user_profiles: {
+            user_id: profile.user_id,
+            preferences: profile.preferences,
+            onboarding_completed: profile.onboarding_completed,
+            created_at: profile.created_at,
+            updated_at: profile.updated_at
+          }
+        }
+        setProfile(userWithProfile)
+      }
     } catch (error) {
       console.error('Error loading user profile:', error)
     }
@@ -99,12 +112,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const checkExecutiveStatus = async () => {
     try {
-      if (!profile?.users?.role) {
+      if (!profile?.role) {
         setIsExecutive(false)
         return
       }
       
-      const role = profile.users.role
+      const role = profile.role
       const executiveRoles = ['CEO', 'COO', 'CFO', 'CTO', 'CMO', 'CHRO', 'President', 'VP', 'Director', 'Executive', 'Founder', 'Partner']
       const isExec = executiveRoles.some(execRole => 
         role.toLowerCase().includes(execRole.toLowerCase())
@@ -140,12 +153,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { createClient } = await import('@/lib/supabase/client')
       const supabase = createClient()
       
-      if (!user) return { success: false, error: 'User not authenticated' }
+      if (!clerkUser) return { success: false, error: 'User not authenticated' }
       
       const { error } = await supabase
         .from('user_profiles')
         .update(updates)
-        .eq('user_id', user.id)
+        .eq('user_id', clerkUser.id)
       
       if (error) throw error
       
@@ -156,17 +169,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setError(errorMessage)
       return { success: false, error: errorMessage }
     }
-  }, [user])
+  }, [clerkUser])
 
   const refreshProfile = useCallback(async () => {
-    if (user) {
-      await loadUserProfile(user.id)
+    if (clerkUser) {
+      await loadUserProfile(clerkUser.id)
       await checkExecutiveStatus()
     }
-  }, [user])
+  }, [clerkUser])
 
   const value: AuthContextType = {
-    user,
+    user: clerkUser, // For backward compatibility
     clerkUser,
     profile,
     isLoading: !isLoaded || isLoading,
@@ -208,13 +221,13 @@ export function useProfile() {
 
 export function useExecutiveStatus() {
   const { isExecutive, profile } = useAuth()
-  const role = profile?.users?.role || ''
+  const role = profile?.role || ''
   
   return {
     isExecutive,
     role,
-    subscriptionStatus: profile?.subscription_status || 'trial',
-    onboardingCompleted: profile?.onboarding_completed || false
+    subscriptionStatus: 'trial', // Simplified for MVP
+    onboardingCompleted: profile?.user_profiles?.onboarding_completed || false
   }
 }
 

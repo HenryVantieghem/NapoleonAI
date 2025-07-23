@@ -1,6 +1,8 @@
 import { createClient } from '@/lib/supabase/client'
 import { createServiceClient } from '@/lib/supabase/server'
-import type { ConnectedAccountInsert } from '@/types/database'
+import type { Database } from '@/types/database'
+
+type ConnectedAccountInsert = Database['public']['Tables']['connected_accounts']['Insert']
 
 // OAuth Provider Configurations
 export const OAUTH_CONFIGS = {
@@ -203,16 +205,24 @@ export async function saveConnectedAccount(
     ? new Date(Date.now() + tokenData.expires_in * 1000).toISOString()
     : null
 
+  // Map OAuth provider names to database provider names
+  const providerMap = {
+    'google': 'gmail',
+    'microsoft': 'teams',
+    'slack': 'slack'
+  } as const
+  
+  const dbProvider = providerMap[provider] || provider
+
   const accountData: ConnectedAccountInsert = {
     user_id: userId,
-    provider,
+    provider: dbProvider,
     account_id: accountInfo.account_id,
     account_email: accountInfo.account_email,
     account_name: accountInfo.account_name,
     access_token: tokenData.access_token,
     refresh_token: tokenData.refresh_token,
     expires_at: expiresAt,
-    scope: tokenData.scope,
     status: 'active',
   }
 

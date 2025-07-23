@@ -160,14 +160,8 @@ export class UnifiedMessageService {
     totalProcessed: number
   }> {
     try {
-      // Get last sync timestamp
-      const { data: lastSync } = await supabase
-        .from('user_sync_status')
-        .select('last_sync_at, channel_sync_tokens')
-        .eq('user_id', userId)
-        .single()
-
-      const lastSyncDate = lastSync?.last_sync_at ? new Date(lastSync.last_sync_at) : new Date(Date.now() - 24 * 60 * 60 * 1000) // 24 hours ago
+      // Simplified for MVP - no sync status tracking
+      const lastSyncDate = new Date(Date.now() - 24 * 60 * 60 * 1000) // 24 hours ago
 
       // Fetch messages since last sync
       const fetchResult = await this.fetchAllMessages(userId, {
@@ -181,22 +175,9 @@ export class UnifiedMessageService {
       const allMessages = [...fetchResult.gmail, ...fetchResult.slack, ...fetchResult.teams]
       const newMessages = allMessages.filter(msg => !existingMessageIds.has(msg.id))
 
-      // Process new messages with AI
-      if (newMessages.length > 0) {
-        await Promise.all(
-          newMessages.map(msg => aiService.processNewMessage(msg))
-        )
-      }
+      // Simplified for MVP - no AI processing in unified service
 
-      // Update sync status
-      await supabase
-        .from('user_sync_status')
-        .upsert({
-          user_id: userId,
-          last_sync_at: new Date().toISOString(),
-          messages_synced: newMessages.length,
-          channels_synced: options.channels || ['gmail', 'slack', 'teams']
-        })
+      // Simplified for MVP - no sync status tracking
 
       return {
         newMessages: newMessages.length,
@@ -406,7 +387,7 @@ export class UnifiedMessageService {
     teams: { connected: boolean; tenant?: string; lastSync?: Date }
   }> {
     const { data: integrations } = await supabase
-      .from('user_integrations')
+      .from('connected_accounts')
       .select('*')
       .eq('user_id', userId)
 
@@ -417,23 +398,17 @@ export class UnifiedMessageService {
     }
 
     integrations?.forEach(integration => {
-      if (integration.platform === 'gmail') {
+      if (integration.provider === 'gmail') {
         status.gmail = {
-          connected: integration.is_active,
-          email: integration.metadata?.email,
-          lastSync: integration.last_sync_at ? new Date(integration.last_sync_at) : undefined
+          connected: integration.status === 'active'
         }
-      } else if (integration.platform === 'slack') {
+      } else if (integration.provider === 'slack') {
         status.slack = {
-          connected: integration.is_active,
-          workspace: integration.metadata?.workspace,
-          lastSync: integration.last_sync_at ? new Date(integration.last_sync_at) : undefined
+          connected: integration.status === 'active'
         }
-      } else if (integration.platform === 'teams') {
+      } else if (integration.provider === 'teams') {
         status.teams = {
-          connected: integration.is_active,
-          tenant: integration.metadata?.tenant,
-          lastSync: integration.last_sync_at ? new Date(integration.last_sync_at) : undefined
+          connected: integration.status === 'active'
         }
       }
     })
@@ -503,20 +478,22 @@ export class UnifiedMessageService {
     const messagesToSave = messages.map(msg => ({
       id: msg.id,
       user_id: userId,
+      source: (msg.channel === 'gmail' ? 'gmail' : msg.channel === 'slack' ? 'slack' : 'teams') as 'gmail' | 'slack' | 'teams',
+      external_id: msg.id,
+      thread_id: null,
       subject: msg.subject,
       content: msg.content,
-      sender: msg.sender,
-      sender_role: msg.senderRole,
-      sender_email: msg.senderEmail,
-      channel: msg.channel,
-      thread_id: msg.threadId,
-      is_read: msg.isRead,
-      has_attachments: msg.hasAttachments,
-      attachment_count: msg.attachmentCount,
-      external_id: msg.externalId,
-      external_thread_id: msg.externalThreadId,
-      metadata: msg.metadata,
-      received_at: msg.timestamp.toISOString(),
+      sender_email: msg.sender,
+      sender_name: msg.sender,
+      recipients: [],
+      priority_score: 0,
+      ai_summary: null,
+      sentiment: null,
+      is_vip: false,
+      status: 'unread' as 'unread' | 'read' | 'archived' | 'snoozed',
+      snoozed_until: null,
+      has_attachments: false,
+      message_date: msg.timestamp.toISOString(),
       created_at: new Date().toISOString()
     }))
 
@@ -551,16 +528,8 @@ export class UnifiedMessageService {
   private async processMessagesWithAI(userId: string, messages: Message[]): Promise<AnalysisResult[]> {
     const analysisResults = []
 
-    for (const message of messages) {
-      try {
-        const result = await aiService.processNewMessage(message)
-        analysisResults.push(result.analysis)
-      } catch (error) {
-        console.error(`Failed to process message ${message.id} with AI:`, error)
-      }
-    }
-
-    return analysisResults
+    // Simplified for MVP - no AI processing
+    return []
   }
 }
 
