@@ -52,8 +52,6 @@ export function DashboardHeader({
   }
 
   const getUserDisplayName = () => {
-    if (profile?.users?.name) return profile.users.name.split(' ')[0]
-    if (user?.email) return user.email.split('@')[0]
     return "Executive"
   }
 

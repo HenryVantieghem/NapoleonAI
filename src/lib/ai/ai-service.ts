@@ -53,7 +53,9 @@ export class AIService {
           status: 'pending' as const,
           businessImpact: this.mapPriorityToBusinessImpact(item.priority),
           createdAt: new Date(),
-          updatedAt: new Date()
+          updatedAt: new Date(),
+          category: (item.category as any) || 'review',
+          dueDate: item.dueDate ? new Date(item.dueDate) : undefined
         })),
         businessImpact,
         decisionContext
@@ -124,16 +126,23 @@ export class AIService {
 
       // Calculate metrics
       const { data: metricsData } = await supabase
-        .from('communication_metrics')
+        .from('communication_insights')
         .select('*')
         .eq('user_id', userId)
-        .order('date', { ascending: false })
+        .order('created_at', { ascending: false })
         .limit(1)
 
       const priorityMessages = priorityData?.map(msg => ({
-        ...msg,
-        analysis: msg.message_analysis?.[0] || null,
-        summary: msg.executive_summaries?.[0]?.summary || ''
+        id: msg.id,
+        sender: msg.sender_email,
+        channel: msg.source,
+        timestamp: new Date(msg.message_date),
+        content: msg.content,
+        subject: msg.subject || '',
+        priority: this.mapScoreToPriority(msg.priority_score),
+        isVIP: msg.is_vip,
+        analysis: null as any,
+        summary: msg.ai_summary || ''
       })) || []
 
       const insights = insightsData?.[0] || this.getDefaultInsights()
@@ -333,6 +342,13 @@ export class AIService {
       case 'low': return 'low'
       default: return 'medium'
     }
+  }
+
+  private mapScoreToPriority(score: number): PriorityLevel {
+    if (score >= 90) return 'critical'
+    if (score >= 70) return 'high'
+    if (score >= 40) return 'medium'
+    return 'low'
   }
 
   private getDefaultInsights(): CommunicationInsights {

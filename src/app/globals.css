@@ -25,11 +25,14 @@
   }
 
   * {
-    @apply border-gray-200;
+    border-color: rgb(229 231 235);
   }
   
   body {
-    @apply bg-white font-sans text-gray-900 antialiased;
+    background-color: white;
+    font-family: 'Inter', sans-serif;
+    color: rgb(17 24 39);
+    -webkit-font-smoothing: antialiased;
     font-feature-settings: 'rlig' 1, 'calt' 1;
   }
 
@@ -44,25 +47,28 @@
   }
 
   ::-webkit-scrollbar-track {
-    @apply bg-gray-100;
+    background: rgb(243 244 246);
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-gray-300 rounded-full;
+    background: rgb(209 213 219);
+    border-radius: 9999px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-burgundy-400;
+    background: #D26876;
   }
 
   /* Selection styles */
   ::selection {
-    @apply bg-burgundy-100 text-burgundy-900;
+    background: #F7E1E4;
+    color: #5C1A26;
   }
 
   /* Focus styles */
   :focus-visible {
-    @apply outline-none ring-2 ring-burgundy-500 ring-offset-2;
+    outline: none;
+    box-shadow: 0 0 0 2px #801B2B, 0 0 0 4px #801B2B33;
   }
 }
 
@@ -70,184 +76,209 @@
 @layer components {
   /* Luxury Button Base */
   .btn {
-    @apply inline-flex items-center justify-center rounded-lg font-medium transition-all duration-300 ease-in-out;
-    @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
-    @apply disabled:opacity-50 disabled:pointer-events-none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #801B2B;
+  }
+
+  .btn:disabled {
+    opacity: 0.5;
+    pointer-events: none;
   }
 
   .btn-primary {
-    @apply bg-gradient-burgundy text-white shadow-burgundy;
-    @apply hover:shadow-burgundy-lg hover:scale-105;
-    @apply focus:ring-burgundy-500;
+    background: linear-gradient(to right, #A12F3D, #801B2B);
+    color: white;
+    box-shadow: 0 10px 40px rgba(128, 27, 43, 0.3);
+  }
+  
+  .btn-primary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 20px 60px rgba(128, 27, 43, 0.4);
   }
 
   .btn-secondary {
-    @apply bg-white text-burgundy-700 border-2 border-burgundy-200;
-    @apply hover:bg-burgundy-50 hover:border-burgundy-300;
-    @apply focus:ring-burgundy-500;
+    background: white;
+    color: #801B2B;
+    border: 2px solid #EFC4CA;
+  }
+
+  .btn-secondary:hover {
+    background: #FCF2F3;
+    border-color: #E39BA5;
   }
 
   .btn-ghost {
-    @apply bg-transparent text-gray-700 border border-gray-200;
-    @apply hover:bg-gray-50 hover:text-gray-900;
-    @apply focus:ring-gray-500;
+    background: transparent;
+    color: rgb(55 65 81);
+    border: 1px solid rgb(229 231 235);
+  }
+
+  .btn-ghost:hover {
+    background: rgb(249 250 251);
+    color: rgb(17 24 39);
   }
 
   /* Size variants */
   .btn-sm {
-    @apply px-4 py-2 text-sm;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
   }
 
   .btn-md {
-    @apply px-6 py-3 text-base;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
   }
 
   .btn-lg {
-    @apply px-8 py-4 text-lg;
+    padding: 1rem 2rem;
+    font-size: 1.125rem;
   }
 
   .btn-xl {
-    @apply px-12 py-6 text-xl;
+    padding: 1.5rem 3rem;
+    font-size: 1.25rem;
   }
 
   /* Luxury Card */
   .card-luxury {
-    @apply bg-white rounded-2xl shadow-luxury border border-gray-100;
-    @apply hover:shadow-luxury-lg transition-all duration-300;
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgb(243 244 246);
+    transition: all 0.3s ease;
+  }
+
+  .card-luxury:hover {
+    box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.15);
   }
 
   /* Text Styles */
   .text-gradient-burgundy {
-    @apply bg-gradient-to-r from-burgundy-600 to-burgundy-800 bg-clip-text text-transparent;
+    background: linear-gradient(to right, #A12F3D, #801B2B);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
   }
 
   .text-hero {
-    @apply text-hero font-serif font-bold text-gray-900 leading-none;
+    font-size: 4.5rem;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    color: rgb(17 24 39);
   }
 
   .text-display {
-    @apply text-display font-serif font-bold text-gray-900;
-  }
-
-  .text-h1 {
-    @apply text-h1 font-serif font-bold text-gray-900;
-  }
-
-  .text-h2 {
-    @apply text-h2 font-serif font-semibold text-gray-900;
-  }
-
-  .text-h3 {
-    @apply text-h3 font-serif font-semibold text-gray-900;
-  }
-
-  .text-body-lg {
-    @apply text-body-lg font-sans text-gray-700;
-  }
-
-  .text-body {
-    @apply text-body font-sans text-gray-600;
+    font-size: 3.75rem;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    color: rgb(17 24 39);
   }
 
   /* Layout Components */
   .container-luxury {
-    @apply max-w-7xl mx-auto px-6 sm:px-8 lg:px-12;
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .container-luxury {
+      padding: 0 2rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container-luxury {
+      padding: 0 3rem;
+    }
   }
 
   .section-padding {
-    @apply py-16 sm:py-20 lg:py-24;
+    padding: 4rem 0;
   }
 
-  .section-padding-lg {
-    @apply py-20 sm:py-24 lg:py-32;
+  @media (min-width: 640px) {
+    .section-padding {
+      padding: 5rem 0;
+    }
   }
 
-  /* Animation Utilities */
-  .animate-on-scroll {
-    @apply opacity-0 translate-y-8 transition-all duration-800 ease-out;
-  }
-
-  .animate-on-scroll.visible {
-    @apply opacity-100 translate-y-0;
-  }
-
-  /* Luxury Backdrop */
-  .backdrop-luxury {
-    @apply backdrop-blur-luxury bg-white/80;
+  @media (min-width: 1024px) {
+    .section-padding {
+      padding: 6rem 0;
+    }
   }
 
   /* Executive Badge */
   .executive-badge {
-    @apply inline-flex items-center px-4 py-2 rounded-full text-sm font-medium;
-    @apply bg-burgundy-50 text-burgundy-700 border border-burgundy-200;
-  }
-
-  /* Testimonial Card */
-  .testimonial-card {
-    @apply card-luxury p-8 relative overflow-hidden;
-  }
-
-  .testimonial-card::before {
-    content: '';
-    @apply absolute top-0 left-0 w-full h-1 bg-gradient-burgundy;
-  }
-
-  /* Floating Animation */
-  .float {
-    animation: float 6s ease-in-out infinite;
-  }
-
-  .float-delay-1 {
-    animation: float 6s ease-in-out infinite;
-    animation-delay: -2s;
-  }
-
-  .float-delay-2 {
-    animation: float 6s ease-in-out infinite;
-    animation-delay: -4s;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    background: #FCF2F3;
+    color: #801B2B;
+    border: 1px solid #EFC4CA;
   }
 
   /* Luxury Input */
   .input-luxury {
-    @apply w-full px-4 py-3 border border-gray-200 rounded-xl;
-    @apply focus:border-burgundy-300 focus:ring-burgundy-200;
-    @apply bg-white text-gray-900 placeholder-gray-500;
-    @apply transition-colors duration-200;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid rgb(229 231 235);
+    border-radius: 0.75rem;
+    background: white;
+    color: rgb(17 24 39);
+    transition: colors 0.2s ease;
+  }
+
+  .input-luxury:focus {
+    border-color: #E39BA5;
+    outline: none;
+    box-shadow: 0 0 0 1px #EFC4CA;
+  }
+
+  .input-luxury::placeholder {
+    color: rgb(107 114 128);
   }
 
   /* Logo Text */
   .logo-text {
-    @apply font-script text-2xl text-burgundy-700 font-semibold;
-  }
-
-  /* Gradient Text */
-  .gradient-text {
-    @apply bg-gradient-to-r from-burgundy-600 via-burgundy-700 to-burgundy-800;
-    @apply bg-clip-text text-transparent;
-  }
-
-  /* Luxury Divider */
-  .divider-luxury {
-    @apply w-24 h-0.5 bg-gradient-burgundy mx-auto rounded-full;
-  }
-
-  /* Executive Quote */
-  .quote-mark {
-    @apply text-6xl font-serif text-burgundy-200 leading-none;
-  }
-
-  /* CTA Section Background */
-  .cta-bg {
-    @apply bg-gradient-to-br from-burgundy-50 via-white to-cream;
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.5rem;
+    color: #801B2B;
+    font-weight: 600;
   }
 
   /* Hover Effects */
   .hover-lift {
-    @apply transition-transform duration-300 hover:-translate-y-1;
+    transition: transform 0.3s ease;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-0.25rem);
   }
 
   .hover-glow {
-    @apply transition-shadow duration-300 hover:shadow-burgundy;
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .hover-glow:hover {
+    box-shadow: 0 10px 40px rgba(128, 27, 43, 0.3);
   }
 }
 
@@ -255,38 +286,47 @@
 @layer utilities {
   /* Responsive Typography */
   .text-responsive-hero {
-    @apply text-4xl sm:text-5xl md:text-6xl lg:text-hero;
+    font-size: 2.25rem;
+  }
+
+  @media (min-width: 640px) {
+    .text-responsive-hero {
+      font-size: 3rem;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .text-responsive-hero {
+      font-size: 3.75rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .text-responsive-hero {
+      font-size: 4.5rem;
+    }
   }
 
   .text-responsive-display {
-    @apply text-3xl sm:text-4xl md:text-5xl lg:text-display;
+    font-size: 1.875rem;
   }
 
-  .text-responsive-h1 {
-    @apply text-2xl sm:text-3xl md:text-4xl lg:text-h1;
+  @media (min-width: 640px) {
+    .text-responsive-display {
+      font-size: 2.25rem;
+    }
   }
 
-  /* Spacing Utilities */
-  .space-y-luxury > * + * {
-    @apply mt-8;
+  @media (min-width: 768px) {
+    .text-responsive-display {
+      font-size: 3rem;
+    }
   }
 
-  .space-y-luxury-lg > * + * {
-    @apply mt-12;
-  }
-
-  /* Aspect Ratios */
-  .aspect-golden {
-    aspect-ratio: 1.618 / 1;
-  }
-
-  .aspect-executive {
-    aspect-ratio: 16 / 10;
-  }
-
-  /* Grid Layouts */
-  .grid-luxury {
-    @apply grid gap-8 sm:gap-12 lg:gap-16;
+  @media (min-width: 1024px) {
+    .text-responsive-display {
+      font-size: 3.75rem;
+    }
   }
 
   /* Animation Delays */

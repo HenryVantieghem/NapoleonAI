@@ -48,7 +48,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Get the last processed history ID
-    const lastHistoryId = userIntegration.metadata?.lastHistoryId
+    const metadata = userIntegration.metadata as { lastHistoryId?: string } | null
+    const lastHistoryId = metadata?.lastHistoryId
 
     if (!lastHistoryId || parseInt(historyId) <= parseInt(lastHistoryId)) {
       // No new changes to process
@@ -58,7 +59,7 @@ export async function POST(request: NextRequest) {
     // Set up Gmail API with user's tokens
     gmailAPI.setAccessToken(
       userIntegration.access_token,
-      userIntegration.refresh_token
+      userIntegration.refresh_token || undefined
     )
 
     // Get the history since last processed ID
@@ -69,7 +70,7 @@ export async function POST(request: NextRequest) {
       unifiedMessageService.setTokens(userIntegration.user_id, {
         gmail: {
           accessToken: userIntegration.access_token,
-          refreshToken: userIntegration.refresh_token
+          refreshToken: userIntegration.refresh_token || undefined
         }
       })
 
@@ -90,7 +91,7 @@ export async function POST(request: NextRequest) {
         .from('user_integrations')
         .update({
           metadata: {
-            ...userIntegration.metadata,
+            ...(userIntegration.metadata as object || {}),
             lastHistoryId: history.historyId
           },
           last_sync_at: new Date().toISOString()

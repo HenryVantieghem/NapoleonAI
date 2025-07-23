@@ -81,11 +81,11 @@ export function ContextPanel({ selectedMessage, onClose }: ContextPanelProps) {
   }
 
   const tabs = [
-    { id: 'details', label: 'Details', icon: User },
-    { id: 'thread', label: 'Thread', icon: MessageSquare },
-    { id: 'actions', label: 'Actions', icon: CheckCircle },
-    { id: 'insights', label: 'AI Insights', icon: TrendingUp },
-    { id: 'calendar', label: 'Calendar', icon: Calendar }
+    { id: 'details' as const, label: 'Details', icon: User },
+    { id: 'thread' as const, label: 'Thread', icon: MessageSquare },
+    { id: 'actions' as const, label: 'Actions', icon: CheckCircle },
+    { id: 'insights' as const, label: 'AI Insights', icon: TrendingUp },
+    { id: 'calendar' as const, label: 'Calendar', icon: Calendar }
   ]
 
   if (!selectedMessage) {

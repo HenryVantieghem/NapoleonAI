@@ -19,7 +19,9 @@
       "Bash(grep:*)",
       "Bash(find:*)",
       "Bash(git add:*)",
-      "Bash(git reset:*)"
+      "Bash(git reset:*)",
+      "mcp__git-commands__git_status",
+      "Bash(git branch:*)"
     ],
     "deny": []
   }

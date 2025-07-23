@@ -2,6 +2,7 @@ export interface AuthError {
   message: string
   code: string
   details?: string
+  provider?: string
 }
 
 export const createAuthError = (code: string, message: string, details?: string): AuthError => ({
