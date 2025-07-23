@@ -24,7 +24,9 @@
       "Bash(git branch:*)",
       "Bash(git checkout:*)",
       "Bash(git push:*)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "Bash(git commit:*)",
+      "mcp__git-commands__git_log"
     ],
     "deny": []
   }
