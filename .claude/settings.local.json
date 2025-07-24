@@ -32,7 +32,8 @@
       "Bash(touch:*)",
       "Bash(pkill:*)",
       "Bash(npx lighthouse:*)",
-      "Bash(npm run lint)"
+      "Bash(npm run lint)",
+      "Bash(npx vercel:*)"
     ],
     "deny": []
   }
