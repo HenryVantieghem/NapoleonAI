@@ -26,7 +26,13 @@
       "Bash(git push:*)",
       "Bash(mv:*)",
       "Bash(git commit:*)",
-      "mcp__git-commands__git_log"
+      "mcp__git-commands__git_log",
+      "mcp__git-commands__git_add",
+      "mcp__git-commands__git_commit",
+      "Bash(touch:*)",
+      "Bash(pkill:*)",
+      "Bash(npx lighthouse:*)",
+      "Bash(npm run lint)"
     ],
     "deny": []
   }

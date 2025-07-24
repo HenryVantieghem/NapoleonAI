@@ -65,3 +65,6 @@ coverage/
 
 # ESLint cache
 .eslintcache
+
+# clerk configuration (can include secrets)
+/.clerk/
