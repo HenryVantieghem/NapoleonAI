@@ -74,7 +74,14 @@ export async function POST(request: NextRequest) {
 
       // Process new messages (simplified for MVP)
       console.log(`Processing ${history.messages.length} new Gmail messages for user ${userIntegration.user_id}`)
-      // TODO: Implement message processing with unified service
+      
+      // Fetch and store messages with AI analysis
+      await unifiedMessageService.fetchAllMessages(userIntegration.user_id, {
+        channels: ['gmail'],
+        limit: history.messages.length,
+        includeAnalysis: true,
+        saveToDB: true
+      })
 
       // Update last sync time (simplified for MVP)
       await supabase

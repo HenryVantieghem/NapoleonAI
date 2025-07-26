@@ -1,0 +1,43 @@
+# Napoleon AI Robots Configuration
+# https://www.napoleonai.com
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /dashboard/
+Disallow: /onboarding/
+Disallow: /auth/
+Disallow: /_next/
+Disallow: /private/
+
+# Crawl-delay: 1
+
+# Sitemaps
+Sitemap: https://napoleonai.com/sitemap.xml
+Sitemap: https://napoleonai.com/sitemap-0.xml
+
+# AI Crawlers (Optional - can be adjusted based on preference)
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Bingbot
+Crawl-delay: 2
+
+User-agent: Googlebot
+Allow: /
+
+# Executive SEO optimization
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: facebookexternalhit
+Allow: /

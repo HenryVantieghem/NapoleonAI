@@ -158,7 +158,14 @@ async function handleTeamsNotification(notification: any) {
 
     // Process message with simplified AI (MVP)
     console.log(`Processing Teams message for user ${userIntegration.user_id}`)
-    // TODO: Implement simplified message processing with AI service
+    
+    // Store message and analyze with AI
+    await unifiedMessageService.fetchAllMessages(userIntegration.user_id, {
+      channels: ['teams'],
+      limit: 1,
+      includeAnalysis: true,
+      saveToDB: true
+    })
 
     // Update last sync timestamp
     await supabase

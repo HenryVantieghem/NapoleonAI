@@ -33,7 +33,10 @@
       "Bash(pkill:*)",
       "Bash(npx lighthouse:*)",
       "Bash(npm run lint)",
-      "Bash(npx vercel:*)"
+      "Bash(npx vercel:*)",
+      "Bash(timeout:*)",
+      "Bash(node:*)",
+      "Bash(true)"
     ],
     "deny": []
   }

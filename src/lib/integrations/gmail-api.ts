@@ -149,66 +149,6 @@ export class GmailAPI {
     }
   }
 
-  /**
-   * Send reply to a message
-   */
-  async sendReply(
-    messageId: string,
-    threadId: string,
-    content: string,
-    subject?: string
-  ): Promise<{ success: boolean; messageId?: string; error?: string }> {
-    try {
-      // Get original message to extract reply information
-      const originalMessage = await this.gmail.users.messages.get({
-        userId: 'me',
-        id: messageId,
-        format: 'full'
-      })
-
-      const headers = originalMessage.data.payload?.headers || []
-      const originalFrom = this.getHeader(headers, 'From') || ''
-      const originalSubject = this.getHeader(headers, 'Subject') || ''
-      const originalMessageId = this.getHeader(headers, 'Message-ID') || ''
-
-      // Create reply headers
-      const replySubject = subject || `Re: ${originalSubject.replace(/^Re:\s*/i, '')}`
-      
-      const emailContent = [
-        `To: ${originalFrom}`,
-        `Subject: ${replySubject}`,
-        `In-Reply-To: ${originalMessageId}`,
-        `References: ${originalMessageId}`,
-        'Content-Type: text/html; charset=utf-8',
-        '',
-        content
-      ].join('\n')
-
-      const encodedMessage = Buffer.from(emailContent)
-        .toString('base64')
-        .replace(/\+/g, '-')
-        .replace(/\//g, '_')
-        .replace(/=+$/, '')
-
-      const response = await this.gmail.users.messages.send({
-        userId: 'me',
-        requestBody: {
-          raw: encodedMessage,
-          threadId: threadId
-        }
-      })
-
-      return {
-        success: true,
-        messageId: response.data.id || ''
-      }
-    } catch (error) {
-      return {
-        success: false,
-        error: (error as Error).message
-      }
-    }
-  }
 
   /**
    * Mark message as read/unread
@@ -368,6 +308,120 @@ export class GmailAPI {
       return result.messages
     } catch (error) {
       throw new Error(`Failed to search Gmail messages: ${(error as Error).message}`)
+    }
+  }
+
+  /**
+   * Send a new email
+   */
+  async sendEmail(options: {
+    to: string
+    subject: string
+    content: string
+    cc?: string[]
+    bcc?: string[]
+  }): Promise<{
+    success: boolean
+    messageId?: string
+    error?: string
+  }> {
+    try {
+      const { to, subject, content, cc, bcc } = options
+      
+      // Create email content
+      const email = [
+        `To: ${to}`,
+        cc?.length ? `Cc: ${cc.join(', ')}` : '',
+        bcc?.length ? `Bcc: ${bcc.join(', ')}` : '',
+        `Subject: ${subject}`,
+        '',
+        content
+      ].filter(line => line !== '').join('\n')
+
+      // Encode the email
+      const encodedEmail = Buffer.from(email).toString('base64url')
+
+      // Send the email
+      const response = await this.gmail.users.messages.send({
+        userId: 'me',
+        requestBody: {
+          raw: encodedEmail
+        }
+      })
+
+      return {
+        success: true,
+        messageId: response.data.id || undefined
+      }
+    } catch (error) {
+      console.error('Failed to send email:', error)
+      return {
+        success: false,
+        error: (error as Error).message
+      }
+    }
+  }
+
+  /**
+   * Send a reply to an existing message
+   */
+  async sendReply(
+    messageId: string,
+    threadId: string,
+    content: string,
+    subject?: string
+  ): Promise<{
+    success: boolean
+    messageId?: string
+    error?: string
+  }> {
+    try {
+      // Get the original message to extract headers
+      const originalMessage = await this.gmail.users.messages.get({
+        userId: 'me',
+        id: messageId
+      })
+
+      const headers = originalMessage.data.payload?.headers || []
+      const fromHeader = this.getHeader(headers, 'from')
+      const replySubject = subject || `Re: ${this.getHeader(headers, 'subject') || ''}`
+
+      if (!fromHeader) {
+        throw new Error('Could not find original sender')
+      }
+
+      // Create reply email
+      const email = [
+        `To: ${fromHeader}`,
+        `Subject: ${replySubject}`,
+        `In-Reply-To: ${this.getHeader(headers, 'message-id') || ''}`,
+        `References: ${this.getHeader(headers, 'references') || ''} ${this.getHeader(headers, 'message-id') || ''}`.trim(),
+        '',
+        content
+      ].join('\n')
+
+      // Encode the email
+      const encodedEmail = Buffer.from(email).toString('base64url')
+
+      // Send the reply
+      const response = await this.gmail.users.messages.send({
+        userId: 'me',
+        requestBody: {
+          raw: encodedEmail,
+          threadId: threadId
+        }
+      })
+
+      return {
+        success: true,
+        messageId: response.data.id || undefined
+      }
+    } catch (error) {
+      console.error('Failed to send reply:', error)
+      return {
+        success: false,
+        error: (error as Error).message
+      }
     }
   }
 

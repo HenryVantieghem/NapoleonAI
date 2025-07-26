@@ -39,47 +39,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const isAuthenticated = isSignedIn || false
 
   // Initialize auth state with Clerk
-  useEffect(() => {
-    async function initializeAuth() {
-      if (!isLoaded) return
-
-      try {
-        setIsLoading(true)
-        
-        // Load user profile if authenticated
-        if (isSignedIn && clerkUser) {
-          await loadUserProfile(clerkUser.id)
-          await checkExecutiveStatus()
-        }
-      } catch (error: any) {
-        console.error('Auth initialization error:', error)
-        setError('Failed to initialize authentication')
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    initializeAuth()
-  }, [isLoaded, isSignedIn, clerkUser])
-
-  // Handle auth state changes with Clerk
-  useEffect(() => {
-    if (!isLoaded) return
-
-    if (isSignedIn && clerkUser) {
-      // User signed in, load profile
-      loadUserProfile(clerkUser.id)
-      checkExecutiveStatus()
-      setError(null)
-    } else {
-      // User signed out, clear profile
-      setProfile(null)
-      setIsExecutive(false)
-      setError(null)
-    }
-  }, [isSignedIn, clerkUser, isLoaded])
-
-  const loadUserProfile = async (userId: string) => {
+  const loadUserProfile = useCallback(async (userId: string) => {
     try {
       const { createClient } = await import('@/lib/supabase/client')
       const supabase = createClient()
@@ -108,9 +68,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       console.error('Error loading user profile:', error)
     }
-  }
+  }, [])
 
-  const checkExecutiveStatus = async () => {
+  const checkExecutiveStatus = useCallback(async () => {
     try {
       if (!profile?.role) {
         setIsExecutive(false)
@@ -127,7 +87,51 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.error('Error checking executive status:', error)
       setIsExecutive(false)
     }
-  }
+  }, [profile])
+
+  useEffect(() => {
+    async function initializeAuth() {
+      if (!isLoaded) return
+
+      try {
+        setIsLoading(true)
+        
+        // Load user profile if authenticated
+        if (isSignedIn && clerkUser) {
+          await loadUserProfile(clerkUser.id)
+        }
+      } catch (error: any) {
+        console.error('Auth initialization error:', error)
+        setError('Failed to initialize authentication')
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    initializeAuth()
+  }, [isLoaded, isSignedIn, clerkUser, loadUserProfile])
+
+  // Handle auth state changes with Clerk
+  useEffect(() => {
+    if (!isLoaded) return
+
+    if (isSignedIn && clerkUser) {
+      // User signed in, load profile
+      loadUserProfile(clerkUser.id)
+      setError(null)
+    } else {
+      // User signed out, clear profile
+      setProfile(null)
+      setIsExecutive(false)
+      setError(null)
+    }
+  }, [isSignedIn, clerkUser, isLoaded, loadUserProfile])
+
+  // Check executive status when profile changes
+  useEffect(() => {
+    checkExecutiveStatus()
+  }, [checkExecutiveStatus])
+
 
   const clearError = useCallback(() => {
     setError(null)
@@ -143,9 +147,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (error: any) {
       setError('Failed to sign out')
     }
-  }, [clerkSignOut])
+  }, [clerkSignOut, clearError])
 
   // Profile methods
+  const refreshProfile = useCallback(async () => {
+    if (clerkUser) {
+      await loadUserProfile(clerkUser.id)
+    }
+  }, [clerkUser, loadUserProfile])
+
   const updateProfile = useCallback(async (updates: any) => {
     clearError()
     
@@ -169,14 +179,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setError(errorMessage)
       return { success: false, error: errorMessage }
     }
-  }, [clerkUser])
+  }, [clerkUser, clearError, refreshProfile])
 
-  const refreshProfile = useCallback(async () => {
-    if (clerkUser) {
-      await loadUserProfile(clerkUser.id)
-      await checkExecutiveStatus()
-    }
-  }, [clerkUser])
 
   const value: AuthContextType = {
     user: clerkUser, // For backward compatibility

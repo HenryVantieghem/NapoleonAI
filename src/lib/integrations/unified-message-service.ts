@@ -231,8 +231,12 @@ export class UnifiedMessageService {
               options.subject
             )
           } else {
-            // For new emails, would need to implement sendEmail method
-            throw new Error('New email sending not implemented yet')
+            // For new emails - implementation for MVP
+            return await gmailAPI.sendEmail({
+              to: options.to,
+              subject: options.subject || 'Message from Napoleon AI',
+              content: options.content
+            })
           }
 
         case 'slack':

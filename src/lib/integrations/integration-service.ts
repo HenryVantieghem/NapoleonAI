@@ -223,8 +223,21 @@ export class IntegrationService {
       const now = Date.now()
       
       if (expiresAt < now) {
-        // TODO: Implement token refresh logic
-        console.warn(`Token for ${provider} has expired`)
+        console.warn(`Token for ${provider} has expired, attempting refresh...`)
+        
+        try {
+          const refreshedTokens = await this.refreshToken(provider, data.refresh_token, userId)
+          if (refreshedTokens) {
+            return {
+              accessToken: refreshedTokens.access_token,
+              refreshToken: refreshedTokens.refresh_token || data.refresh_token,
+              expiresAt: refreshedTokens.expires_at
+            }
+          }
+        } catch (error) {
+          console.error(`Failed to refresh token for ${provider}:`, error)
+          return null
+        }
       }
     }
     
@@ -235,6 +248,70 @@ export class IntegrationService {
     }
   }
   
+  // Refresh expired tokens
+  static async refreshToken(
+    provider: IntegrationProvider,
+    refreshToken: string | null,
+    userId?: string
+  ): Promise<{
+    access_token: string
+    refresh_token?: string
+    expires_at: string
+  } | null> {
+    if (!userId || !refreshToken) return null
+    
+    const config = oauthConfigs[provider]
+    
+    try {
+      const params = new URLSearchParams({
+        grant_type: 'refresh_token',
+        refresh_token: refreshToken,
+        client_id: config.clientId,
+        client_secret: process.env[`${provider.toUpperCase()}_CLIENT_SECRET`] || ''
+      })
+      
+      const response = await fetch(config.tokenUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: params
+      })
+      
+      if (!response.ok) {
+        throw new Error(`Token refresh failed: ${response.statusText}`)
+      }
+      
+      const tokens = await response.json()
+      
+      // Update tokens in database
+      const supabase = createClient()
+      const expiresAt = tokens.expires_in 
+        ? new Date(Date.now() + tokens.expires_in * 1000).toISOString()
+        : null
+      
+      await supabase
+        .from('connected_accounts')
+        .update({
+          access_token: tokens.access_token,
+          refresh_token: tokens.refresh_token || refreshToken,
+          expires_at: expiresAt,
+          updated_at: new Date().toISOString()
+        })
+        .eq('user_id', userId)
+        .eq('provider', provider)
+      
+      return {
+        access_token: tokens.access_token,
+        refresh_token: tokens.refresh_token,
+        expires_at: expiresAt || ''
+      }
+    } catch (error) {
+      console.error(`Failed to refresh ${provider} token:`, error)
+      return null
+    }
+  }
+
   // Check if a specific integration is connected
   static async isIntegrationConnected(provider: IntegrationProvider, userId?: string): Promise<boolean> {
     const accounts = await this.getConnectedAccounts(userId)

@@ -3,7 +3,7 @@
 import { motion, useInView } from "framer-motion"
 import { useRef } from "react"
 import { Star, Crown, Quote, Building, Award, TrendingUp } from "lucide-react"
-import Image from "next/image"
+import { ExecutiveAvatar } from "@/components/ui/optimized-image"
 import { executiveContent } from "@/lib/utils"
 
 export function SocialProof() {
@@ -145,18 +145,13 @@ export function SocialProof() {
 
               {/* Executive Info */}
               <div className="flex items-center">
-                <div className="relative w-12 h-12 mr-4">
-                  <Image
-                    src={testimonial.image}
-                    alt={testimonial.author}
-                    width={48}
-                    height={48}
-                    className="rounded-full object-cover"
-                  />
-                  <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-burgundy-600 rounded-full flex items-center justify-center">
-                    <Crown className="w-3 h-3 text-white" />
-                  </div>
-                </div>
+                <ExecutiveAvatar
+                  src={testimonial.image}
+                  name={testimonial.author}
+                  size="md"
+                  showCrown
+                  className="mr-4"
+                />
                 <div>
                   <div className="font-semibold text-gray-900">
                     {testimonial.author}

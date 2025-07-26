@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { motion } from "framer-motion"
 import { Mail, MessageSquare, Building, Check, X, Loader2, Crown, Link2, Unlink } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -56,16 +56,7 @@ export default function IntegrationsPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [connectingProvider, setConnectingProvider] = useState<IntegrationProvider | null>(null)
 
-  useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      router.push('/auth/login')
-      return
-    }
-
-    loadConnectedAccounts()
-  }, [authLoading, isAuthenticated, router])
-
-  const loadConnectedAccounts = async () => {
+  const loadConnectedAccounts = useCallback(async () => {
     try {
       if (user?.id) {
         const accounts = await IntegrationService.getConnectedAccounts(user.id)
@@ -76,7 +67,17 @@ export default function IntegrationsPage() {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [user?.id])
+
+  useEffect(() => {
+    if (!authLoading && !isAuthenticated) {
+      router.push('/auth/login')
+      return
+    }
+
+    loadConnectedAccounts()
+  }, [authLoading, isAuthenticated, router, loadConnectedAccounts])
+
 
   const handleConnect = async (provider: IntegrationProvider) => {
     setConnectingProvider(provider)

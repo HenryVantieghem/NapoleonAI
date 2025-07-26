@@ -63,9 +63,9 @@ const config: Config = {
         },
       },
       fontFamily: {
-        serif: ["Playfair Display", "serif"], // Headers
-        sans: ["Inter", "sans-serif"],        // Body
-        script: ["Dancing Script", "cursive"], // Logo
+        serif: ["var(--font-serif)"], // Headers
+        sans: ["var(--font-sans)"],   // Body
+        script: ["var(--font-script)"], // Logo
       },
       fontSize: {
         'hero': ['4.5rem', { lineHeight: '1.1', letterSpacing: '-0.02em' }],
