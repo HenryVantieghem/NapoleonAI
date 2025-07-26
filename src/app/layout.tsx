@@ -87,9 +87,76 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const clerkPublishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+  
+  // Handle missing Clerk key gracefully during build
+  if (!clerkPublishableKey || clerkPublishableKey.includes('placeholder')) {
+    return (
+      <html lang="en" className="scroll-smooth">
+        <head>
+          <link rel="icon" href="/favicon.ico" />
+          <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+          <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+          <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+          <link rel="manifest" href="/site.webmanifest" />
+          <meta name="theme-color" content="#801B2B" />
+          <meta name="apple-mobile-web-app-capable" content="yes" />
+          <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+          <meta name="apple-mobile-web-app-title" content="Napoleon AI" />
+        </head>
+        <body 
+          className={cn(
+            "min-h-screen bg-white font-sans antialiased",
+            inter.variable,
+            playfairDisplay.variable,
+            dancingScript.variable
+          )}
+        >
+          <div className="relative flex min-h-screen flex-col">
+            {children}
+          </div>
+
+          {/* Structured Data for SEO */}
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "SoftwareApplication",
+                "name": "Napoleon AI",
+                "description": "Executive communication commander that transforms chaos into strategic clarity",
+                "applicationCategory": "BusinessApplication",
+                "operatingSystem": "Web",
+                "offers": {
+                  "@type": "Offer",
+                  "price": "500",
+                  "priceCurrency": "USD",
+                  "priceSpecification": {
+                    "@type": "RecurringCharge",
+                    "frequency": "Monthly"
+                  }
+                },
+                "creator": {
+                  "@type": "Organization",
+                  "name": "Napoleon AI",
+                  "url": "https://napoleonai.com"
+                },
+                "aggregateRating": {
+                  "@type": "AggregateRating",
+                  "ratingValue": "4.9",
+                  "reviewCount": "500"
+                }
+              })
+            }}
+          />
+        </body>
+      </html>
+    )
+  }
+
   return (
     <ClerkProvider
-      publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY!}
+      publishableKey={clerkPublishableKey}
       afterSignInUrl="/dashboard"
       afterSignUpUrl="/onboarding"
       appearance={{

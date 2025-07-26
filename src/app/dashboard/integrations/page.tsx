@@ -9,6 +9,9 @@ import { useAuth } from "@/lib/hooks/use-auth"
 import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 
+// Disable static generation for dashboard pages
+export const dynamic = 'force-dynamic'
+
 interface IntegrationConfig {
   provider: IntegrationProvider
   name: string

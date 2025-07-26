@@ -5,6 +5,9 @@ import { SocialProof } from "@/components/landing/social-proof"
 import { CTASection } from "@/components/landing/cta-section"
 import { Metadata } from "next"
 
+// Disable static generation to avoid event handler issues
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: "Napoleon AI - Executive Communication Commander | Transform Chaos into Clarity",
   description: "The luxury AI platform for C-suite executives. Unite Gmail, Slack & Teams. Save 8+ hours weekly. Intelligent prioritization, VIP management & strategic insights.",
