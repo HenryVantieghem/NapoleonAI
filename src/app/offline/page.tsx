@@ -1,12 +1,7 @@
-import { Metadata } from "next"
+"use client"
+
 import { Crown, Wifi, WifiOff } from "lucide-react"
 import { Button } from "@/components/ui/button"
-
-export const metadata: Metadata = {
-  title: "Executive Offline Mode | Napoleon AI",
-  description: "Napoleon AI is temporarily offline. Your executive data is cached and ready when you reconnect.",
-  robots: { index: false, follow: false }
-}
 
 export default function OfflinePage() {
   return (
