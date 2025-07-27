@@ -24,8 +24,8 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['framer-motion', 'lucide-react', '@radix-ui/react-*'],
   },
-  // Enable static optimization
-  output: 'standalone',
+  // Disable static optimization for now
+  // output: 'standalone',
   swcMinify: true,
   compress: true,
   

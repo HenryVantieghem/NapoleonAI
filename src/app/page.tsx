@@ -1,12 +1,5 @@
-import { Navbar } from "@/components/shared/navbar"
-import { HeroSection } from "@/components/landing/hero-section"
-import { ValueProposition } from "@/components/landing/value-proposition"
-import { SocialProof } from "@/components/landing/social-proof"
-import { CTASection } from "@/components/landing/cta-section"
+import { Crown } from "lucide-react"
 import { Metadata } from "next"
-
-// Disable static generation to avoid event handler issues
-export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: "Napoleon AI - Executive Communication Commander | Transform Chaos into Clarity",
@@ -131,12 +124,33 @@ export default function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }}
       />
       
-      <Navbar />
-      <main className="flex-1">
-        <HeroSection />
-        <ValueProposition />
-        <SocialProof />
-        <CTASection />
+      {/* Simplified landing page for deployment testing */}
+      <main className="min-h-screen bg-gradient-to-br from-cream to-white flex items-center justify-center">
+        <div className="text-center max-w-4xl mx-auto px-4">
+          <div className="mb-8">
+            <Crown className="w-24 h-24 text-burgundy-600 mx-auto mb-6" />
+            <h1 className="text-6xl font-serif font-bold text-gray-900 mb-4">
+              Napoleon AI
+            </h1>
+            <p className="text-2xl text-gray-600 mb-8">
+              Executive Communication Commander
+            </p>
+            <p className="text-lg text-gray-500 max-w-2xl mx-auto mb-12">
+              Transform communication chaos into strategic clarity. The luxury AI platform designed exclusively for C-suite executives.
+            </p>
+            <div className="space-y-4">
+              <a 
+                href="/auth/signup" 
+                className="inline-block bg-gradient-to-r from-burgundy-600 to-burgundy-700 text-white px-8 py-4 rounded-lg text-lg font-medium hover:shadow-lg transition-all duration-300"
+              >
+                Take Command Now
+              </a>
+              <div className="text-sm text-gray-400">
+                Trusted by Fortune 500 executives worldwide
+              </div>
+            </div>
+          </div>
+        </div>
       </main>
     </>
   )

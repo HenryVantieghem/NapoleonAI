@@ -36,7 +36,9 @@
       "Bash(npx vercel:*)",
       "Bash(timeout:*)",
       "Bash(node:*)",
-      "Bash(true)"
+      "Bash(true)",
+      "WebFetch(domain:napoleon-khvg9gnsk-napoleon.vercel.app)",
+      "WebFetch(domain:napoleon-985r760ub-napoleon.vercel.app)"
     ],
     "deny": []
   }
