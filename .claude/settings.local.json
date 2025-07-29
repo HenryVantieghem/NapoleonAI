@@ -38,7 +38,12 @@
       "Bash(node:*)",
       "Bash(true)",
       "WebFetch(domain:napoleon-khvg9gnsk-napoleon.vercel.app)",
-      "WebFetch(domain:napoleon-985r760ub-napoleon.vercel.app)"
+      "WebFetch(domain:napoleon-985r760ub-napoleon.vercel.app)",
+      "WebFetch(domain:napoleon-ohbit7exo-napoleon.vercel.app)",
+      "Bash(npm run dev:*)",
+      "WebFetch(domain:napoleon-f46e5df5k-napoleon.vercel.app)",
+      "WebFetch(domain:napoleon-cg8c008np-napoleon.vercel.app)",
+      "mcp__sequential-thinking__sequentialthinking"
     ],
     "deny": []
   }
