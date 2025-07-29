@@ -43,7 +43,10 @@
       "Bash(npm run dev:*)",
       "WebFetch(domain:napoleon-f46e5df5k-napoleon.vercel.app)",
       "WebFetch(domain:napoleon-cg8c008np-napoleon.vercel.app)",
-      "mcp__sequential-thinking__sequentialthinking"
+      "mcp__sequential-thinking__sequentialthinking",
+      "mcp__github-repo__getRepoAllDirectories",
+      "mcp__github-repo__getRepoFile",
+      "mcp__github-repo__getRepoDirectories"
     ],
     "deny": []
   }
