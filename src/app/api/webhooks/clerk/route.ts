@@ -57,11 +57,14 @@ export async function POST(req: Request) {
       return new Response('No email found', { status: 400 })
     }
 
-    const name = first_name && last_name ? `${first_name} ${last_name}` : first_name || last_name || ''
-    const role = public_metadata?.role as string || ''
+    // Get profile data from public_metadata (stored during sign-up process)
+    const profileData = public_metadata?.profileData as any || {}
+    const name = profileData.fullName || (first_name && last_name ? `${first_name} ${last_name}` : first_name || last_name || '')
+    const role = profileData.role || public_metadata?.role as string || ''
+    const companySize = profileData.companySize || ''
 
     try {
-      // Upsert user record
+      // Upsert user record with enhanced profile data
       const { error: userError } = await supabase
         .from('users')
         .upsert({
@@ -69,7 +72,10 @@ export async function POST(req: Request) {
           email,
           name,
           role,
-          avatar_url: image_url || ''
+          avatar_url: image_url || '',
+          company_size: companySize,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
         }, {
           onConflict: 'id'
         })
@@ -79,27 +85,48 @@ export async function POST(req: Request) {
         return new Response('Error upserting user', { status: 500 })
       }
 
-      // Create or update user profile
+      // Create or update user profile with executive-specific settings
+      const executiveSettings = {
+        autoArchive: 7,
+        priorityThreshold: role === 'ceo' || role === 'founder' ? 80 : 70,
+        vipAlerts: true,
+        boardMemberPriority: role === 'ceo' || role === 'founder' ? 95 : 85,
+        investorPriority: 90,
+        executiveDigest: 'morning',
+        crossPlatformSync: true
+      }
+
+      const executivePreferences = {
+        theme: 'executive', // Navy & Gold theme
+        notifications: {
+          email: true,
+          push: true,
+          digest: role === 'ceo' || role === 'founder' ? 'hourly' : 'daily',
+          vipInstant: true,
+          boardAlerts: true
+        },
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        displayDensity: 'comfortable',
+        aiSuggestions: true
+      }
+
       const { error: profileError } = await supabase
         .from('user_profiles')
         .upsert({
           user_id: id,
-          preferences: {
-            theme: 'light',
-            notifications: {
-              email: true,
-              push: true,
-              digest: 'daily'
-            },
-            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
-          },
-          settings: {
-            autoArchive: 7,
-            priorityThreshold: 70,
-            vipAlerts: true
-          },
+          preferences: executivePreferences,
+          settings: executiveSettings,
           onboarding_completed: public_metadata?.onboardingCompleted === true,
-          subscription_status: public_metadata?.subscriptionStatus || 'trial'
+          subscription_status: public_metadata?.subscriptionStatus || 'trial',
+          profile_data: {
+            role: role,
+            companySize: companySize,
+            executiveLevel: ['ceo', 'coo', 'cfo', 'cto', 'founder'].includes(role) ? 'c-suite' : 'executive',
+            signupSource: 'direct',
+            profileCompletedAt: new Date().toISOString()
+          },
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
         }, {
           onConflict: 'user_id',
           ignoreDuplicates: false
@@ -110,7 +137,7 @@ export async function POST(req: Request) {
         return new Response('Error upserting profile', { status: 500 })
       }
 
-      console.log(`User ${id} synced to Supabase`)
+      console.log(`User ${id} (${role}) synced to Supabase with executive profile`)
     } catch (error) {
       console.error('Error in webhook handler:', error)
       return new Response('Internal server error', { status: 500 })

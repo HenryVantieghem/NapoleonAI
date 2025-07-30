@@ -2,7 +2,7 @@
 
 import { SignIn } from "@clerk/nextjs"
 import { motion } from "framer-motion"
-import { Crown, Shield, Sparkles } from "lucide-react"
+import { Crown, Shield, Sparkles, Mail, MessageSquare, Users } from "lucide-react"
 
 export default function LoginPage() {
   // Fallback for when Clerk is not available (build time)
@@ -104,28 +104,73 @@ export default function LoginPage() {
                 colorInputBackground: '#F9FAFB',
                 colorInputText: '#1B2951',
                 fontFamily: 'Inter, sans-serif',
-                borderRadius: '0.5rem'
+                borderRadius: '0.75rem'
               },
               elements: {
-                card: 'shadow-luxury border border-gold-200/20 bg-white/95 backdrop-blur-luxury',
+                card: 'shadow-luxury border border-gold-200/20 bg-white/95 backdrop-blur-luxury rounded-2xl',
                 headerTitle: 'hidden',
                 headerSubtitle: 'hidden',
                 socialButtonsBlockButton: 
-                  'border-2 border-gray-200 hover:border-gold-300 hover:bg-gold-50 transition-all duration-200 font-medium',
-                socialButtonsBlockButtonText: 'font-medium',
+                  'border-2 border-gold-200/30 hover:border-gold-400 hover:bg-gold-50 transition-all duration-300 font-medium rounded-xl py-3 px-4 text-navy-900',
+                socialButtonsBlockButtonText: 'font-semibold text-navy-900',
+                socialButtonsBlockButtonArrow: 'text-gold',
                 formButtonPrimary: 
-                  'bg-gradient-gold hover:shadow-gold-lg text-navy-900 font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105',
+                  'bg-gradient-gold hover:shadow-gold-lg text-navy-900 font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 rounded-xl',
                 formFieldInput: 
-                  'border-gray-200 focus:border-gold-400 focus:ring-gold-200 transition-all duration-200 focus:bg-gold-50/20',
-                footerActionLink: 'text-gold-600 hover:text-gold-700 font-medium',
-                dividerLine: 'bg-gray-200',
-                dividerText: 'text-gray-500 bg-white',
-                formFieldLabel: 'text-gray-700 font-medium',
-                identityPreviewText: 'text-gray-700',
-                identityPreviewEditButton: 'text-gold-600 hover:text-gold-700'
+                  'border-gold-200/30 focus:border-gold-400 focus:ring-gold-200 transition-all duration-200 focus:bg-gold-50/20 rounded-lg',
+                footerActionLink: 'text-gold-600 hover:text-gold-700 font-semibold',
+                dividerLine: 'bg-gold-200/30',
+                dividerText: 'text-navy-600 bg-white font-medium',
+                formFieldLabel: 'text-navy-700 font-semibold',
+                identityPreviewText: 'text-navy-700',
+                identityPreviewEditButton: 'text-gold-600 hover:text-gold-700 font-medium',
+                alternativeMethodsBlockButton: 'text-gold-600 hover:text-gold-700 border-gold-200/30 hover:border-gold-400'
               }
             }}
           />
+        </motion.div>
+
+        {/* OAuth Provider Information */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="bg-white/95 backdrop-blur-luxury rounded-2xl p-6 shadow-luxury border border-gold-200/30 mt-6"
+        >
+          <div className="text-center mb-4">
+            <h3 className="text-lg font-semibold text-navy-900 mb-2">
+              Connect Your Executive Platforms
+            </h3>
+            <p className="text-sm text-navy-600">
+              Secure OAuth integration with enterprise-grade encryption
+            </p>
+          </div>
+
+          <div className="grid grid-cols-3 gap-4 text-center">
+            <div className="flex flex-col items-center">
+              <div className="w-12 h-12 bg-gradient-to-r from-red-500 to-red-600 rounded-xl flex items-center justify-center mb-2 shadow-lg">
+                <Mail className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-sm font-medium text-navy-700">Gmail</span>
+              <span className="text-xs text-navy-500">Ready</span>
+            </div>
+            
+            <div className="flex flex-col items-center opacity-60">
+              <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mb-2 shadow-lg">
+                <MessageSquare className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-sm font-medium text-navy-700">Slack</span>
+              <span className="text-xs text-navy-500">Phase 2</span>
+            </div>
+            
+            <div className="flex flex-col items-center opacity-60">
+              <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mb-2 shadow-lg">
+                <Users className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-sm font-medium text-navy-700">Teams</span>
+              <span className="text-xs text-navy-500">Phase 2</span>
+            </div>
+          </div>
         </motion.div>
 
         {/* Executive Features */}
