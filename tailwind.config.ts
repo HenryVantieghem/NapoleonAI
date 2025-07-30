@@ -19,23 +19,37 @@ const config: Config = {
     },
     extend: {
       colors: {
-        // Cartier Luxury Color Palette
+        // Executive Navy & Gold Color Palette
         white: "#FFFFFF",
-        black: "#000000",
+        black: "#0A0A0A",
         cream: "#F8F6F0",
-        burgundy: {
-          DEFAULT: "#801B2B",
-          50: "#FCF2F3",
-          100: "#F7E1E4",
-          200: "#EFC4CA",
-          300: "#E39BA5",
-          400: "#D26876",
-          500: "#BD4452",
-          600: "#A12F3D",
-          700: "#801B2B",
-          800: "#6B1A27",
-          900: "#5C1A26",
+        navy: {
+          DEFAULT: "#1B2951",
+          50: "#F0F2F9",
+          100: "#D9E0F0",
+          200: "#B4C5E0",
+          300: "#8FA9D0",
+          400: "#6A8EC0",
+          500: "#4573B0",
+          600: "#355A8A",
+          700: "#254164",
+          800: "#1B2951",
+          900: "#141B3C",
         },
+        gold: {
+          DEFAULT: "#D4AF37",
+          50: "#FEFBF0",
+          100: "#FDF4D4",
+          200: "#FBE9A9",
+          300: "#F9DE7E",
+          400: "#F7D353",
+          500: "#D4AF37",
+          600: "#B8962F",
+          700: "#9C7D27",
+          800: "#80641F",
+          900: "#644B17",
+        },
+        charcoal: "#2C3E50",
         gray: {
           50: "#F9FAFB",
           100: "#F3F4F6",
@@ -48,24 +62,12 @@ const config: Config = {
           800: "#1F2937",
           900: "#111827",
         },
-        // Additional luxury colors
-        gold: {
-          50: "#FFFBEB",
-          100: "#FEF3C7",
-          200: "#FDE68A",
-          300: "#FCD34D",
-          400: "#FBBF24",
-          500: "#F59E0B",
-          600: "#D97706",
-          700: "#B45309",
-          800: "#92400E",
-          900: "#78350F",
-        },
       },
       fontFamily: {
-        serif: ["var(--font-serif)"], // Headers
-        sans: ["var(--font-sans)"],   // Body
-        script: ["var(--font-script)"], // Logo
+        serif: ["var(--font-serif)"], // Executive headers
+        sans: ["var(--font-sans)"],   // Professional body text
+        mono: ["var(--font-mono)"],   // Code/data displays
+        script: ["var(--font-script)"], // Logo only
       },
       fontSize: {
         'hero': ['4.5rem', { lineHeight: '1.1', letterSpacing: '-0.02em' }],
@@ -121,22 +123,26 @@ const config: Config = {
           "50%": { transform: "translateY(-10px)" },
         },
         "glow": {
-          "0%": { boxShadow: "0 0 5px rgba(128, 27, 43, 0.5)" },
-          "100%": { boxShadow: "0 0 20px rgba(128, 27, 43, 0.8)" },
+          "0%": { boxShadow: "0 0 5px rgba(212, 175, 55, 0.5)" },
+          "100%": { boxShadow: "0 0 20px rgba(212, 175, 55, 0.8)" },
         },
       },
       boxShadow: {
         'luxury': '0 25px 50px -12px rgba(0, 0, 0, 0.1)',
         'luxury-lg': '0 35px 60px -12px rgba(0, 0, 0, 0.15)',
-        'burgundy': '0 10px 40px rgba(128, 27, 43, 0.3)',
-        'burgundy-lg': '0 20px 60px rgba(128, 27, 43, 0.4)',
+        'navy': '0 10px 40px rgba(27, 41, 81, 0.3)',
+        'navy-lg': '0 20px 60px rgba(27, 41, 81, 0.4)',
+        'gold': '0 10px 40px rgba(212, 175, 55, 0.3)',
+        'gold-lg': '0 20px 60px rgba(212, 175, 55, 0.4)',
       },
       backdropBlur: {
         'luxury': '16px',
       },
       backgroundImage: {
         'gradient-luxury': 'linear-gradient(135deg, #F8F6F0 0%, #FFFFFF 100%)',
-        'gradient-burgundy': 'linear-gradient(135deg, #801B2B 0%, #A12F3D 100%)',
+        'gradient-navy': 'linear-gradient(135deg, #1B2951 0%, #254164 100%)',
+        'gradient-gold': 'linear-gradient(135deg, #D4AF37 0%, #B8962F 100%)',
+        'gradient-executive': 'linear-gradient(135deg, #1B2951 0%, #D4AF37 100%)',
         'gradient-radial': 'radial-gradient(ellipse at center, var(--tw-gradient-stops))',
       },
     },

@@ -1,399 +1,299 @@
-claude.md
-# Napoleon AI - Executive Communication Commander
+# CLAUDE.md
 
-## Mission: Build Production-Ready MVP
-Create a luxury productivity platform that transforms communication chaos into strategic clarity for C-suite executives. Deploy fully functional MVP to Vercel with all integrations working.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Complete Tech Stack
-- **Frontend**: Next.js 14 + TypeScript + Tailwind CSS + Framer Motion
-- **Backend**: Supabase (PostgreSQL + Auth + Real-time)
-- **AI**: OpenAI GPT-4 via Vercel AI SDK
-- **Integrations**: Gmail API + Slack Web API + Microsoft Graph API
-- **Deployment**: Vercel + GitHub Actions
-- **UI Components**: shadcn/ui + Custom luxury components
+# Napoleon AI - Executive Intelligence Platform
 
-## Luxury Design System - Cartier Theme
+@import executive-features-priority.md
+@import luxury-design-system.md  
+@import executive-ux-principles.md
+@import ai-intelligence-framework.md
+@import integration-architecture.md
+
+## Architecture Overview
+
+Napoleon AI is a luxury executive intelligence platform built with Next.js 14 App Router. The architecture uses Clerk for authentication, Supabase for data persistence, and OpenAI for AI-powered message analysis, designed exclusively for Fortune 500 C-suite executives.
+
+### Tech Stack
+- **Framework**: Next.js 14 with App Router and TypeScript
+- **Authentication**: Clerk (instead of Supabase Auth as originally planned)
+- **Database**: Supabase PostgreSQL with Row Level Security (RLS)
+- **AI Processing**: OpenAI GPT-4 via custom AI service
+- **Styling**: Tailwind CSS with Cartier-inspired luxury theme
+- **Animations**: Framer Motion for premium interactions
+- **Deployment**: Vercel with automatic deployments
+
+### Key Architectural Decisions
+- **Authentication Switch**: Uses Clerk instead of Supabase Auth for better OAuth integration with Gmail, Slack, and Teams
+- **Simplified Database Schema**: MVP uses streamlined tables (users, user_profiles, connected_accounts, messages, action_items, vip_contacts)
+- **AI Service Pattern**: Centralized AI processing with fallback keyword-based analysis when OpenAI fails
+- **Real-time Updates**: Supabase real-time subscriptions for live dashboard updates
+
+## Development Commands
+
+```bash
+# Development
+npm run dev          # Start development server on localhost:3000
+npm run build        # Build for production
+npm run start        # Start production server
+npm run lint         # Run ESLint
+npm run type-check   # TypeScript type checking
+
+# Database
+npm run db:generate-types  # Generate TypeScript types from Supabase schema
+
+# Deployment
+./scripts/deploy.sh  # Production deployment script (includes build, lint, deploy to Vercel)
+```
+
+## Project Structure
+
+```
+src/
+├── app/                    # Next.js App Router
+│   ├── api/               # API routes
+│   │   ├── integrations/  # OAuth callbacks (gmail, slack, teams)
+│   │   └── webhooks/      # Webhook handlers (clerk, platform webhooks)
+│   ├── dashboard/         # Main application interface
+│   ├── onboarding/        # User setup flow
+│   └── auth/             # Authentication pages
+├── components/
+│   ├── ui/               # Base UI components with luxury styling
+│   ├── landing/          # Landing page sections
+│   ├── dashboard/        # Dashboard components (command-center, panels)
+│   └── auth/            # Authentication components
+├── lib/
+│   ├── supabase/        # Database clients (client.ts, server.ts, config.ts)
+│   ├── ai/              # AI processing (ai-service.ts, openai-client.ts)
+│   ├── integrations/    # External API integrations
+│   ├── auth/            # Clerk authentication utilities
+│   └── hooks/           # Custom React hooks
+├── types/               # TypeScript definitions
+└── middleware.ts        # Route protection and auth middleware
+```
+
+## Core Architecture Patterns
+
+### Authentication Flow
+- Uses Clerk for user authentication with OAuth providers
+- Clerk webhooks sync user data to Supabase
+- Database uses Clerk user IDs as foreign keys
+- OAuth tokens for integrations stored separately in `connected_accounts` table
+
+### AI Processing Pipeline
+Located in `src/lib/ai/ai-service.ts`:
+1. **Message Analysis**: OpenAI GPT-4 analyzes messages for priority, sentiment, and action items
+2. **VIP Boosting**: Priority scores increased for VIP contacts (stored in `vip_contacts` table)
+3. **Fallback System**: Keyword-based analysis when AI fails
+4. **Data Persistence**: Results saved to `messages` and `action_items` tables
+
+### Real-time Updates
+- Supabase real-time subscriptions in `src/lib/supabase/client.ts`
+- `subscribeToMessages()` and `subscribeToActionItems()` functions
+- Dashboard components subscribe to changes for live updates
+
+### Database Schema (Simplified MVP)
+Current schema in `supabase/migrations/20241201000000_mvp_simplified_schema.sql`:
+- `users` - Basic user information synced from Clerk
+- `user_profiles` - User preferences and settings
+- `connected_accounts` - OAuth tokens for Gmail/Slack/Teams
+- `messages` - Unified messages from all platforms
+- `action_items` - AI-extracted tasks from messages
+- `vip_contacts` - Priority contact management
+
+## Environment Configuration
+
+Required environment variables (see `.env.example`):
+
+```bash
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+
+# Clerk Authentication
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+CLERK_SECRET_KEY=your_clerk_secret_key
+
+# OpenAI
+OPENAI_API_KEY=your_openai_api_key
+
+# OAuth Providers (for integrations)
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+SLACK_CLIENT_ID=your_slack_client_id
+SLACK_CLIENT_SECRET=your_slack_client_secret
+MICROSOFT_CLIENT_ID=your_microsoft_client_id
+MICROSOFT_CLIENT_SECRET=your_microsoft_client_secret
+```
+
+## Integration Patterns
+
+### OAuth Integration Flow
+1. **Callback Handlers**: Located in `src/app/api/integrations/callback/[provider]/`
+2. **Token Storage**: Encrypted tokens stored in `connected_accounts` table
+3. **API Clients**: Individual service classes for Gmail, Slack, Teams in `src/lib/integrations/`
+4. **Unified Service**: `unified-message-service.ts` aggregates messages from all platforms
+
+### AI Service Usage
+```typescript
+import { aiService } from '@/lib/ai/ai-service'
+
+// Process a message
+const analysis = await aiService.processMessage(message, userId)
+
+// Get daily digest
+const digest = await aiService.getDailyDigest(userId)
+
+// Save analysis results
+await aiService.saveMessageAnalysis(messageId, analysis, userId)
+```
+
+## Testing & Debugging
+
+### Common Development Tasks
+- **Database Reset**: Run latest migration in Supabase SQL editor
+- **Type Generation**: `npm run db:generate-types` after schema changes
+- **OAuth Testing**: Use ngrok for local webhook testing
+- **AI Testing**: Check OpenAI API key and rate limits
+
+### Performance Monitoring
+- **Next.js Analytics**: Integrated via `@vercel/analytics`
+- **Speed Insights**: Integrated via `@vercel/speed-insights`
+- **Lighthouse Targets**: 90+ score for mobile performance
+
+## Deployment Process
+
+The `scripts/deploy.sh` script handles:
+1. Dependency checking and installation
+2. TypeScript compilation check
+3. ESLint validation
+4. Production build
+5. Vercel deployment
+6. Health check verification
+
+### Manual Deployment Steps
+```bash
+npm ci                    # Clean install dependencies
+npm run type-check       # Verify TypeScript
+npm run lint            # Check code quality
+npm run build           # Build for production
+vercel --prod           # Deploy to production
+```
+
+## Executive Design System
+
+### Navy & Gold Luxury Theme
+The application uses a sophisticated executive design system:
+
 ```css
-/* Color Palette - Use Exactly */
+/* Executive Color Palette */
 :root {
   --white: #FFFFFF;
-  --black: #000000;
+  --black: #0A0A0A;
   --cream: #F8F6F0;
-  --burgundy: #801B2B;
+  --navy: #1B2951;          /* Primary executive color */
+  --gold: #D4AF37;          /* Premium accent color */
+  --charcoal: #2C3E50;      /* Supporting dark */
   --gray-50: #F9FAFB;
   --gray-100: #F3F4F6;
   --gray-900: #111827;
 }
 
-/* Typography System */
---font-serif: 'Playfair Display', serif;  /* Headers */
---font-sans: 'Inter', sans-serif;         /* Body */
---font-script: 'Dancing Script', cursive; /* Logo */
-
-/* Spacing: 8px grid system */
-/* Animations: 300ms ease-in-out */
-/* Shadows: Subtle, elegant depth */
-/* Borders: 1px solid with high contrast */
+/* Executive Typography */
+--font-serif: 'Playfair Display', serif;    /* Executive headers */
+--font-sans: 'Inter', sans-serif;           /* Professional body text */
+--font-mono: 'JetBrains Mono', monospace;   /* Code/data displays */
 ```
 
-## Complete Database Schema
-```sql
--- Enable RLS
-alter table auth.users enable row level security;
+### Component Patterns
+- **Luxury Button**: Located in `src/components/ui/luxury-button.tsx` with variants for different contexts
+- **Luxury Card**: Elevated cards with subtle shadows and hover effects
+- **Typography**: Semantic heading classes with proper font family assignment
+- **Animations**: 300ms ease-in-out transitions, luxury hover effects
+- **Grid System**: 8px spacing system for consistent layouts
 
--- Users table
-create table public.users (
-  id uuid references auth.users on delete cascade primary key,
-  email text unique not null,
-  name text,
-  role text,
-  avatar_url text,
-  created_at timestamptz default now() not null,
-  updated_at timestamptz default now() not null
-);
+### UI Component Architecture
+- Base components in `src/components/ui/` extend Radix UI primitives
+- Luxury variants add premium styling while maintaining accessibility
+- Framer Motion integration for smooth animations
+- Responsive design with mobile-first approach
 
--- User profiles
-create table public.user_profiles (
-  user_id uuid references public.users(id) on delete cascade primary key,
-  preferences jsonb default '{}'::jsonb,
-  vip_contacts jsonb default '[]'::jsonb,
-  settings jsonb default '{}'::jsonb,
-  onboarding_completed boolean default false,
-  subscription_status text default 'trial',
-  updated_at timestamptz default now() not null
-);
+## Security & Performance
 
--- Connected accounts
-create table public.connected_accounts (
-  id uuid default gen_random_uuid() primary key,
-  user_id uuid references public.users(id) on delete cascade not null,
-  provider text not null check (provider in ('gmail', 'slack', 'teams')),
-  account_id text not null,
-  account_email text,
-  account_name text,
-  access_token text,
-  refresh_token text,
-  expires_at timestamptz,
-  scope text,
-  status text default 'active' check (status in ('active', 'inactive', 'error')),
-  created_at timestamptz default now() not null,
-  updated_at timestamptz default now() not null,
-  unique(user_id, provider, account_id)
-);
+### Security Implementation
+- **Row Level Security**: All database tables use RLS policies restricting data access to authenticated users
+- **Token Encryption**: OAuth tokens encrypted at rest in `connected_accounts` table
+- **HTTPS Enforcement**: Security headers configured in `next.config.js`
+- **CORS Configuration**: Restricted to allowed domains and API endpoints
+- **Input Validation**: TypeScript types and runtime validation for all user inputs
 
--- Messages
-create table public.messages (
-  id uuid default gen_random_uuid() primary key,
-  user_id uuid references public.users(id) on delete cascade not null,
-  source text not null check (source in ('gmail', 'slack', 'teams')),
-  external_id text not null,
-  thread_id text,
-  subject text,
-  content text not null,
-  sender_email text not null,
-  sender_name text,
-  recipients jsonb default '[]'::jsonb,
-  priority_score integer default 0 check (priority_score >= 0 and priority_score <= 100),
-  ai_summary text,
-  sentiment text check (sentiment in ('positive', 'neutral', 'negative', 'urgent')),
-  is_vip boolean default false,
-  status text default 'unread' check (status in ('unread', 'read', 'archived', 'snoozed')),
-  snoozed_until timestamptz,
-  has_attachments boolean default false,
-  message_date timestamptz not null,
-  created_at timestamptz default now() not null,
-  updated_at timestamptz default now() not null,
-  unique(user_id, source, external_id)
-);
+### Performance Optimizations
+- **Image Optimization**: Next.js Image component with WebP/AVIF formats
+- **Bundle Optimization**: Package imports optimized for Framer Motion and Radix UI
+- **Caching Strategy**: 1-year cache for static assets, optimized font loading
+- **Code Splitting**: Automatic route-based and component-based splitting
+- **Real-time Efficiency**: Targeted Supabase subscriptions to minimize data transfer
 
--- Action items
-create table public.action_items (
-  id uuid default gen_random_uuid() primary key,
-  message_id uuid references public.messages(id) on delete cascade not null,
-  user_id uuid references public.users(id) on delete cascade not null,
-  description text not null,
-  due_date timestamptz,
-  priority text default 'medium' check (priority in ('low', 'medium', 'high', 'urgent')),
-  status text default 'pending' check (status in ('pending', 'in_progress', 'completed', 'cancelled')),
-  assigned_to text,
-  notes text,
-  extracted_at timestamptz default now() not null,
-  completed_at timestamptz
-);
+## Key Implementation Notes
 
--- VIP contacts
-create table public.vip_contacts (
-  id uuid default gen_random_uuid() primary key,
-  user_id uuid references public.users(id) on delete cascade not null,
-  email text not null,
-  name text,
-  relationship_type text check (relationship_type in ('investor', 'board', 'client', 'partner', 'team', 'vendor')),
-  priority_level integer default 5 check (priority_level >= 1 and priority_level <= 10),
-  notes text,
-  avatar_url text,
-  created_at timestamptz default now() not null,
-  updated_at timestamptz default now() not null,
-  unique(user_id, email)
-);
+### Message Processing Flow
+1. Messages ingested via OAuth integrations (Gmail/Slack/Teams)
+2. Processed through `aiService.processMessage()` for priority scoring
+3. VIP contacts boost priority scores automatically
+4. Action items extracted and saved to database
+5. Real-time updates pushed to dashboard components
 
--- Relationship insights
-create table public.relationship_insights (
-  id uuid default gen_random_uuid() primary key,
-  user_id uuid references public.users(id) on delete cascade not null,
-  contact_email text not null,
-  last_contact timestamptz,
-  interaction_frequency integer default 0,
-  sentiment_score decimal(3,2) default 0.50 check (sentiment_score >= 0 and sentiment_score <= 1),
-  follow_up_needed boolean default false,
-  insights jsonb default '{}'::jsonb,
-  updated_at timestamptz default now() not null,
-  unique(user_id, contact_email)
-);
+### Dashboard Architecture
+- **Three-panel layout**: Implemented in `src/components/dashboard/command-center.tsx`
+- **Navigation Panel**: User profile, platform connections, settings
+- **Main Panel**: Strategic digest, message list, action items
+- **Context Panel**: Contact details, AI insights, reply interface
 
--- Indexes for performance
-create index idx_messages_user_priority on public.messages(user_id, priority_score desc, message_date desc);
-create index idx_messages_user_status on public.messages(user_id, status, message_date desc);
-create index idx_messages_user_vip on public.messages(user_id, is_vip, message_date desc);
-create index idx_action_items_user_status on public.action_items(user_id, status, due_date);
-create index idx_connected_accounts_user on public.connected_accounts(user_id, provider, status);
+### Database Migration Strategy
+- Latest simplified schema: `supabase/migrations/20241201000000_mvp_simplified_schema.sql`
+- Removed complex tables for MVP focus
+- Maintains essential functionality: users, messages, action items, VIP contacts
+- Performance indexes on high-query columns
 
--- RLS Policies
-create policy "Users can view own data" on public.users for select using (auth.uid() = id);
-create policy "Users can update own data" on public.users for update using (auth.uid() = id);
+## Executive Memory Architecture Summary
 
-create policy "Users can manage own profiles" on public.user_profiles for all using (auth.uid() = user_id);
-create policy "Users can manage own accounts" on public.connected_accounts for all using (auth.uid() = user_id);
-create policy "Users can manage own messages" on public.messages for all using (auth.uid() = user_id);
-create policy "Users can manage own action items" on public.action_items for all using (auth.uid() = user_id);
-create policy "Users can manage own vip contacts" on public.vip_contacts for all using (auth.uid() = user_id);
-create policy "Users can manage own insights" on public.relationship_insights for all using (auth.uid() = user_id);
+### Core Executive Value Proposition
+Napoleon AI transforms Fortune 500 executives from communication chaos to strategic clarity through:
+- **Time Savings**: 2+ hours daily through AI-powered prioritization and unified inbox
+- **Intelligence Amplification**: AI enhances executive judgment without replacing it
+- **Cross-Platform Unity**: Gmail + Slack + Teams unified into single command center
+- **VIP Relationship Intelligence**: Board/investor communications never missed
+- **Executive-Grade Security**: Enterprise security with luxury user experience
 
--- Enable RLS on all tables
-alter table public.users enable row level security;
-alter table public.user_profiles enable row level security;
-alter table public.connected_accounts enable row level security;
-alter table public.messages enable row level security;
-alter table public.action_items enable row level security;
-alter table public.vip_contacts enable row level security;
-alter table public.relationship_insights enable row level security;
-```
+### Implementation Priority Sequence
+1. **Tier 1 (MVP Core)**: Strategic Daily Digest, VIP Intelligence, Unified Inbox
+2. **Tier 2 (ROI Amplification)**: AI Reply Intelligence, Action Item Extraction, Relationship Insights
+3. **Tier 3 (Premium Features)**: Board Meeting Prep, Investor Relations, Executive Assistant Integration
 
-## Complete File Structure
-```
-napoleon-ai/
-├── .env.local                 # Environment variables
-├── .env.example              # Environment template
-├── next.config.js            # Next.js configuration
-├── tailwind.config.ts        # Tailwind with luxury theme
-├── package.json              # Dependencies
-├── tsconfig.json             # TypeScript config
-├── supabase/
-│   ├── migrations/           # Database migrations
-│   └── seed.sql             # Sample data
-├── src/
-│   ├── app/                  # Next.js App Router
-│   │   ├── globals.css      # Global styles
-│   │   ├── layout.tsx       # Root layout
-│   │   ├── page.tsx         # Landing page
-│   │   ├── dashboard/       # Main application
-│   │   │   ├── page.tsx
-│   │   │   └── layout.tsx
-│   │   ├── onboarding/      # Setup flow
-│   │   │   ├── page.tsx
-│   │   │   ├── profile/
-│   │   │   ├── connect/
-│   │   │   ├── vips/
-│   │   │   └── tour/
-│   │   └── api/             # API endpoints
-│   │       ├── auth/
-│   │       ├── messages/
-│   │       ├── ai/
-│   │       └── webhooks/
-│   ├── components/           # React components
-│   │   ├── ui/              # shadcn/ui base components
-│   │   ├── landing/         # Landing page sections
-│   │   │   ├── hero-section.tsx
-│   │   │   ├── value-proposition.tsx
-│   │   │   ├── social-proof.tsx
-│   │   │   └── cta-section.tsx
-│   │   ├── onboarding/      # Onboarding components
-│   │   │   ├── profile-setup.tsx
-│   │   │   ├── account-connection.tsx
-│   │   │   ├── vip-configuration.tsx
-│   │   │   └── guided-tour.tsx
-│   │   ├── dashboard/       # Dashboard components
-│   │   │   ├── command-menu.tsx
-│   │   │   ├── strategic-digest.tsx
-│   │   │   ├── message-list.tsx
-│   │   │   ├── message-item.tsx
-│   │   │   ├── action-items-sidebar.tsx
-│   │   │   ├── context-panel.tsx
-│   │   │   └── ai-reply-modal.tsx
-│   │   └── shared/          # Shared components
-│   │       ├── navbar.tsx
-│   │       ├── footer.tsx
-│   │       └── loading.tsx
-│   ├── lib/                 # Utilities and services
-│   │   ├── supabase/        # Database client
-│   │   │   ├── client.ts
-│   │   │   ├── server.ts
-│   │   │   └── types.ts
-│   │   ├── integrations/    # API integrations
-│   │   │   ├── gmail.ts
-│   │   │   ├── slack.ts
-│   │   │   ├── teams.ts
-│   │   │   └── oauth.ts
-│   │   ├── ai/              # AI processing
-│   │   │   ├── openai.ts
-│   │   │   ├── message-analysis.ts
-│   │   │   ├── priority-scoring.ts
-│   │   │   └── action-extraction.ts
-│   │   ├── utils/           # Helper functions
-│   │   │   ├── cn.ts
-│   │   │   ├── date.ts
-│   │   │   ├── validation.ts
-│   │   │   └── constants.ts
-│   │   └── hooks/           # Custom React hooks
-│   │       ├── use-messages.ts
-│   │       ├── use-action-items.ts
-│   │       └── use-auth.ts
-│   ├── types/               # TypeScript definitions
-│   │   ├── database.ts
-│   │   ├── integrations.ts
-│   │   └── ai.ts
-│   └── styles/              # Additional styles
-│       └── components.css
-└── docs/                    # Documentation
-    ├── API.md
-    ├── DEPLOYMENT.md
-    └── DEVELOPMENT.md
-```
+### Design System Evolution
+**From**: Cartier burgundy luxury retail aesthetic
+**To**: Navy (#1B2951) & Gold (#D4AF37) executive intelligence positioning
+**Rationale**: Authority, trust, and intelligence over luxury retail associations
 
-## Required Environment Variables
-```env
-# Supabase
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
+### Executive UX Principles
+- Time is the ultimate currency (sub-3-second interactions)
+- Intelligence amplification, not automation (95%+ executive approval rate)
+- Executive context awareness (board schedules influence prioritization)
+- Mobile-first for airport/travel usage (70% of executive usage)
+- Luxury experience standards (WCAG AAA, haptic feedback, premium animations)
 
-# OpenAI
-OPENAI_API_KEY=
+### AI Intelligence Framework
+- **Executive Message Analysis**: Priority scoring through C-suite lens
+- **Cross-Platform Relationship Intelligence**: Unified contact insights
+- **Executive Response Suggestions**: Context-aware, voice-matched responses
+- **Safety Protocols**: Board communication protection, high-stakes safeguards
+- **Learning System**: Personalized executive intelligence that improves over time
 
-# OAuth Providers
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
-SLACK_CLIENT_ID=
-SLACK_CLIENT_SECRET=
-MICROSOFT_CLIENT_ID=
-MICROSOFT_CLIENT_SECRET=
+### Technical Architecture Excellence
+- **Performance**: <200ms page transitions, <2s AI analysis, 99.99% uptime
+- **Security**: Zero-trust architecture, E2E encryption, enterprise compliance
+- **Scalability**: Horizontal scaling, global CDN, executive-optimized caching
+- **Integration**: Unified schema across Gmail/Slack/Teams with real-time sync
 
-# NextAuth
-NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=
-
-# Production
-VERCEL_URL=
-```
-
-## Core Features Implementation Requirements
-
-### 1. Landing Page (Cartier Luxury Design)
-- Hero section with "Transform Communication Chaos into Strategic Clarity"
-- Elegant typography with Playfair Display + Inter
-- Burgundy CTA button "Take Command Now"
-- Executive testimonials and social proof
-- Mobile-responsive with luxury aesthetics
-- Smooth scroll animations with Framer Motion
-
-### 2. Authentication & OAuth
-- Supabase Auth with Google, Microsoft, Slack providers
-- Biometric authentication support (Face ID/Touch ID)
-- Secure token storage with encryption
-- Automatic token refresh handling
-- Error handling for OAuth failures
-
-### 3. Onboarding Flow (3 minutes max)
-- **Step 1**: Profile setup (role, pain points) - 30 seconds
-- **Step 2**: Account connections (Gmail, Slack, Teams) - 60 seconds
-- **Step 3**: VIP contact designation - 90 seconds
-- **Step 4**: Guided dashboard tour - 30 seconds
-- Progress indicators and skip options
-- Celebration moments (crown icon completion)
-
-### 4. Command Center Dashboard
-- **Three-panel layout**: Navigation | Main | Context
-- **Strategic Daily Digest**: Top priority summary
-- **Unified Message List**: AI-prioritized across platforms
-- **Action Items Sidebar**: Extracted tasks with due dates
-- **Context Panel**: Contact info and AI insights
-- Real-time updates via Supabase subscriptions
-
-### 5. AI Processing Pipeline
-- Message summarization with OpenAI GPT-4
-- Priority scoring algorithm (VIP 40%, urgency 25%, sentiment 20%, time 15%)
-- Action item extraction from email/Slack content
-- Sentiment analysis for communication tone
-- VIP relationship tracking and insights
-
-### 6. API Integrations
-- **Gmail API**: Fetch emails, send replies, real-time webhooks
-- **Slack Web API**: Channel messages, direct messages, posting
-- **Microsoft Graph**: Outlook emails, Teams chats
-- Rate limiting and error handling for all APIs
-- OAuth token management and refresh
-
-## Production Deployment Requirements
-- Vercel deployment with environment variables
-- Custom domain setup (optional)
-- Error monitoring with Sentry
-- Analytics with PostHog or Vercel Analytics
-- Performance monitoring and optimization
-- SSL certificates and security headers
-- Database backup and recovery procedures
-
-## Performance Targets
-- Page load time: <2 seconds
-- API response time: <200ms
-- Real-time update latency: <1 second
-- AI processing time: <5 seconds
-- Mobile performance: 90+ Lighthouse score
-- Accessibility: WCAG AA compliance
-
-## Security Requirements
-- Row Level Security (RLS) on all database tables
-- OAuth token encryption at rest
-- HTTPS enforcement
-- CORS configuration
-- Rate limiting on API endpoints
-- Input validation and sanitization
-- Secure environment variable handling
-
-## Success Metrics to Track
-- Time to first value: <60 seconds
-- Onboarding completion rate: >80%
-- Daily active users: >70% of registered
-- Message processing accuracy: >85%
-- User session duration: 5-10 minutes
-- Weekly time savings: >2 hours per user
-
-## Development Instructions
-1. Initialize Next.js 14 project with all dependencies
-2. Set up Supabase with complete database schema
-3. Implement authentication with OAuth providers
-4. Build luxury design system with Tailwind CSS
-5. Create landing page with Cartier-inspired design
-6. Implement onboarding flow with account connections
-7. Build three-panel dashboard with real-time updates
-8. Integrate AI processing for message analysis
-9. Add Gmail, Slack, and Teams API integrations
-10. Deploy to Vercel with production configuration
-
-## Critical Success Factors
-- Every interaction must feel premium and luxury
-- AI must be invisible but intelligent
-- Cross-platform unification is the key differentiator
-- Executive time savings must be immediate and obvious
-- Security and privacy are non-negotiable
-- Performance must be flawless for executive users
-
-Build this as a production-ready application that an executive would pay $300-500/month for. Focus on quality, luxury experience, and immediate value delivery.
+This codebase represents a production-ready luxury executive intelligence platform that delivers immediate ROI while maintaining the sophistication and security standards expected by C-suite users.

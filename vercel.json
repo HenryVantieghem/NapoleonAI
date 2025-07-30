@@ -2,11 +2,37 @@
   "buildCommand": "npm run build",
   "outputDirectory": ".next",
   "framework": "nextjs",
-  "regions": ["iad1", "sfo1"],
+  "regions": ["iad1", "sfo1", "lhr1"],
   "functions": {
+    "src/app/api/ai/**/*.ts": {
+      "maxDuration": 300,
+      "memory": 3008,
+      "runtime": "nodejs20.x",
+      "fluid": true,
+      "concurrency": 100
+    },
+    "src/app/api/integrations/**/*.ts": {
+      "maxDuration": 180,
+      "memory": 1024,
+      "runtime": "nodejs20.x",
+      "fluid": true,
+      "concurrency": 50
+    },
+    "src/app/api/webhooks/**/*.ts": {
+      "maxDuration": 60,
+      "memory": 512,
+      "runtime": "nodejs20.x",
+      "fluid": false
+    },
     "src/app/api/**/*.ts": {
-      "maxDuration": 30
+      "maxDuration": 30,
+      "memory": 1024,
+      "runtime": "nodejs20.x"
     }
+  },
+  "compute": {
+    "type": "fluid",
+    "pricing": "active-cpu"
   },
   "headers": [
     {

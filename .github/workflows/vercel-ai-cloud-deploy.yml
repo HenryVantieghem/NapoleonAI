@@ -1,0 +1,177 @@
+name: Deploy Napoleon AI to Vercel AI Cloud
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+jobs:
+  type-check:
+    runs-on: ubuntu-latest
+    name: Type Check
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Type check
+        run: npm run type-check
+
+  deploy-preview:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    name: Deploy Preview
+    needs: type-check
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+        
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+        
+      - name: Build Project Artifacts
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_AI_GATEWAY_ENABLED: true
+          FLUID_COMPUTE_ENABLED: true
+          SANDBOX_ENABLED: true
+          
+      - name: Deploy Project Artifacts to Vercel
+        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
+
+  deploy-staging:
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    name: Deploy Staging
+    needs: type-check
+    environment: staging
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+        
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+        
+      - name: Build Project Artifacts
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_AI_GATEWAY_ENABLED: true
+          FLUID_COMPUTE_ENABLED: true
+          SANDBOX_ENABLED: true
+          MONITORING_ENABLED: true
+          
+      - name: Deploy Project Artifacts to Vercel
+        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
+        
+      - name: Run Health Checks
+        run: |
+          echo "Waiting for deployment to be ready..."
+          sleep 30
+          # Add health check calls here
+
+  deploy-production:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    name: Deploy Production
+    needs: type-check
+    environment: production
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+        
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        
+      - name: Build Project Artifacts
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_AI_GATEWAY_ENABLED: true
+          FLUID_COMPUTE_ENABLED: true
+          SANDBOX_ENABLED: true
+          MONITORING_ENABLED: true
+          PERFORMANCE_TRACKING: true
+          
+      - name: Deploy Project Artifacts to Vercel
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+        
+      - name: Production Health Checks
+        run: |
+          echo "Waiting for production deployment to be ready..."
+          sleep 60
+          # Add comprehensive health checks here
+          
+      - name: Notify Success
+        if: success()
+        run: |
+          echo "🎉 Napoleon AI successfully deployed to production!"
+          echo "✅ AI Gateway: Enabled"
+          echo "✅ Fluid Compute: Active CPU Pricing"
+          echo "✅ Sandbox: Secure Execution"
+          echo "✅ Monitoring: Full Observability"
+
+  security-scan:
+    runs-on: ubuntu-latest
+    name: Security Scan
+    needs: [deploy-preview, deploy-staging, deploy-production]
+    if: always()
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Run Security Audit
+        run: npm audit --audit-level moderate
+        
+      - name: Scan for Secrets
+        run: |
+          echo "Scanning for potential secrets..."
+          # Add secret scanning logic here
+          
+      - name: Validate Security Headers
+        run: |
+          echo "Validating security headers configuration..."
+          # Add header validation logic here

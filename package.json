@@ -8,6 +8,12 @@
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
+    "test": "jest",
+    "test:auth": "jest tests/auth",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:e2e": "jest tests/auth/auth-flows.test.js",
+    "quality-gate": "npm run lint && npm run type-check && npm run test:auth",
     "db:generate-types": "supabase gen types typescript --project-id $SUPABASE_PROJECT_ID > src/types/database.ts"
   },
   "dependencies": {
@@ -33,9 +39,11 @@
     "openai": "^4.52.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-hook-form": "^7.61.1",
     "recharts": "^2.12.7",
     "svix": "^1.69.0",
-    "tailwind-merge": "^2.4.0"
+    "tailwind-merge": "^2.4.0",
+    "zustand": "^5.0.6"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.7",
@@ -46,7 +54,9 @@
     "autoprefixer": "^10.4.19",
     "eslint": "^8.57.0",
     "eslint-config-next": "14.2.5",
+    "jest": "^30.0.5",
     "postcss": "^8.4.40",
+    "puppeteer": "^24.15.0",
     "tailwindcss": "^3.4.7",
     "typescript": "^5.5.4"
   },
