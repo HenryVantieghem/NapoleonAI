@@ -1,14 +1,24 @@
-# CLAUDE.md
+# CLAUDE.md - Napoleon AI Global Memory Architecture
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Global Vision
+**"AI Strategic Commander for Perfect Focus – luxury productivity platform for C-suite executives and high-performing professionals."**
+
+## Three-Tier Memory Architecture
+- **Global**: Core vision, design system, executive principles (this file)
+- **Project**: Implementation details, technical patterns, integration specs
+- **Local**: Session-specific context, active tasks, temporary notes (CLAUDE.local.md)
+
 # Napoleon AI - Executive Intelligence Platform
 
+@import NAPOLEON_AI_VISION.md
 @import executive-features-priority.md
 @import luxury-design-system.md  
 @import executive-ux-principles.md
 @import ai-intelligence-framework.md
 @import integration-architecture.md
+@import EXECUTIVE_EXPERIENCE_CHECKLIST.md
 
 ## Architecture Overview
 

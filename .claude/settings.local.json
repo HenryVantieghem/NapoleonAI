@@ -47,7 +47,11 @@
       "mcp__github-repo__getRepoAllDirectories",
       "mcp__github-repo__getRepoFile",
       "mcp__github-repo__getRepoDirectories",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "WebFetch(domain:clerk.com)",
+      "WebFetch(domain:api.slack.com)",
+      "WebFetch(domain:supabase.com)",
+      "Bash(git pull:*)"
     ],
     "deny": []
   }
