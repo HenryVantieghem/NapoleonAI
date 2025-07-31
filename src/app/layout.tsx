@@ -1,8 +1,10 @@
 import type { Metadata } from "next"
-import { Inter, Playfair_Display, Dancing_Script } from "next/font/google"
+import { Inter, Playfair_Display, JetBrains_Mono } from "next/font/google"
 import { ClerkProvider } from '@clerk/nextjs'
 import "./globals.css"
 import { cn } from "@/lib/utils"
+import { SpeedInsights } from "@vercel/speed-insights/next"
+import { Analytics } from "@vercel/analytics/react"
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -16,26 +18,34 @@ const playfairDisplay = Playfair_Display({
   display: 'swap',
 })
 
-const dancingScript = Dancing_Script({
+const jetBrainsMono = JetBrains_Mono({
   subsets: ["latin"],
-  variable: "--font-script",
+  variable: "--font-mono",
   display: 'swap',
 })
 
 export const metadata: Metadata = {
-  title: "Napoleon AI - Executive Communication Commander",
-  description: "Transform communication chaos into strategic clarity. The luxury AI platform designed exclusively for C-suite executives. Unite Gmail, Slack, and Teams with intelligent prioritization.",
+  metadataBase: new URL('https://napoleon-ai.com'),
+  title: {
+    default: "Napoleon AI - Executive Intelligence. Amplified.",
+    template: "%s | Napoleon AI"
+  },
+  description: "Save 2+ hours daily on email and messages. The luxury AI platform that unifies Gmail, Slack & Teams for C-suite executives. Transform communication chaos into strategic clarity.",
   keywords: [
-    "executive communication",
-    "C-suite productivity",
-    "AI communication tool",
-    "luxury business software",
-    "executive assistant AI",
-    "communication intelligence",
+    "executive communication platform",
+    "AI email management",
+    "unified inbox for executives",
     "Napoleon AI",
-    "strategic communication"
+    "CEO communication tools",
+    "C-suite productivity",
+    "executive assistant AI",
+    "enterprise communication platform",
+    "Gmail Slack Teams integration",
+    "board communication management",
+    "investor relations platform",
+    "luxury productivity software"
   ],
-  authors: [{ name: "Napoleon AI Team" }],
+  authors: [{ name: "Napoleon AI" }],
   creator: "Napoleon AI",
   publisher: "Napoleon AI",
   formatDetection: {
@@ -46,25 +56,32 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://napoleonai.com",
-    title: "Napoleon AI - Executive Communication Commander",
-    description: "Transform communication chaos into strategic clarity with AI-powered executive intelligence.",
+    url: "https://napoleon-ai.com",
+    title: "Napoleon AI - Executive Intelligence. Amplified.",
+    description: "Save 2+ hours daily. The luxury AI platform for C-suite executives.",
     siteName: "Napoleon AI",
     images: [
       {
-        url: "https://napoleonai.com/og-image.jpg",
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Napoleon AI - Executive Communication Commander",
+        alt: "Napoleon AI - Executive Command Center",
       },
+      {
+        url: "/og-image-square.jpg",
+        width: 600,
+        height: 600,
+        alt: "Napoleon AI Logo",
+      }
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Napoleon AI - Executive Communication Commander",
-    description: "Transform communication chaos into strategic clarity with AI-powered executive intelligence.",
-    images: ["https://napoleonai.com/twitter-image.jpg"],
+    title: "Napoleon AI - Executive Intelligence. Amplified.",
+    description: "Save 2+ hours daily. The luxury AI platform for C-suite executives.",
+    images: ["/twitter-image.jpg"],
     creator: "@napoleonai",
+    site: "@napoleonai",
   },
   robots: {
     index: true,
@@ -77,8 +94,34 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  verification: {
-    google: "google-site-verification-code-here",
+  alternates: {
+    canonical: "https://napoleon-ai.com",
+  },
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180" },
+    ],
+    other: [
+      {
+        rel: "mask-icon",
+        url: "/safari-pinned-tab.svg",
+        color: "#1B2951",
+      },
+    ],
+  },
+  manifest: "/site.webmanifest",
+  appleWebApp: {
+    title: "Napoleon AI",
+    statusBarStyle: "black-translucent",
+    capable: true,
+  },
+  other: {
+    "msapplication-TileColor": "#1B2951",
   },
 }
 
@@ -99,7 +142,7 @@ export default function RootLayout({
           <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
           <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
           <link rel="manifest" href="/site.webmanifest" />
-          <meta name="theme-color" content="#801B2B" />
+          <meta name="theme-color" content="#1B2951" />
           <meta name="apple-mobile-web-app-capable" content="yes" />
           <meta name="apple-mobile-web-app-status-bar-style" content="default" />
           <meta name="apple-mobile-web-app-title" content="Napoleon AI" />
@@ -109,7 +152,7 @@ export default function RootLayout({
             "min-h-screen bg-white font-sans antialiased",
             inter.variable,
             playfairDisplay.variable,
-            dancingScript.variable
+            jetBrainsMono.variable
           )}
         >
           <div className="relative flex min-h-screen flex-col">
@@ -162,26 +205,26 @@ export default function RootLayout({
       appearance={{
         baseTheme: undefined,
         variables: {
-          colorPrimary: '#801B2B',
-          colorText: '#111827',
+          colorPrimary: '#D4AF37',
+          colorText: '#1B2951',
           colorTextSecondary: '#6B7280',
           colorBackground: '#FFFFFF',
           colorInputBackground: '#F9FAFB',
-          colorInputText: '#111827',
+          colorInputText: '#1B2951',
           fontFamily: 'Inter, sans-serif',
-          borderRadius: '0.5rem'
+          borderRadius: '0.75rem'
         },
         elements: {
           formButtonPrimary: 
-            'bg-gradient-to-r from-burgundy-600 to-burgundy-700 hover:from-burgundy-700 hover:to-burgundy-800 text-white font-medium transition-all duration-300 shadow-lg hover:shadow-xl',
-          card: 'shadow-luxury border border-gray-100 bg-white/80 backdrop-blur-sm',
-          headerTitle: 'font-serif text-2xl font-semibold text-gray-900',
-          headerSubtitle: 'text-gray-600',
+            'bg-gradient-gold hover:shadow-gold-lg text-navy-900 font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105',
+          card: 'shadow-luxury border border-gold-200/20 bg-white/95 backdrop-blur-luxury rounded-2xl',
+          headerTitle: 'font-serif text-3xl font-bold text-navy-900',
+          headerSubtitle: 'text-navy-600',
           socialButtonsBlockButton: 
-            'border border-gray-200 hover:border-burgundy-200 hover:bg-burgundy-50 transition-colors duration-200',
+            'border-2 border-gold-200/30 hover:border-gold-400 hover:bg-gold-50 transition-all duration-300',
           formFieldInput: 
-            'border-gray-200 focus:border-burgundy-300 focus:ring-burgundy-200 transition-colors duration-200',
-          footerActionLink: 'text-burgundy-600 hover:text-burgundy-700 font-medium'
+            'border-gold-200/30 focus:border-gold-400 focus:ring-gold-200 transition-all duration-200 focus:bg-gold-50/20',
+          footerActionLink: 'text-gold-600 hover:text-gold-700 font-semibold'
         }
       }}
     >
@@ -192,7 +235,7 @@ export default function RootLayout({
           <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
           <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
           <link rel="manifest" href="/site.webmanifest" />
-          <meta name="theme-color" content="#801B2B" />
+          <meta name="theme-color" content="#1B2951" />
           <meta name="apple-mobile-web-app-capable" content="yes" />
           <meta name="apple-mobile-web-app-status-bar-style" content="default" />
           <meta name="apple-mobile-web-app-title" content="Napoleon AI" />
@@ -202,7 +245,7 @@ export default function RootLayout({
             "min-h-screen bg-white font-sans antialiased",
             inter.variable,
             playfairDisplay.variable,
-            dancingScript.variable
+            jetBrainsMono.variable
           )}
         >
           <div className="relative flex min-h-screen flex-col">
