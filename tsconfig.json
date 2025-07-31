@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "lib": ["dom", "dom.iterable", "es6"],
+    "lib": ["dom", "dom.iterable", "es2015", "es2017"],
+    "target": "es2015",
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -12,6 +13,8 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "downlevelIteration": true,
+    "types": ["jest", "node"],
     "plugins": [
       {
         "name": "next"
@@ -26,6 +29,6 @@
       "@/styles/*": ["./src/styles/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "jest.setup.js"],
+  "exclude": ["node_modules", "tests/e2e", "playwright.config.ts"]
 }
