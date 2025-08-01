@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { currentUser } from '@clerk/nextjs/server'
 import { createClient } from '@/lib/supabase/server'
+import { gmailAPI } from '@/lib/integrations/gmail-api'
+import { aiService } from '@/lib/ai/ai-service'
 
-// Enhanced sample messages for MVP Command Center
+// Enhanced sample messages for DEMO/FALLBACK when no Gmail connection
 const sampleMessages = [
   {
     id: 'msg_1',
@@ -132,6 +134,150 @@ const sampleMessages = [
   }
 ]
 
+/**
+ * Get messages from Gmail API with AI processing
+ */
+async function getMessagesFromGmail(userId: string, limit: number = 50) {
+  try {
+    const supabase = createClient()
+    
+    // Get Gmail OAuth tokens from database
+    const { data: gmailAccount } = await supabase
+      .from('connected_accounts')
+      .select('tokens, metadata')
+      .eq('user_id', userId)
+      .eq('provider', 'gmail')
+      .eq('is_active', true)
+      .single()
+
+    if (!gmailAccount?.tokens) {
+      console.log('No Gmail account connected for user:', userId)
+      return null // Fall back to sample data
+    }
+
+    // Set up Gmail API with user's tokens
+    gmailAPI.setAccessToken(
+      gmailAccount.tokens.access_token,
+      gmailAccount.tokens.refresh_token
+    )
+
+    // Fetch recent messages from Gmail
+    const gmailResult = await gmailAPI.getMessages(userId, {
+      maxResults: limit,
+      labelIds: ['INBOX'],
+      includeSpamTrash: false
+    })
+
+    if (!gmailResult.messages || gmailResult.messages.length === 0) {
+      return null // Fall back to sample data
+    }
+
+    // Transform Gmail messages to our format and process with AI
+    const processedMessages = []
+    
+    for (const gmailMessage of gmailResult.messages) {
+      try {
+        // Check if message already exists in our database
+        const { data: existingMessage } = await supabase
+          .from('messages')
+          .select('id, ai_summary, priority_score')
+          .eq('external_id', gmailMessage.id)
+          .eq('user_id', userId)
+          .single()
+
+        let aiSummary = null
+        let priorityScore = 50
+        let isVip = false
+
+        if (existingMessage) {
+          // Use existing AI analysis
+          aiSummary = existingMessage.ai_summary
+          priorityScore = existingMessage.priority_score || 50
+        } else {
+          // Process new message with AI
+          try {
+            const messageData = {
+              id: gmailMessage.id || '',
+              content: gmailMessage.content || '',
+              subject: gmailMessage.subject || '',
+              sender_name: gmailMessage.sender || '',
+              sender_email: gmailMessage.senderEmail || '',
+              message_date: gmailMessage.timestamp || new Date(),
+              source_platform: 'gmail',
+              external_id: gmailMessage.id || '',
+              user_id: userId
+            }
+
+            const analysis = await aiService.processMessage(messageData as any, userId)
+            aiSummary = analysis.summary
+            priorityScore = analysis.priority.score
+            isVip = analysis.priority.isVip
+
+            // Save to database for future reference
+            await supabase.from('messages').insert({
+              id: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+              user_id: userId,
+              source_platform: 'gmail',
+              external_id: gmailMessage.id,
+              sender_name: gmailMessage.sender,
+              sender_email: gmailMessage.senderEmail,
+              subject: gmailMessage.subject,
+              content: gmailMessage.content,
+              ai_summary: aiSummary,
+              priority_score: priorityScore,
+              is_vip: isVip,
+              is_read: gmailMessage.isRead || false,
+              is_archived: false,
+              is_snoozed: false,
+              message_date: gmailMessage.timestamp?.toISOString() || new Date().toISOString(),
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
+            })
+
+            // Save action items if any
+            if (analysis.actionItems.length > 0) {
+              await aiService.saveMessageAnalysis(gmailMessage.id || '', analysis, userId)
+            }
+          } catch (aiError) {
+            console.error('AI processing failed for message:', gmailMessage.id, aiError)
+            // Continue with default values
+          }
+        }
+
+        // Transform to our message format
+        processedMessages.push({
+          id: gmailMessage.id || `gmail_${Date.now()}`,
+          user_id: userId,
+          source_platform: 'gmail',
+          external_id: gmailMessage.id,
+          sender_name: gmailMessage.sender || 'Unknown Sender',
+          sender_email: gmailMessage.senderEmail || '',
+          subject: gmailMessage.subject || 'No Subject',
+          content: gmailMessage.content || '',
+          ai_summary: aiSummary,
+          priority_score: priorityScore,
+          is_vip: isVip,
+          is_read: gmailMessage.isRead || false,
+          is_archived: false,
+          is_snoozed: false,
+          created_at: gmailMessage.timestamp?.toISOString() || new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        })
+      } catch (messageError) {
+        console.error('Error processing message:', gmailMessage.id, messageError)
+        // Skip this message and continue
+      }
+    }
+
+    console.log(`Successfully processed ${processedMessages.length} Gmail messages for user ${userId}`)
+    return processedMessages
+
+  } catch (error) {
+    console.error('Gmail API error:', error)
+    return null // Fall back to sample data
+  }
+}
+
 export async function GET(request: NextRequest) {
   try {
     // Authenticate user with Clerk
@@ -150,8 +296,8 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get('search') || ''
     const filters = searchParams.get('filters')?.split(',') || []
     
-    // For MVP, use enhanced sample messages with user ID set
-    const messages = sampleMessages.map(msg => ({
+    // Get real Gmail messages or use sample data as fallback
+    let messages = await getMessagesFromGmail(user.id, limit) || sampleMessages.map(msg => ({
       ...msg,
       user_id: user.id
     }))

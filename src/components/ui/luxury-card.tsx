@@ -6,10 +6,11 @@ import { cn } from "@/lib/utils"
 import { cardHoverEffect } from "@/lib/animations"
 
 interface LuxuryCardProps extends Omit<HTMLMotionProps<"div">, "children"> {
-  variant?: "default" | "elevated" | "bordered" | "gradient"
+  variant?: "default" | "elevated" | "bordered" | "gradient" | "glass" | "executive"
   interactive?: boolean
   glow?: boolean
   shimmer?: boolean
+  vip?: boolean
   children?: React.ReactNode
 }
 
@@ -20,6 +21,7 @@ export const LuxuryCard = forwardRef<HTMLDivElement, LuxuryCardProps>(
     interactive = false,
     glow = false,
     shimmer = false,
+    vip = false,
     children,
     ...props 
   }, ref) => {
@@ -28,8 +30,10 @@ export const LuxuryCard = forwardRef<HTMLDivElement, LuxuryCardProps>(
     const variants = {
       default: "bg-white shadow-luxury",
       elevated: "bg-white shadow-luxury-lg",
-      bordered: "bg-white border-2 border-gray-100 shadow-sm hover:border-burgundy-100",
-      gradient: "bg-gradient-to-br from-white to-cream shadow-luxury"
+      bordered: "bg-white border-2 border-gray-100 shadow-sm hover:border-navy/20",
+      gradient: "bg-gradient-to-br from-white to-cream shadow-luxury",
+      glass: "backdrop-blur-luxury bg-white/40 border border-white/20 shadow-luxury-glass",
+      executive: "backdrop-blur-luxury bg-navy/5 border border-gold/20 shadow-executive hover:bg-navy/10"
     }
     
     return (
@@ -38,7 +42,8 @@ export const LuxuryCard = forwardRef<HTMLDivElement, LuxuryCardProps>(
         className={cn(
           baseStyles,
           variants[variant],
-          interactive && "cursor-pointer",
+          interactive && "cursor-pointer hover:scale-[1.02]",
+          vip && "ring-2 ring-gold/30 shadow-gold-glow",
           className
         )}
         variants={interactive ? cardHoverEffect : undefined}
@@ -47,34 +52,50 @@ export const LuxuryCard = forwardRef<HTMLDivElement, LuxuryCardProps>(
         animate="rest"
         {...props}
       >
-        {/* Shimmer effect */}
+        {/* Executive glassmorphism shimmer */}
         {shimmer && (
           <motion.div
             className="absolute inset-0 -translate-x-full"
-            animate={{ x: ["0%", "200%"] }}
+            animate={{ x: ["-100%", "300%"] }}
             transition={{ 
-              duration: 3, 
+              duration: 4, 
               repeat: Infinity,
-              ease: "linear"
+              ease: "linear",
+              repeatDelay: 2
             }}
           >
-            <div className="h-full w-1/2 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12" />
+            <div className="h-full w-1/3 bg-gradient-to-r from-transparent via-gold/20 to-transparent skew-x-12" />
           </motion.div>
         )}
         
-        {/* Glow effect */}
+        {/* Executive glow effect */}
         {glow && (
           <motion.div
-            className="absolute -inset-4 opacity-0"
-            animate={{ opacity: [0, 0.5, 0] }}
+            className="absolute -inset-2 opacity-0 pointer-events-none"
+            animate={{ opacity: [0, 0.6, 0] }}
+            transition={{ 
+              duration: 4, 
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          >
+            <div className="h-full w-full bg-gradient-to-r from-navy/20 via-gold/20 to-navy/20 blur-xl" />
+          </motion.div>
+        )}
+        
+        {/* VIP gold accent border animation */}
+        {vip && (
+          <motion.div
+            className="absolute inset-0 rounded-2xl border-2 border-gold/0"
+            animate={{ 
+              borderColor: ["rgba(212, 175, 55, 0)", "rgba(212, 175, 55, 0.4)", "rgba(212, 175, 55, 0)"]
+            }}
             transition={{ 
               duration: 3, 
               repeat: Infinity,
               ease: "easeInOut"
             }}
-          >
-            <div className="h-full w-full bg-gradient-burgundy blur-2xl opacity-20" />
-          </motion.div>
+          />
         )}
         
         {children}
@@ -113,8 +134,10 @@ export function ExecutiveStatCard({
       }}
     >
       <LuxuryCard 
-        variant="bordered" 
+        variant="executive" 
         interactive
+        glow
+        shimmer
         className="p-6 group"
       >
         <div className="flex items-start justify-between mb-4">
@@ -122,9 +145,9 @@ export function ExecutiveStatCard({
             <motion.div
               whileHover={{ rotate: 360 }}
               transition={{ duration: 0.6 }}
-              className="w-12 h-12 bg-burgundy-100 rounded-xl flex items-center justify-center"
+              className="w-12 h-12 bg-navy/10 backdrop-blur-sm rounded-xl flex items-center justify-center border border-gold/20"
             >
-              <Icon className="w-6 h-6 text-burgundy-600" />
+              <Icon className="w-6 h-6 text-navy" />
             </motion.div>
           )}
           
@@ -163,9 +186,9 @@ export function ExecutiveStatCard({
           {label}
         </motion.div>
         
-        {/* Hover indicator */}
+        {/* Executive hover indicator */}
         <motion.div
-          className="absolute bottom-0 left-0 h-1 bg-gradient-burgundy"
+          className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-navy to-gold"
           initial={{ scaleX: 0 }}
           whileHover={{ scaleX: 1 }}
           transition={{ duration: 0.3 }}

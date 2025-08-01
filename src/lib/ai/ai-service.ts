@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase/client'
 import { openai } from './openai-client'
+import { errorHandler, withErrorHandling } from '@/lib/services/error-handler'
 import type { Message, ActionItem, VipContact } from '@/types/database'
 
 export interface SimplePriorityResult {
@@ -28,17 +29,18 @@ export class SimpleAIService {
    * Process a message with simplified AI analysis for MVP
    */
   async processMessage(message: Message, userId: string): Promise<SimpleAnalysisResult> {
-    try {
-      // Get VIP contacts for priority scoring
-      const { data: vipContacts } = await supabase
-        .from('vip_contacts')
-        .select('email, priority_level')
-        .eq('user_id', userId)
+    const result = await withErrorHandling(
+      async () => {
+        // Get VIP contacts for priority scoring
+        const { data: vipContacts } = await supabase
+          .from('vip_contacts')
+          .select('email, priority_level')
+          .eq('user_id', userId)
 
-      const isVip = this.checkIfVip(message.sender_email, vipContacts || [])
-      
-      // Simplified AI analysis
-      const prompt = `
+        const isVip = this.checkIfVip(message.sender_email, vipContacts || [])
+        
+        // Simplified AI analysis
+        const prompt = `
 Analyze this executive message for priority and extract action items:
 
 FROM: ${message.sender_name || message.sender_email}
@@ -69,36 +71,48 @@ Focus on:
 - Critical issues
 `
 
-      const response = await openai.chat.completions.create({
-        model: 'gpt-4',
-        messages: [{ role: 'user', content: prompt }],
-        temperature: 0.3,
-        max_tokens: 1000
-      })
+        const response = await openai.chat.completions.create({
+          model: 'gpt-4',
+          messages: [{ role: 'user', content: prompt }],
+          temperature: 0.3,
+          max_tokens: 1000
+        })
 
-      const aiResult = JSON.parse(response.choices[0].message.content || '{}')
-      
-      // Apply VIP boost to priority
-      let finalScore = aiResult.priorityScore || 0
-      if (isVip.isVip) {
-        finalScore = Math.min(100, finalScore + isVip.boost)
-      }
+        const aiResult = JSON.parse(response.choices[0].message.content || '{}')
+        
+        // Apply VIP boost to priority
+        let finalScore = aiResult.priorityScore || 0
+        if (isVip.isVip) {
+          finalScore = Math.min(100, finalScore + isVip.boost)
+        }
 
-      return {
-        priority: {
-          score: finalScore,
-          reason: isVip.isVip ? `VIP Contact: ${aiResult.priorityReason}` : aiResult.priorityReason,
-          isUrgent: finalScore >= 80,
-          isVip: isVip.isVip
-        },
-        summary: aiResult.summary || 'No summary available',
-        actionItems: aiResult.actionItems || [],
-        sentiment: aiResult.sentiment || 'neutral'
+        return {
+          priority: {
+            score: finalScore,
+            reason: isVip.isVip ? `VIP Contact: ${aiResult.priorityReason}` : aiResult.priorityReason,
+            isUrgent: finalScore >= 80,
+            isVip: isVip.isVip
+          },
+          summary: aiResult.summary || 'No summary available',
+          actionItems: aiResult.actionItems || [],
+          sentiment: aiResult.sentiment || 'neutral'
+        }
+      },
+      {
+        userId,
+        messageId: message.id,
+        component: 'AIService',
+        action: 'processMessage'
       }
-    } catch (error) {
-      console.error('AI processing error:', error)
-      
-      // Fallback analysis without AI
+    )
+
+    // Return AI result or fallback data
+    if (result.data) {
+      return result.data
+    } else if (result.fallback) {
+      return result.fallback
+    } else {
+      // Ultimate fallback
       return this.getFallbackAnalysis(message)
     }
   }

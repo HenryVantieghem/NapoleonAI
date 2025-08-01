@@ -130,13 +130,18 @@ const config: Config = {
       boxShadow: {
         'luxury': '0 25px 50px -12px rgba(0, 0, 0, 0.1)',
         'luxury-lg': '0 35px 60px -12px rgba(0, 0, 0, 0.15)',
+        'luxury-glass': '0 8px 32px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+        'executive': '0 12px 40px rgba(27, 41, 81, 0.2), 0 4px 16px rgba(212, 175, 55, 0.1)',
         'navy': '0 10px 40px rgba(27, 41, 81, 0.3)',
         'navy-lg': '0 20px 60px rgba(27, 41, 81, 0.4)',
         'gold': '0 10px 40px rgba(212, 175, 55, 0.3)',
         'gold-lg': '0 20px 60px rgba(212, 175, 55, 0.4)',
+        'gold-glow': '0 0 30px rgba(212, 175, 55, 0.4), 0 0 60px rgba(212, 175, 55, 0.2)',
       },
       backdropBlur: {
         'luxury': '16px',
+        'executive': '24px',
+        'glass': '12px',
       },
       backgroundImage: {
         'gradient-luxury': 'linear-gradient(135deg, #F8F6F0 0%, #FFFFFF 100%)',

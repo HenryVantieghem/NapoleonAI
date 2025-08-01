@@ -15,23 +15,28 @@ export function CommandCenter() {
   const [isContextPanelOpen, setIsContextPanelOpen] = useState(true)
 
   return (
-    <div className="h-screen flex flex-col bg-gradient-subtle">
+    <div className="h-screen flex flex-col bg-gradient-to-br from-navy/5 via-white to-gold/5">
+      {/* Executive glassmorphism overlay */}
+      <div className="absolute inset-0 bg-white/40 backdrop-blur-glass pointer-events-none" />
+      
       {/* Dashboard Header */}
-      <DashboardHeader 
-        user={user}
-        profile={profile}
-        onViewChange={setActiveView}
-        activeView={activeView}
-      />
+      <div className="relative z-10">
+        <DashboardHeader 
+          user={user}
+          profile={profile}
+          onViewChange={setActiveView}
+          activeView={activeView}
+        />
+      </div>
 
-      {/* Three-Panel Layout */}
-      <div className="flex-1 flex overflow-hidden">
+      {/* Three-Panel Executive Layout */}
+      <div className="flex-1 flex overflow-hidden relative z-10">
         {/* Navigation Panel - Left */}
         <motion.div
           initial={{ x: -100, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="w-80 bg-white border-r border-gray-200 shadow-sm flex flex-col"
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="w-80 backdrop-blur-executive bg-white/20 border-r border-white/30 shadow-luxury-glass flex flex-col"
         >
           <NavigationPanel 
             activeView={activeView}
@@ -45,9 +50,9 @@ export function CommandCenter() {
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className={`flex-1 bg-white flex flex-col ${
-            isContextPanelOpen ? 'border-r border-gray-200' : ''
+          transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+          className={`flex-1 backdrop-blur-executive bg-white/30 flex flex-col ${
+            isContextPanelOpen ? 'border-r border-white/30' : ''
           }`}
         >
           <MainPanel 
@@ -59,15 +64,15 @@ export function CommandCenter() {
           />
         </motion.div>
 
-        {/* Context Panel - Right */}
+        {/* Executive Context Panel - Right */}
         <AnimatePresence mode="wait">
           {isContextPanelOpen && (
             <motion.div
               initial={{ x: 100, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: 100, opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="w-96 bg-gray-50 border-l border-gray-200 flex flex-col"
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              className="w-96 backdrop-blur-executive bg-white/20 border-l border-white/30 shadow-luxury-glass flex flex-col"
             >
               <ContextPanel 
                 selectedMessage={selectedMessage}

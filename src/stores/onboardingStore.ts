@@ -60,7 +60,7 @@ interface OnboardingActions {
   setVipContacts: (contacts: OnboardingData['vipContacts']) => void
   
   // Completion & concierge
-  completeOnboarding: () => void
+  completeOnboarding: () => Promise<void>
   requestSkip: () => void
   requestConcierge: (scheduledAt?: string) => void
   
@@ -178,7 +178,33 @@ export const useOnboardingStore = create<OnboardingStore>()(
       setVipContacts: (contacts) => set({ vipContacts: contacts }),
       
       // Completion & concierge
-      completeOnboarding: () => {
+      completeOnboarding: async () => {
+        const state = get()
+        
+        try {
+          // Save onboarding data to database
+          const response = await fetch('/api/onboarding/complete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              role: state.role,
+              painPoints: state.painPoints,
+              companySize: state.companySize,
+              vipContacts: state.vipContacts,
+              connectedAccounts: state.connectedAccounts
+            })
+          })
+          
+          if (!response.ok) {
+            throw new Error('Failed to save onboarding data')
+          }
+          
+          console.log('Onboarding data saved successfully')
+        } catch (error) {
+          console.error('Error saving onboarding data:', error)
+          // Continue with local completion even if API fails
+        }
+        
         set({ 
           onboardingComplete: true,
           completedAt: new Date().toISOString(),
