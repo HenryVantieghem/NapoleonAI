@@ -19,37 +19,175 @@ const config: Config = {
     },
     extend: {
       colors: {
-        // Executive Navy & Gold Color Palette
+        // Private Jet Executive Color Palette
         white: "#FFFFFF",
-        black: "#0A0A0A",
-        cream: "#F8F6F0",
-        navy: {
-          DEFAULT: "#1B2951",
-          50: "#F0F2F9",
-          100: "#D9E0F0",
-          200: "#B4C5E0",
-          300: "#8FA9D0",
-          400: "#6A8EC0",
-          500: "#4573B0",
-          600: "#355A8A",
-          700: "#254164",
-          800: "#1B2951",
-          900: "#141B3C",
+        black: "#000000",
+        
+        // Primary Private Jet Colors
+        jetBlack: {
+          DEFAULT: "#0B0D11",
+          50: "#F5F5F6",
+          100: "#E8E9EA",
+          200: "#D1D3D6",
+          300: "#B9BDC1",
+          400: "#A2A7AD",
+          500: "#8B9198",
+          600: "#747B84",
+          700: "#5D656F",
+          800: "#464F5B",
+          900: "#2F3946",
+          950: "#0B0D11",
         },
-        gold: {
+        
+        midnightBlue: {
+          DEFAULT: "#122039",
+          50: "#F2F4F8",
+          100: "#E6E9F1",
+          200: "#CCD3E3",
+          300: "#B3BDD5",
+          400: "#99A7C7",
+          500: "#8091B9",
+          600: "#667BAB",
+          700: "#4D659D",
+          800: "#334F8F",
+          900: "#1A3981",
+          950: "#122039",
+        },
+        
+        champagneGold: {
           DEFAULT: "#D4AF37",
           50: "#FEFBF0",
-          100: "#FDF4D4",
-          200: "#FBE9A9",
-          300: "#F9DE7E",
-          400: "#F7D353",
-          500: "#D4AF37",
-          600: "#B8962F",
-          700: "#9C7D27",
-          800: "#80641F",
-          900: "#644B17",
+          100: "#FDF6E1",
+          200: "#FBEDC3",
+          300: "#F9E4A5",
+          400: "#F7DB87",
+          500: "#F5D269",
+          600: "#F3C94B",
+          700: "#E8BE35",
+          800: "#D4AF37",
+          900: "#B8962F",
+          950: "#9C7D27",
         },
-        charcoal: "#2C3E50",
+        
+        platinumSilver: {
+          DEFAULT: "#C7CAD1",
+          50: "#FAFBFC",
+          100: "#F5F6F8",
+          200: "#EBEDF1",
+          300: "#E1E4EA",
+          400: "#D7DBE3",
+          500: "#CDD2DC",
+          600: "#C7CAD1",
+          700: "#B8BCC4",
+          800: "#A9AEB7",
+          900: "#9AA0AA",
+          950: "#8B929D",
+        },
+        
+        cognacLeather: {
+          DEFAULT: "#8C5A3C",
+          50: "#F9F5F2",
+          100: "#F3EBE5",
+          200: "#E7D7CB",
+          300: "#DBC3B1",
+          400: "#CFAF97",
+          500: "#C39B7D",
+          600: "#B78763",
+          700: "#AB7349",
+          800: "#9F5F2F",
+          900: "#8C5A3C",
+          950: "#7A4E33",
+        },
+        
+        warmIvory: {
+          DEFAULT: "#F6F6F4",
+          50: "#FEFEFE",
+          100: "#FDFDFC",
+          200: "#FBFBF9",
+          300: "#F9F9F7",
+          400: "#F7F7F5",
+          500: "#F6F6F4",
+          600: "#F4F4F2",
+          700: "#F2F2F0",
+          800: "#F0F0EE",
+          900: "#EEEEEC",
+          950: "#ECECEA",
+        },
+        
+        // Legacy color mappings for compatibility (will be phased out)
+        navy: {
+          DEFAULT: "#122039", // Mapped to midnightBlue
+          50: "#F2F4F8",
+          100: "#E6E9F1",
+          200: "#CCD3E3",
+          300: "#B3BDD5",
+          400: "#99A7C7",
+          500: "#8091B9",
+          600: "#667BAB",
+          700: "#4D659D",
+          800: "#334F8F",
+          900: "#1A3981",
+        },
+        
+        gold: {
+          DEFAULT: "#D4AF37", // Mapped to champagneGold
+          50: "#FEFBF0",
+          100: "#FDF6E1",
+          200: "#FBEDC3",
+          300: "#F9E4A5",
+          400: "#F7DB87",
+          500: "#F5D269",
+          600: "#F3C94B",
+          700: "#E8BE35",
+          800: "#D4AF37",
+          900: "#B8962F",
+        },
+        
+        // Semantic color mapping
+        background: {
+          primary: "#0B0D11",    // jetBlack
+          secondary: "#122039",  // midnightBlue
+          accent: "#C7CAD1",     // platinumSilver
+          surface: "#F6F6F4",    // warmIvory
+        },
+        
+        text: {
+          primary: "#F6F6F4",    // warmIvory
+          secondary: "#C7CAD1",  // platinumSilver
+          accent: "#D4AF37",     // champagneGold
+          muted: "#8B929D",      // platinumSilver.950
+          inverse: "#0B0D11",    // jetBlack
+        },
+        
+        interactive: {
+          primary: "#D4AF37",    // champagneGold
+          primaryHover: "#E8BE35", // champagneGold.700
+          secondary: "#122039",  // midnightBlue
+          secondaryHover: "#1A3981", // midnightBlue.900
+          accent: "#8C5A3C",     // cognacLeather
+          accentHover: "#9F5F2F", // cognacLeather.800
+        },
+        
+        vip: {
+          tag: "#8C5A3C",        // cognacLeather
+          tagText: "#F6F6F4",    // warmIvory
+          border: "#D4AF37",     // champagneGold
+        },
+        
+        card: {
+          background: "#122039", // midnightBlue
+          border: "#C7CAD1",     // platinumSilver
+          hover: "#1A3981",      // midnightBlue.900
+        },
+        
+        navigation: {
+          background: "#0B0D11", // jetBlack
+          active: "#D4AF37",     // champagneGold
+          inactive: "#C7CAD1",   // platinumSilver
+          hover: "#8B929D",      // platinumSilver.950
+        },
+        
+        // Status colors (maintained for functionality)
         gray: {
           50: "#F9FAFB",
           100: "#F3F4F6",
@@ -128,12 +266,22 @@ const config: Config = {
         },
       },
       boxShadow: {
-        'luxury': '0 25px 50px -12px rgba(0, 0, 0, 0.1)',
-        'luxury-lg': '0 35px 60px -12px rgba(0, 0, 0, 0.15)',
-        'luxury-glass': '0 8px 32px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
-        'executive': '0 12px 40px rgba(27, 41, 81, 0.2), 0 4px 16px rgba(212, 175, 55, 0.1)',
-        'navy': '0 10px 40px rgba(27, 41, 81, 0.3)',
-        'navy-lg': '0 20px 60px rgba(27, 41, 81, 0.4)',
+        'luxury': '0 25px 50px -12px rgba(11, 13, 17, 0.15)',
+        'luxury-lg': '0 35px 60px -12px rgba(11, 13, 17, 0.2)',
+        'luxury-glass': '0 8px 32px rgba(11, 13, 17, 0.12), inset 0 1px 0 rgba(246, 246, 244, 0.1)',
+        'executive': '0 12px 40px rgba(18, 32, 57, 0.25), 0 4px 16px rgba(212, 175, 55, 0.15)',
+        'jet-black': '0 10px 40px rgba(11, 13, 17, 0.3)',
+        'jet-black-lg': '0 20px 60px rgba(11, 13, 17, 0.4)',
+        'midnight': '0 10px 40px rgba(18, 32, 57, 0.3)',
+        'midnight-lg': '0 20px 60px rgba(18, 32, 57, 0.4)',
+        'champagne': '0 10px 40px rgba(212, 175, 55, 0.3)',
+        'champagne-lg': '0 20px 60px rgba(212, 175, 55, 0.4)',
+        'champagne-glow': '0 0 30px rgba(212, 175, 55, 0.4), 0 0 60px rgba(212, 175, 55, 0.2)',
+        'cognac': '0 8px 32px rgba(140, 90, 60, 0.2)',
+        'platinum': '0 4px 16px rgba(199, 202, 209, 0.1)',
+        // Legacy mappings for compatibility
+        'navy': '0 10px 40px rgba(18, 32, 57, 0.3)',
+        'navy-lg': '0 20px 60px rgba(18, 32, 57, 0.4)',
         'gold': '0 10px 40px rgba(212, 175, 55, 0.3)',
         'gold-lg': '0 20px 60px rgba(212, 175, 55, 0.4)',
         'gold-glow': '0 0 30px rgba(212, 175, 55, 0.4), 0 0 60px rgba(212, 175, 55, 0.2)',
@@ -144,11 +292,18 @@ const config: Config = {
         'glass': '12px',
       },
       backgroundImage: {
-        'gradient-luxury': 'linear-gradient(135deg, #F8F6F0 0%, #FFFFFF 100%)',
-        'gradient-navy': 'linear-gradient(135deg, #1B2951 0%, #254164 100%)',
-        'gradient-gold': 'linear-gradient(135deg, #D4AF37 0%, #B8962F 100%)',
-        'gradient-executive': 'linear-gradient(135deg, #1B2951 0%, #D4AF37 100%)',
+        'gradient-luxury': 'linear-gradient(135deg, #F6F6F4 0%, #FDFDFC 100%)',
+        'gradient-jet-black': 'linear-gradient(135deg, #0B0D11 0%, #2F3946 100%)',
+        'gradient-midnight': 'linear-gradient(135deg, #122039 0%, #1A3981 100%)',
+        'gradient-champagne': 'linear-gradient(135deg, #D4AF37 0%, #E8BE35 100%)',
+        'gradient-platinum': 'linear-gradient(135deg, #C7CAD1 0%, #B8BCC4 100%)',
+        'gradient-cognac': 'linear-gradient(135deg, #8C5A3C 0%, #9F5F2F 100%)',
+        'gradient-ivory': 'linear-gradient(135deg, #F6F6F4 0%, #FDFDFC 100%)',
+        'gradient-executive': 'linear-gradient(135deg, #0B0D11 0%, #122039 50%, #D4AF37 100%)',
         'gradient-radial': 'radial-gradient(ellipse at center, var(--tw-gradient-stops))',
+        // Legacy mappings for compatibility
+        'gradient-navy': 'linear-gradient(135deg, #122039 0%, #1A3981 100%)',
+        'gradient-gold': 'linear-gradient(135deg, #D4AF37 0%, #E8BE35 100%)',
       },
     },
   },

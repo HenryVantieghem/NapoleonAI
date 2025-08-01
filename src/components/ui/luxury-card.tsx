@@ -28,12 +28,12 @@ export const LuxuryCard = forwardRef<HTMLDivElement, LuxuryCardProps>(
     const baseStyles = "relative overflow-hidden rounded-2xl transition-all duration-300"
     
     const variants = {
-      default: "bg-white shadow-luxury",
-      elevated: "bg-white shadow-luxury-lg",
-      bordered: "bg-white border-2 border-gray-100 shadow-sm hover:border-navy/20",
-      gradient: "bg-gradient-to-br from-white to-cream shadow-luxury",
-      glass: "backdrop-blur-luxury bg-white/40 border border-white/20 shadow-luxury-glass",
-      executive: "backdrop-blur-luxury bg-navy/5 border border-gold/20 shadow-executive hover:bg-navy/10"
+      default: "bg-midnightBlue shadow-luxury border border-platinumSilver/20",
+      elevated: "bg-midnightBlue shadow-luxury-lg border border-platinumSilver/30",
+      bordered: "bg-midnightBlue border-2 border-platinumSilver shadow-sm hover:border-champagneGold/40",
+      gradient: "bg-gradient-to-br from-midnightBlue to-jetBlack shadow-luxury border border-platinumSilver/20",
+      glass: "backdrop-blur-luxury bg-midnightBlue/60 border border-platinumSilver/20 shadow-luxury-glass",
+      executive: "backdrop-blur-executive bg-jetBlack/80 border border-champagneGold/30 shadow-executive hover:bg-jetBlack/90 hover:border-champagneGold/50"
     }
     
     return (
@@ -43,7 +43,7 @@ export const LuxuryCard = forwardRef<HTMLDivElement, LuxuryCardProps>(
           baseStyles,
           variants[variant],
           interactive && "cursor-pointer hover:scale-[1.02]",
-          vip && "ring-2 ring-gold/30 shadow-gold-glow",
+          vip && "ring-2 ring-champagneGold/30 shadow-champagne-glow",
           className
         )}
         variants={interactive ? cardHoverEffect : undefined}
@@ -64,7 +64,7 @@ export const LuxuryCard = forwardRef<HTMLDivElement, LuxuryCardProps>(
               repeatDelay: 2
             }}
           >
-            <div className="h-full w-1/3 bg-gradient-to-r from-transparent via-gold/20 to-transparent skew-x-12" />
+            <div className="h-full w-1/3 bg-gradient-to-r from-transparent via-champagneGold/20 to-transparent skew-x-12" />
           </motion.div>
         )}
         
@@ -79,14 +79,14 @@ export const LuxuryCard = forwardRef<HTMLDivElement, LuxuryCardProps>(
               ease: "easeInOut"
             }}
           >
-            <div className="h-full w-full bg-gradient-to-r from-navy/20 via-gold/20 to-navy/20 blur-xl" />
+            <div className="h-full w-full bg-gradient-to-r from-jetBlack/20 via-champagneGold/20 to-jetBlack/20 blur-xl" />
           </motion.div>
         )}
         
-        {/* VIP gold accent border animation */}
+        {/* VIP champagne accent border animation */}
         {vip && (
           <motion.div
-            className="absolute inset-0 rounded-2xl border-2 border-gold/0"
+            className="absolute inset-0 rounded-2xl border-2 border-champagneGold/0"
             animate={{ 
               borderColor: ["rgba(212, 175, 55, 0)", "rgba(212, 175, 55, 0.4)", "rgba(212, 175, 55, 0)"]
             }}
@@ -145,9 +145,9 @@ export function ExecutiveStatCard({
             <motion.div
               whileHover={{ rotate: 360 }}
               transition={{ duration: 0.6 }}
-              className="w-12 h-12 bg-navy/10 backdrop-blur-sm rounded-xl flex items-center justify-center border border-gold/20"
+              className="w-12 h-12 bg-midnightBlue/20 backdrop-blur-sm rounded-xl flex items-center justify-center border border-champagneGold/30"
             >
-              <Icon className="w-6 h-6 text-navy" />
+              <Icon className="w-6 h-6 text-champagneGold" />
             </motion.div>
           )}
           
@@ -172,7 +172,7 @@ export function ExecutiveStatCard({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: delay + 0.2 }}
-          className="text-3xl font-bold text-gray-900 mb-1"
+          className="text-3xl font-bold text-warmIvory mb-1"
         >
           {value}
         </motion.div>
@@ -181,14 +181,14 @@ export function ExecutiveStatCard({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: delay + 0.3 }}
-          className="text-sm text-gray-600"
+          className="text-sm text-platinumSilver"
         >
           {label}
         </motion.div>
         
         {/* Executive hover indicator */}
         <motion.div
-          className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-navy to-gold"
+          className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-midnightBlue to-champagneGold"
           initial={{ scaleX: 0 }}
           whileHover={{ scaleX: 1 }}
           transition={{ duration: 0.3 }}
@@ -239,7 +239,7 @@ export function LuxuryTestimonialCard({
                 stiffness: 200
               }}
               className={cn(
-                "text-gold-400",
+                "text-champagneGold",
                 i < rating ? "fill-current" : "fill-transparent"
               )}
             >
@@ -253,7 +253,7 @@ export function LuxuryTestimonialCard({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: delay + 0.3 }}
-          className="text-gray-700 leading-relaxed mb-6 italic"
+          className="text-warmIvory leading-relaxed mb-6 italic"
         >
           "{quote}"
         </motion.blockquote>
@@ -264,9 +264,9 @@ export function LuxuryTestimonialCard({
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: delay + 0.5 }}
         >
-          <div className="font-semibold text-gray-900">{author}</div>
-          <div className="text-sm text-burgundy-600">{role}</div>
-          <div className="text-xs text-gray-500">{company}</div>
+          <div className="font-semibold text-warmIvory">{author}</div>
+          <div className="text-sm text-champagneGold">{role}</div>
+          <div className="text-xs text-platinumSilver">{company}</div>
         </motion.div>
       </LuxuryCard>
     </motion.div>

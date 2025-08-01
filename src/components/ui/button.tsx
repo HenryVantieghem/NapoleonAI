@@ -9,19 +9,21 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary: 
-          "bg-gradient-to-r from-navy to-navy/90 text-white shadow-lg hover:shadow-xl hover:scale-105 focus-visible:ring-navy/50",
+          "bg-gradient-to-r from-champagneGold to-champagneGold-700 text-jetBlack shadow-lg hover:shadow-xl hover:scale-105 focus-visible:ring-champagneGold/50 font-semibold",
         secondary:
-          "bg-white text-navy border-2 border-gray-200 hover:bg-gray-50 hover:border-gray-300 focus-visible:ring-navy/50",
+          "bg-midnightBlue text-warmIvory border-2 border-platinumSilver hover:bg-midnightBlue-900 hover:border-champagneGold focus-visible:ring-champagneGold/50",
         ghost: 
-          "bg-transparent text-gray-700 border border-gray-200 hover:bg-gray-50 hover:text-gray-900 focus-visible:ring-gray-500",
+          "bg-transparent text-platinumSilver border border-platinumSilver hover:bg-platinumSilver/10 hover:text-warmIvory hover:border-champagneGold focus-visible:ring-champagneGold/50",
         luxury:
-          "bg-gradient-to-r from-navy via-navy/90 to-navy/80 text-white shadow-luxury hover:shadow-luxury-lg hover:scale-105 focus-visible:ring-navy/50 relative overflow-hidden",
+          "bg-gradient-to-r from-champagneGold via-champagneGold-700 to-champagneGold-800 text-jetBlack shadow-luxury hover:shadow-luxury-lg hover:scale-105 focus-visible:ring-champagneGold/50 relative overflow-hidden font-semibold",
         outline:
-          "border-2 border-gray-200 bg-transparent text-navy hover:bg-gray-50 hover:border-gray-300 focus-visible:ring-navy/50",
+          "border-2 border-platinumSilver bg-transparent text-warmIvory hover:bg-platinumSilver/10 hover:border-champagneGold focus-visible:ring-champagneGold/50",
         link: 
-          "text-navy underline-offset-4 hover:underline hover:text-navy/80 focus-visible:ring-navy/50",
+          "text-champagneGold underline-offset-4 hover:underline hover:text-champagneGold/80 focus-visible:ring-champagneGold/50",
         destructive:
-          "bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-500"
+          "bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-500",
+        vip:
+          "bg-cognacLeather text-warmIvory border border-champagneGold hover:bg-cognacLeather-800 hover:shadow-champagne-glow focus-visible:ring-champagneGold/50 font-medium"
       },
       size: {
         sm: "h-10 px-4 py-2 text-sm",

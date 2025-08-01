@@ -29,11 +29,11 @@ const relationshipIcons = {
 const relationshipColors = {
   'Board Member': 'from-purple-500 to-purple-600',
   'Investor': 'from-emerald-500 to-emerald-600', 
-  'Executive': 'from-navy-500 to-navy-600',
+  'Executive': 'from-midnightBlue-500 to-midnightBlue-600',
   'Client': 'from-blue-500 to-blue-600',
-  'Partner': 'from-gold-500 to-gold-600',
-  'VIP': 'from-gold-500 to-gold-600',
-  'Other': 'from-gray-500 to-gray-600'
+  'Partner': 'from-champagneGold-500 to-champagneGold-600',
+  'VIP': 'from-champagneGold-500 to-champagneGold-600',
+  'Other': 'from-platinumSilver-500 to-platinumSilver-600'
 }
 
 export default function VipCard({
@@ -60,10 +60,10 @@ export default function VipCard({
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       transition={{ duration: 0.2 }}
-      className={`relative w-full p-4 rounded-xl border-2 transition-all duration-300 text-left ${
+      className={`relative w-full p-4 rounded-xl border-2 transition-all duration-300 text-left bg-midnightBlue ${
         selected
-          ? 'border-gold bg-gold-50 shadow-lg ring-2 ring-gold/20'
-          : 'border-gray-200 hover:border-gold-300 hover:bg-gold-50/30 hover:shadow-md'
+          ? 'border-champagneGold bg-midnightBlue-900 shadow-lg ring-2 ring-champagneGold/20'
+          : 'border-platinumSilver hover:border-champagneGold-300 hover:bg-midnightBlue-900/50 hover:shadow-md'
       } ${variant === 'compact' ? 'p-3' : ''}`}
     >
       {/* Selection indicator */}
@@ -74,8 +74,8 @@ export default function VipCard({
           transition={{ duration: 0.2 }}
           className="absolute top-3 right-3"
         >
-          <div className="w-6 h-6 bg-gold rounded-full flex items-center justify-center">
-            <Star className="w-3 h-3 text-white fill-current" />
+          <div className="w-6 h-6 bg-champagneGold rounded-full flex items-center justify-center">
+            <Star className="w-3 h-3 text-jetBlack fill-current" />
           </div>
         </motion.div>
       )}
@@ -83,8 +83,8 @@ export default function VipCard({
       <div className="flex items-center space-x-4">
         {/* Avatar */}
         <div className="relative">
-          <div className="w-12 h-12 bg-gradient-to-br from-navy-100 to-navy-200 rounded-full flex items-center justify-center">
-            <span className="text-sm font-semibold text-navy-700">
+          <div className="w-12 h-12 bg-gradient-to-br from-jetBlack-100 to-jetBlack-200 rounded-full flex items-center justify-center border border-platinumSilver/30">
+            <span className="text-sm font-semibold text-warmIvory">
               {initials}
             </span>
           </div>
@@ -97,13 +97,13 @@ export default function VipCard({
         
         {/* Contact info */}
         <div className="flex-1 min-w-0">
-          <div className="font-semibold text-navy-900 truncate">
+          <div className="font-semibold text-warmIvory truncate">
             {contact.name}
           </div>
-          <div className="text-sm text-navy-600 truncate">
+          <div className="text-sm text-champagneGold truncate">
             {contact.relationshipType}
           </div>
-          <div className="text-xs text-navy-500 truncate">
+          <div className="text-xs text-platinumSilver truncate">
             {contact.email}
           </div>
         </div>
@@ -122,7 +122,7 @@ export default function VipCard({
               </div>
             )}
             {contact.source === 'manual' && (
-              <div className="bg-gold-100 text-gold-700 px-2 py-1 rounded-full">
+              <div className="bg-champagneGold-100 text-champagneGold-700 px-2 py-1 rounded-full">
                 Manual
               </div>
             )}
@@ -132,7 +132,7 @@ export default function VipCard({
       
       {/* Hover shimmer effect */}
       <motion.div
-        className="absolute inset-0 rounded-xl bg-gradient-to-r from-transparent via-gold/5 to-transparent"
+        className="absolute inset-0 rounded-xl bg-gradient-to-r from-transparent via-champagneGold/5 to-transparent"
         initial={{ x: '-100%', opacity: 0 }}
         whileHover={{ x: '100%', opacity: 1 }}
         transition={{ duration: 0.8 }}
