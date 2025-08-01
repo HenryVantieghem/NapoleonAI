@@ -16,26 +16,8 @@ export async function GET() {
       })
     }
 
-    // Get session activity from Supabase (if you want to track it)
-    const supabase = createServiceClient()
-    
-    // Optional: Log session activity
-    const { error: logError } = await supabase
-      .from('user_sessions')
-      .upsert({
-        user_id: userId,
-        session_id: sessionId,
-        last_activity: new Date().toISOString(),
-        ip_address: '0.0.0.0', // Would get from request headers in production
-        user_agent: 'Unknown' // Would get from request headers in production
-      }, {
-        onConflict: 'user_id,session_id'
-      })
-
-    // Don't fail if session logging fails
-    if (logError) {
-      console.warn('Session logging failed:', logError)
-    }
+    // Session management is handled by Clerk
+    // Optional: Add user_sessions table in future for detailed tracking
 
     return NextResponse.json({
       authenticated: true,
@@ -60,23 +42,7 @@ export async function POST() {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
     }
 
-    // Update last activity timestamp
-    const supabase = createServiceClient()
-    
-    const { error } = await supabase
-      .from('user_sessions')
-      .upsert({
-        user_id: userId,
-        session_id: sessionId,
-        last_activity: new Date().toISOString()
-      }, {
-        onConflict: 'user_id,session_id'
-      })
-
-    if (error) {
-      console.error('Session refresh error:', error)
-      return NextResponse.json({ error: 'Failed to refresh session' }, { status: 500 })
-    }
+    // Session refresh is handled by Clerk automatically
 
     return NextResponse.json({ 
       success: true,
@@ -97,22 +63,7 @@ export async function DELETE() {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
     }
 
-    // Mark session as ended in database
-    const supabase = createServiceClient()
-    
-    const { error } = await supabase
-      .from('user_sessions')
-      .update({
-        ended_at: new Date().toISOString(),
-        status: 'ended'
-      })
-      .eq('user_id', userId)
-      .eq('session_id', sessionId)
-
-    if (error) {
-      console.warn('Session cleanup error:', error)
-      // Don't fail logout for database errors
-    }
+    // Session cleanup is handled by Clerk
 
     return NextResponse.json({ success: true })
   } catch (error) {

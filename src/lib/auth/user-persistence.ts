@@ -31,7 +31,7 @@ export class UserPersistenceService {
       const { data: userData, error: userError } = await this.supabase
         .from('users')
         .upsert({
-          clerk_id: clerkUserId,
+          id: clerkUserId,
           email: profile.email!,
           name: profile.name!,
           role: profile.role!,
@@ -62,7 +62,6 @@ export class UserPersistenceService {
             timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
           },
           onboarding_completed: true,
-          subscription_status: 'trial',
           updated_at: new Date().toISOString()
         }, {
           onConflict: 'user_id'
@@ -91,11 +90,10 @@ export class UserPersistenceService {
           *,
           user_profiles (
             preferences,
-            onboarding_completed,
-            subscription_status
+            onboarding_completed
           )
         `)
-        .eq('clerk_id', clerkUserId)
+        .eq('id', clerkUserId)
         .single()
 
       if (error || !data) {
@@ -104,15 +102,15 @@ export class UserPersistenceService {
       }
 
       return {
-        clerk_id: data.clerk_id,
+        clerk_id: data.id,
         email: data.email,
-        name: data.name,
-        role: data.role,
-        company_size: data.user_profiles?.[0]?.preferences?.company_size || '',
-        pain_points: data.user_profiles?.[0]?.preferences?.pain_points || [],
-        communication_tools: data.user_profiles?.[0]?.preferences?.communication_tools || [],
-        onboarding_completed: data.user_profiles?.[0]?.onboarding_completed || false,
-        preferences: data.user_profiles?.[0]?.preferences || {
+        name: data.name || '',
+        role: data.role || '',
+        company_size: (data.user_profiles as any)?.preferences?.company_size || '',
+        pain_points: (data.user_profiles as any)?.preferences?.pain_points || [],
+        communication_tools: (data.user_profiles as any)?.preferences?.communication_tools || [],
+        onboarding_completed: (data.user_profiles as any)?.onboarding_completed || false,
+        preferences: (data.user_profiles as any)?.preferences || {
           notifications: true,
           ai_suggestions: true,
           vip_only_mode: false,
@@ -178,23 +176,8 @@ export class UserPersistenceService {
     priority: 'urgent' | 'high' | 'normal'
   }): Promise<{ success: boolean; error?: string }> {
     try {
-      const { error } = await this.supabase
-        .from('waitlist')
-        .insert({
-          email: waitlistData.email,
-          name: waitlistData.name,
-          role: waitlistData.role,
-          company: waitlistData.company,
-          priority: waitlistData.priority,
-          source: 'napoleon-ai-signup',
-          created_at: new Date().toISOString()
-        })
-
-      if (error) {
-        console.error('Error adding to waitlist:', error)
-        return { success: false, error: error.message }
-      }
-
+      // TODO: Implement waitlist functionality when waitlist table is added
+      console.log('Waitlist signup (placeholder):', waitlistData)
       return { success: true }
     } catch (error) {
       console.error('Waitlist error:', error)

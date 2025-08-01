@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import { Crown, Building, UserPlus, Zap, MessageSquare, Clock, Mail, Users, Star, CheckCircle, ArrowRight, ChevronRight, Calendar, Phone, Search, Filter, X } from "lucide-react"
@@ -40,6 +40,11 @@ export default function OnboardingPage() {
   const router = useRouter()
   const { user } = useUser()
   const supabase = createClient()
+  
+  // Redirect to step1 by default
+  useEffect(() => {
+    router.push('/onboarding/step1')
+  }, [])
   
   // Zustand store
   const {

@@ -1,0 +1,319 @@
+/* High Contrast Mode Styles */
+.high-contrast {
+  /* Override luxury color scheme with high contrast */
+  --white: #ffffff;
+  --black: #000000;
+  --cream: #ffffff;
+  --navy: #000080;
+  --gold: #ffd700;
+  --charcoal: #2f2f2f;
+  --gray-50: #ffffff;
+  --gray-100: #f0f0f0;
+  --gray-900: #000000;
+}
+
+.high-contrast .bg-white {
+  @apply bg-white border-2 border-black;
+}
+
+.high-contrast .bg-navy {
+  @apply bg-black text-white;
+}
+
+.high-contrast .bg-gold,
+.high-contrast .bg-gradient-gold {
+  @apply bg-yellow-400 text-black;
+}
+
+.high-contrast .text-navy-900,
+.high-contrast .text-navy-600,
+.high-contrast .text-navy-500 {
+  @apply text-black font-bold;
+}
+
+.high-contrast .text-gold-600,
+.high-contrast .text-gold {
+  @apply text-yellow-600 font-bold;
+}
+
+.high-contrast .border-gold,
+.high-contrast .border-gold\/30 {
+  @apply border-black border-2;
+}
+
+.high-contrast .shadow-sm,
+.high-contrast .shadow-md,
+.high-contrast .shadow-lg {
+  @apply shadow-none ring-2 ring-black;
+}
+
+/* High contrast button styles */
+.high-contrast button,
+.high-contrast [role="button"] {
+  @apply border-2 border-black bg-white text-black font-bold;
+}
+
+.high-contrast button:hover,
+.high-contrast [role="button"]:hover {
+  @apply bg-black text-white;
+}
+
+.high-contrast button:focus,
+.high-contrast [role="button"]:focus {
+  @apply ring-4 ring-yellow-400 ring-offset-2;
+}
+
+/* High contrast form elements */
+.high-contrast input,
+.high-contrast textarea,
+.high-contrast select {
+  @apply border-2 border-black bg-white text-black;
+}
+
+.high-contrast input:focus,
+.high-contrast textarea:focus,
+.high-contrast select:focus {
+  @apply ring-4 ring-yellow-400 border-yellow-400;
+}
+
+/* High contrast cards and panels */
+.high-contrast .bg-gray-50,
+.high-contrast .bg-gray-100 {
+  @apply bg-white border-2 border-black;
+}
+
+.high-contrast .animate-pulse {
+  @apply animate-none bg-gray-300;
+}
+
+/* High contrast links */
+.high-contrast a {
+  @apply text-blue-700 underline font-bold;
+}
+
+.high-contrast a:visited {
+  @apply text-purple-700;
+}
+
+.high-contrast a:hover,
+.high-contrast a:focus {
+  @apply text-red-700 bg-yellow-200;
+}
+
+/* Font Size Classes */
+.font-small {
+  font-size: 14px;
+}
+
+.font-small .text-xs {
+  font-size: 12px;
+}
+
+.font-small .text-sm {
+  font-size: 13px;
+}
+
+.font-small .text-base {
+  font-size: 14px;
+}
+
+.font-small .text-lg {
+  font-size: 16px;
+}
+
+.font-medium {
+  font-size: 16px;
+}
+
+.font-medium .text-xs {
+  font-size: 14px;
+}
+
+.font-medium .text-sm {
+  font-size: 15px;
+}
+
+.font-medium .text-base {
+  font-size: 16px;
+}
+
+.font-medium .text-lg {
+  font-size: 18px;
+}
+
+.font-large {
+  font-size: 18px;
+}
+
+.font-large .text-xs {
+  font-size: 16px;
+}
+
+.font-large .text-sm {
+  font-size: 17px;
+}
+
+.font-large .text-base {
+  font-size: 18px;
+}
+
+.font-large .text-lg {
+  font-size: 20px;
+}
+
+/* Large Touch Targets */
+.large-touch-targets button,
+.large-touch-targets [role="button"],
+.large-touch-targets a,
+.large-touch-targets input,
+.large-touch-targets textarea,
+.large-touch-targets select {
+  min-height: 56px;
+  min-width: 56px;
+  padding: 12px 16px;
+}
+
+.large-touch-targets .bottom-nav-item {
+  height: 72px;
+  padding: 16px 8px;
+}
+
+.large-touch-targets .message-card {
+  min-height: 88px;
+  padding: 20px;
+}
+
+/* Reduced Motion */
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+.reduce-motion .animate-spin,
+.reduce-motion .animate-pulse,
+.reduce-motion .animate-bounce {
+  animation: none;
+}
+
+/* Focus indicators */
+.focus-visible {
+  @apply ring-2 ring-blue-500 ring-offset-2;
+}
+
+.high-contrast .focus-visible {
+  @apply ring-4 ring-yellow-400 ring-offset-2;
+}
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip links */
+.skip-link {
+  @apply absolute left-0 top-0 z-50 bg-white text-black p-3 font-bold;
+  transform: translateY(-100%);
+  transition: transform 0.3s;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+.high-contrast .skip-link {
+  @apply bg-yellow-400 text-black border-2 border-black;
+}
+
+/* High contrast status indicators */
+.high-contrast .bg-red-50,
+.high-contrast .bg-red-100 {
+  @apply bg-red-200 border-2 border-red-800;
+}
+
+.high-contrast .bg-yellow-50,
+.high-contrast .bg-yellow-100 {
+  @apply bg-yellow-200 border-2 border-yellow-800;
+}
+
+.high-contrast .bg-green-50,
+.high-contrast .bg-green-100 {
+  @apply bg-green-200 border-2 border-green-800;
+}
+
+.high-contrast .bg-blue-50,
+.high-contrast .bg-blue-100 {
+  @apply bg-blue-200 border-2 border-blue-800;
+}
+
+/* High contrast priority indicators */
+.high-contrast .border-red-400 {
+  @apply border-red-800 border-4;
+}
+
+.high-contrast .border-yellow-400 {
+  @apply border-yellow-800 border-4;
+}
+
+.high-contrast .text-red-500,
+.high-contrast .bg-red-500 {
+  @apply text-red-800 bg-red-200;
+}
+
+.high-contrast .text-yellow-500,
+.high-contrast .bg-yellow-500 {
+  @apply text-yellow-800 bg-yellow-200;
+}
+
+.high-contrast .text-green-500,
+.high-contrast .bg-green-500 {
+  @apply text-green-800 bg-green-200;
+}
+
+.high-contrast .text-blue-500,
+.high-contrast .bg-blue-500 {
+  @apply text-blue-800 bg-blue-200;
+}
+
+/* Mobile accessibility helpers */
+@media (max-width: 1024px) {
+  .mobile-touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  .large-touch-targets .mobile-touch-target {
+    min-height: 56px;
+    min-width: 56px;
+  }
+  
+  /* Ensure sufficient spacing between touch targets */
+  .touch-target-spacing > * + * {
+    margin-top: 8px;
+  }
+  
+  .large-touch-targets .touch-target-spacing > * + * {
+    margin-top: 12px;
+  }
+}
+
+/* Loading states with high contrast support */
+.high-contrast .loading-skeleton {
+  @apply bg-gray-400 border-2 border-black;
+}
+
+.high-contrast .loading-spinner {
+  border-color: #000000;
+  border-top-color: #ffd700;
+}

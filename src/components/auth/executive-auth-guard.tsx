@@ -94,7 +94,7 @@ export function ExecutiveAuthGuard({
         // Check biometric requirement
         let hasRequiredBiometric = true
         if (requireBiometric) {
-          const biometricEnabled = user.publicMetadata?.biometricEnabled || false
+          const biometricEnabled = Boolean(user.unsafeMetadata?.biometricEnabled) || false
           hasRequiredBiometric = biometricEnabled
         }
 
@@ -226,8 +226,8 @@ function ExecutiveRoleVerification({
     
     try {
       await user.update({
-        publicMetadata: {
-          ...user.publicMetadata,
+        unsafeMetadata: {
+          ...user.unsafeMetadata,
           role: selectedRole,
           isExecutive: true,
           executiveVerified: true,

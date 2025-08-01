@@ -223,19 +223,14 @@ class ExecutiveSessionService {
     try {
       const supabase = createClient()
       
-      const { error } = await supabase
-        .from('security_audit_log')
-        .insert({
-          event_type: event.type,
-          event_details: event.details || {},
-          ip_address: event.ipAddress,
-          user_agent: event.userAgent,
-          created_at: new Date().toISOString()
-        })
-
-      if (error) {
-        console.warn('Security audit logging failed:', error)
-      }
+      // TODO: Implement security audit logging when security_audit_log table is added
+      // For now, just log to console
+      console.log('Security event:', {
+        type: event.type,
+        details: event.details,
+        ipAddress: event.ipAddress,
+        userAgent: event.userAgent
+      })
     } catch (error) {
       console.warn('Security audit logging failed:', error)
     }

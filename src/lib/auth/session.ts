@@ -30,8 +30,7 @@ export async function getSession(): Promise<SessionUser | null> {
       .from('user_profiles')
       .select(`
         onboarding_completed,
-        subscription_status,
-        profile_data,
+        preferences,
         users!inner(*)
       `)
       .eq('user_id', user.id)
@@ -52,9 +51,9 @@ export async function getSession(): Promise<SessionUser | null> {
       avatarUrl: userData.avatar_url,
       companySize: userData.company_size,
       onboardingCompleted: profile.onboarding_completed || false,
-      subscriptionStatus: profile.subscription_status || 'trial',
+      subscriptionStatus: 'trial', // TODO: Add subscription_status column to user_profiles table
       mfaEnabled: user.twoFactorEnabled || false,
-      lastLoginAt: user.lastSignInAt?.toISOString() || new Date().toISOString()
+      lastLoginAt: user.lastSignInAt ? new Date(user.lastSignInAt).toISOString() : new Date().toISOString()
     }
   } catch (error) {
     console.error('Session error:', error)

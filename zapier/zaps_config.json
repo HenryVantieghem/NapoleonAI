@@ -1,0 +1,287 @@
+{
+  "version": "1.0.0",
+  "app": {
+    "name": "Napoleon AI",
+    "description": "Executive Intelligence Platform for C-suite Leaders",
+    "version": "1.0.0",
+    "authentication": {
+      "type": "oauth2",
+      "oauth2Config": {
+        "authorizeUrl": "https://napoleonai.com/api/auth/zapier/authorize",
+        "accessTokenUrl": "https://napoleonai.com/api/auth/zapier/token",
+        "refreshTokenUrl": "https://napoleonai.com/api/auth/zapier/refresh",
+        "scope": "read write",
+        "autoRefresh": true
+      }
+    }
+  },
+  "triggers": {
+    "new_vip_message": {
+      "key": "new_vip_message",
+      "noun": "VIP Message",
+      "display": {
+        "label": "New VIP Message",
+        "description": "Triggers when a new message from a VIP contact is received",
+        "important": true
+      },
+      "operation": {
+        "perform": {
+          "url": "https://napoleonai.com/api/zapier/triggers/vip-messages",
+          "method": "GET",
+          "params": {
+            "since": "{{bundle.meta.lastPoll}}"
+          }
+        },
+        "sample": {
+          "id": "msg_123",
+          "from": "board.member@company.com",
+          "subject": "Q4 Board Meeting Agenda",
+          "summary": "Board meeting scheduled for Friday to discuss Q4 results and 2024 strategy",
+          "priority_score": 95,
+          "received_at": "2024-02-01T10:30:00Z"
+        }
+      }
+    },
+    "new_action_item": {
+      "key": "new_action_item",
+      "noun": "Action Item",
+      "display": {
+        "label": "New Action Item",
+        "description": "Triggers when Napoleon AI extracts a new action item from messages"
+      },
+      "operation": {
+        "perform": {
+          "url": "https://napoleonai.com/api/zapier/triggers/action-items",
+          "method": "GET",
+          "params": {
+            "since": "{{bundle.meta.lastPoll}}"
+          }
+        }
+      }
+    },
+    "daily_digest_ready": {
+      "key": "daily_digest_ready",
+      "noun": "Daily Digest",
+      "display": {
+        "label": "Daily Digest Ready",
+        "description": "Triggers when your executive daily digest is generated"
+      },
+      "operation": {
+        "perform": {
+          "url": "https://napoleonai.com/api/zapier/triggers/daily-digest",
+          "method": "GET"
+        }
+      }
+    },
+    "urgent_message": {
+      "key": "urgent_message",
+      "noun": "Urgent Message",
+      "display": {
+        "label": "Urgent Message (90+ Priority)",
+        "description": "Triggers for messages with priority score above 90"
+      },
+      "operation": {
+        "perform": {
+          "url": "https://napoleonai.com/api/zapier/triggers/urgent-messages",
+          "method": "GET",
+          "params": {
+            "min_priority": 90,
+            "since": "{{bundle.meta.lastPoll}}"
+          }
+        }
+      }
+    }
+  },
+  "actions": {
+    "send_to_assistant": {
+      "key": "send_to_assistant",
+      "noun": "Assistant Task",
+      "display": {
+        "label": "Send to Executive Assistant",
+        "description": "Forward a message or task to your executive assistant"
+      },
+      "operation": {
+        "perform": {
+          "url": "https://napoleonai.com/api/zapier/actions/send-to-assistant",
+          "method": "POST",
+          "body": {
+            "message_id": "{{bundle.inputData.message_id}}",
+            "assistant_email": "{{bundle.inputData.assistant_email}}",
+            "instructions": "{{bundle.inputData.instructions}}",
+            "due_date": "{{bundle.inputData.due_date}}"
+          }
+        }
+      }
+    },
+    "create_calendar_event": {
+      "key": "create_calendar_event",
+      "noun": "Calendar Event",
+      "display": {
+        "label": "Create Calendar Event",
+        "description": "Create a calendar event from message content"
+      },
+      "operation": {
+        "perform": {
+          "url": "https://napoleonai.com/api/zapier/actions/create-event",
+          "method": "POST",
+          "body": {
+            "title": "{{bundle.inputData.title}}",
+            "description": "{{bundle.inputData.description}}",
+            "start_time": "{{bundle.inputData.start_time}}",
+            "end_time": "{{bundle.inputData.end_time}}",
+            "attendees": "{{bundle.inputData.attendees}}",
+            "location": "{{bundle.inputData.location}}"
+          }
+        }
+      }
+    },
+    "add_to_crm": {
+      "key": "add_to_crm",
+      "noun": "CRM Contact",
+      "display": {
+        "label": "Add Contact to CRM",
+        "description": "Add a new contact from email to your CRM"
+      },
+      "operation": {
+        "perform": {
+          "url": "https://napoleonai.com/api/zapier/actions/add-to-crm",
+          "method": "POST",
+          "body": {
+            "email": "{{bundle.inputData.email}}",
+            "name": "{{bundle.inputData.name}}",
+            "company": "{{bundle.inputData.company}}",
+            "role": "{{bundle.inputData.role}}",
+            "notes": "{{bundle.inputData.notes}}"
+          }
+        }
+      }
+    },
+    "summarize_thread": {
+      "key": "summarize_thread",
+      "noun": "Thread Summary",
+      "display": {
+        "label": "Summarize Email Thread",
+        "description": "Get AI summary of an entire email thread"
+      },
+      "operation": {
+        "perform": {
+          "url": "https://napoleonai.com/api/zapier/actions/summarize-thread",
+          "method": "POST",
+          "body": {
+            "thread_id": "{{bundle.inputData.thread_id}}",
+            "focus": "{{bundle.inputData.focus}}"
+          }
+        }
+      }
+    }
+  },
+  "searches": {
+    "find_vip_contact": {
+      "key": "find_vip_contact",
+      "noun": "VIP Contact",
+      "display": {
+        "label": "Find VIP Contact",
+        "description": "Search for a VIP contact by email or name"
+      },
+      "operation": {
+        "perform": {
+          "url": "https://napoleonai.com/api/zapier/searches/vip-contacts",
+          "method": "GET",
+          "params": {
+            "query": "{{bundle.inputData.query}}"
+          }
+        }
+      }
+    },
+    "find_message": {
+      "key": "find_message",
+      "noun": "Message",
+      "display": {
+        "label": "Find Message",
+        "description": "Search messages by subject, sender, or content"
+      },
+      "operation": {
+        "perform": {
+          "url": "https://napoleonai.com/api/zapier/searches/messages",
+          "method": "GET",
+          "params": {
+            "query": "{{bundle.inputData.query}}",
+            "from": "{{bundle.inputData.from}}",
+            "subject": "{{bundle.inputData.subject}}",
+            "date_from": "{{bundle.inputData.date_from}}",
+            "date_to": "{{bundle.inputData.date_to}}"
+          }
+        }
+      }
+    }
+  },
+  "resources": {
+    "vip_contact": {
+      "key": "vip_contact",
+      "noun": "VIP Contact",
+      "list": {
+        "display": {
+          "label": "List VIP Contacts",
+          "description": "Get all VIP contacts"
+        },
+        "operation": {
+          "perform": {
+            "url": "https://napoleonai.com/api/zapier/resources/vip-contacts",
+            "method": "GET"
+          }
+        }
+      }
+    },
+    "action_item": {
+      "key": "action_item",
+      "noun": "Action Item",
+      "list": {
+        "display": {
+          "label": "List Action Items",
+          "description": "Get all pending action items"
+        },
+        "operation": {
+          "perform": {
+            "url": "https://napoleonai.com/api/zapier/resources/action-items",
+            "method": "GET",
+            "params": {
+              "status": "{{bundle.inputData.status}}",
+              "due_before": "{{bundle.inputData.due_before}}"
+            }
+          }
+        }
+      }
+    }
+  },
+  "webhooks": {
+    "performList": {
+      "url": "https://napoleonai.com/api/zapier/webhooks/list",
+      "method": "GET"
+    },
+    "performSubscribe": {
+      "url": "https://napoleonai.com/api/zapier/webhooks/subscribe",
+      "method": "POST",
+      "body": {
+        "url": "{{bundle.targetUrl}}",
+        "event": "{{bundle.event}}"
+      }
+    },
+    "performUnsubscribe": {
+      "url": "https://napoleonai.com/api/zapier/webhooks/unsubscribe",
+      "method": "DELETE",
+      "body": {
+        "id": "{{bundle.subscribeData.id}}"
+      }
+    }
+  },
+  "hydrators": {
+    "getMessageDetails": {
+      "url": "https://napoleonai.com/api/zapier/messages/{{bundle.inputData.id}}",
+      "method": "GET"
+    },
+    "getThreadDetails": {
+      "url": "https://napoleonai.com/api/zapier/threads/{{bundle.inputData.thread_id}}",
+      "method": "GET"
+    }
+  }
+}

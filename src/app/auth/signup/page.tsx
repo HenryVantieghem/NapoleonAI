@@ -48,7 +48,7 @@ const companySizeOptions = [
 export default function SignUpPage() {
   const router = useRouter()
   const { user } = useUser()
-  const { clerk } = useClerk()
+  const clerk = useClerk()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showForm, setShowForm] = useState(false)
   const [profileStored, setProfileStored] = useState(false)
@@ -89,10 +89,10 @@ export default function SignUpPage() {
           if (pendingProfile) {
             const profileData = JSON.parse(pendingProfile)
             
-            // Update user's public metadata with profile data
+            // Update user's metadata with profile data
             await user.update({
-              publicMetadata: {
-                ...user.publicMetadata,
+              unsafeMetadata: {
+                ...user.unsafeMetadata,
                 profileData,
                 onboardingCompleted: false,
                 subscriptionStatus: 'trial'

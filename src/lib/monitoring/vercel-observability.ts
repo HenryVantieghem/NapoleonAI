@@ -27,7 +27,7 @@ const mockTrace = (operation: string) => {
         console.log(`[TRACE] ${operation}: ${Date.now() - start}ms`);
         return result;
       } catch (error) {
-        console.error(`[TRACE] ${operation} failed: ${error.message}`);
+        console.error(`[TRACE] ${operation} failed:`, error);
         throw error;
       }
     };
@@ -443,7 +443,7 @@ export function measureExecutivePerformance(operation: string) {
         await ExecutiveMonitoring.trackAIRequest(operation, duration, {
           success: false,
           isExecutive: true,
-          error: error.message
+          error: error instanceof Error ? error.message : String(error)
         });
         
         throw error;

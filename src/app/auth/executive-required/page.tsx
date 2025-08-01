@@ -49,7 +49,8 @@ export default function ExecutiveRequiredPage() {
     try {
       // Update user metadata with Clerk
       await user?.update({
-        publicMetadata: {
+        unsafeMetadata: {
+          ...user.unsafeMetadata,
           role: state.selectedRole,
           company: state.company,
           isExecutive: true,

@@ -2,14 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import accessibility styles */
+@import '../styles/accessibility.css';
+
 /* Base Styles */
 @layer base {
   :root {
-    /* Cartier Color Variables */
+    /* Napoleon AI Executive Color Variables */
     --white: #FFFFFF;
-    --black: #000000;
+    --black: #0A0A0A;
     --cream: #F8F6F0;
-    --burgundy: #801B2B;
+    --navy: #1B2951;          /* Primary executive color */
+    --gold: #D4AF37;          /* Premium accent color */
+    --charcoal: #2C3E50;      /* Supporting dark */
     --gray-50: #F9FAFB;
     --gray-100: #F3F4F6;
     --gray-900: #111827;

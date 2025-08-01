@@ -29,11 +29,16 @@ export default function EnhancedSignupPage() {
       // Add email from Clerk to profile
       const completeProfile = {
         ...profile,
-        email: user.primaryEmailAddress?.emailAddress || ''
+        email: user.primaryEmailAddress?.emailAddress || '',
+        name: profile.name || 'Executive User',
+        role: profile.role || 'CEO',
+        companySize: profile.companySize || '1-10',
+        painPoints: profile.painPoints || [],
+        communicationTools: profile.communicationTools || []
       }
       
       // Save to Supabase
-      const result = await createUserProfile(completeProfile, userId)
+      const result = await createUserProfile(completeProfile)
       
       if (result.success) {
         // Initialize VIP contacts based on role

@@ -51,7 +51,10 @@
       "WebFetch(domain:clerk.com)",
       "WebFetch(domain:api.slack.com)",
       "WebFetch(domain:supabase.com)",
-      "Bash(git pull:*)"
+      "Bash(git pull:*)",
+      "mcp__terminal-commands__run_command",
+      "Bash(npm test)",
+      "Bash(jest --coverage)"
     ],
     "deny": []
   }

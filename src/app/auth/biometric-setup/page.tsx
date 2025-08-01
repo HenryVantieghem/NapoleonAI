@@ -86,13 +86,13 @@ export default function BiometricSetupPage() {
             ? `${user.firstName} ${user.lastName}` 
             : 'Executive User',
         },
-        pubKeyCredParams: [{alg: -7, type: "public-key"}],
+        pubKeyCredParams: [{alg: -7, type: "public-key" as const}],
         authenticatorSelection: {
-          authenticatorAttachment: "platform",
-          userVerification: "required"
+          authenticatorAttachment: "platform" as AuthenticatorAttachment,
+          userVerification: "required" as UserVerificationRequirement
         },
         timeout: 60000,
-        attestation: "direct"
+        attestation: "direct" as AttestationConveyancePreference
       }
 
       // Create credential
@@ -103,8 +103,8 @@ export default function BiometricSetupPage() {
       if (credential) {
         // Update user metadata to indicate biometric setup
         await user?.update({
-          publicMetadata: {
-            ...user.publicMetadata,
+          unsafeMetadata: {
+            ...user.unsafeMetadata,
             biometricEnabled: true,
             biometricSetupDate: new Date().toISOString()
           }
