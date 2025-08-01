@@ -7,7 +7,7 @@ import { buttonPress, luxuryHover } from "@/lib/animations"
 import { Crown, Loader2 } from "lucide-react"
 
 interface LuxuryButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> {
-  variant?: "primary" | "secondary" | "ghost" | "luxury"
+  variant?: "primary" | "secondary" | "ghost" | "luxury" | "outline"
   size?: "sm" | "md" | "lg" | "xl"
   loading?: boolean
   icon?: React.ReactNode
@@ -37,10 +37,11 @@ export const LuxuryButton = forwardRef<HTMLButtonElement, MotionButtonProps>(
     const baseStyles = "relative inline-flex items-center justify-center font-medium transition-all duration-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden"
     
     const variants = {
-      primary: "bg-gradient-to-r from-burgundy-600 to-burgundy-700 text-white hover:from-burgundy-700 hover:to-burgundy-800 focus:ring-burgundy-500 shadow-burgundy",
-      secondary: "bg-white text-burgundy-700 border-2 border-burgundy-200 hover:bg-burgundy-50 hover:border-burgundy-300 focus:ring-burgundy-300",
+      primary: "bg-gradient-to-r from-navy to-navy/90 text-white hover:from-navy/90 hover:to-navy/80 focus:ring-navy/50 shadow-lg",
+      secondary: "bg-white text-navy border-2 border-gray-200 hover:bg-gray-50 hover:border-gray-300 focus:ring-navy/50",
       ghost: "bg-transparent text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:ring-gray-300",
-      luxury: "bg-gradient-to-br from-burgundy-600 via-burgundy-700 to-burgundy-800 text-white shadow-luxury hover:shadow-luxury-lg focus:ring-burgundy-500"
+      luxury: "bg-gradient-to-br from-navy via-navy/90 to-navy/80 text-white shadow-luxury hover:shadow-luxury-lg focus:ring-navy/50",
+      outline: "bg-transparent text-navy border-2 border-gray-200 hover:bg-gray-50 hover:border-gray-300 focus:ring-navy/50"
     }
     
     const sizes = {
@@ -179,6 +180,9 @@ export const LuxuryButton = forwardRef<HTMLButtonElement, MotionButtonProps>(
 )
 
 LuxuryButton.displayName = "LuxuryButton"
+
+// Export as Button for backward compatibility
+export const Button = LuxuryButton
 
 // Executive CTA Button with special effects
 export const ExecutiveCTA = forwardRef<HTMLButtonElement, MotionButtonProps>(

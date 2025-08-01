@@ -1,21 +1,23 @@
 'use client'
 
-import { lazy, ComponentType } from 'react'
+import { lazy, ComponentType, useRef, useCallback, useEffect, useState } from 'react'
 
 // Lazy loading wrapper with error boundaries and loading states
 export function createLazyComponent<T extends ComponentType<any>>(
   importFn: () => Promise<{ default: T }>,
-  fallback: ComponentType<any> | null = null
+  fallback?: ComponentType<any> | null
 ) {
   const LazyComponent = lazy(importFn)
   
+  const DefaultFallback = () => (
+    <div className="flex items-center justify-center p-8">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gold"></div>
+    </div>
+  )
+  
   return {
     Component: LazyComponent,
-    fallback: fallback || (() => (
-      <div className="flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gold"></div>
-      </div>
-    ))
+    fallback: fallback || DefaultFallback
   }
 }
 
@@ -256,5 +258,3 @@ export const PreloadStrategies = {
   }
 }
 
-// React imports for hooks
-import { useRef, useCallback, useEffect, useState } from 'react'

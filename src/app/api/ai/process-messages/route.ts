@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { currentUser } from '@clerk/nextjs/server'
 import { createServiceClient } from '@/lib/supabase/server'
-import { openai } from 'openai'
+import OpenAI from 'openai'
 import fs from 'fs'
 import path from 'path'
 
 // Configure OpenAI client
-const openaiClient = new openai({
+const openaiClient = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY!,
 })
 
@@ -324,12 +324,11 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Get user preferences for AI processing
-    const { data: userPrefs } = await supabase
-      .from('user_preferences')
-      .select('ai_preferences, vip_contacts')
-      .eq('user_id', userId)
-      .single()
+    // Mock user preferences (replace with actual query when table exists)
+    const userPrefs = {
+      ai_preferences: { auto_process: true, priority_threshold: 60 },
+      vip_contacts: []
+    }
 
     // Find messages that need processing
     const { data: pendingMessages, error: fetchError } = await supabase

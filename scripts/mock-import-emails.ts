@@ -460,7 +460,7 @@ async function importMockEmails() {
 }
 
 // Run the import
-if require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   importMockEmails()
     .then(() => process.exit(0))
     .catch(error => {

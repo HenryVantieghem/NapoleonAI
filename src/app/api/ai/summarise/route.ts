@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { currentUser } from '@clerk/nextjs/server'
 import { createServiceClient } from '@/lib/supabase/server'
-import { openai } from 'openai'
+import OpenAI from 'openai'
 import fs from 'fs'
 import path from 'path'
 
 // Configure OpenAI client
-const openaiClient = new openai({
+const openaiClient = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY!,
 })
 

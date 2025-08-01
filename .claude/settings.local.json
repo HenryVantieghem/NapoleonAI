@@ -54,7 +54,8 @@
       "Bash(git pull:*)",
       "mcp__terminal-commands__run_command",
       "Bash(npm test)",
-      "Bash(jest --coverage)"
+      "Bash(jest --coverage)",
+      "Bash(./scripts/deploy-and-verify.sh:*)"
     ],
     "deny": []
   }

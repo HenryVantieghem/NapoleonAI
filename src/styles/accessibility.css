@@ -13,11 +13,13 @@
 }
 
 .high-contrast .bg-white {
-  @apply bg-white border-2 border-black;
+  background-color: #ffffff;
+  border: 2px solid #000000;
 }
 
 .high-contrast .bg-navy {
-  @apply bg-black text-white;
+  background-color: #000000;
+  color: #ffffff;
 }
 
 .high-contrast .bg-gold,
@@ -79,7 +81,8 @@
 /* High contrast cards and panels */
 .high-contrast .bg-gray-50,
 .high-contrast .bg-gray-100 {
-  @apply bg-white border-2 border-black;
+  background-color: #ffffff;
+  border: 2px solid #000000;
 }
 
 .high-contrast .animate-pulse {

@@ -411,3 +411,5 @@ export function MetricsDashboard() {
     </div>
   )
 }
+
+export default MetricsDashboard

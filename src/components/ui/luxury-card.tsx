@@ -85,6 +85,9 @@ export const LuxuryCard = forwardRef<HTMLDivElement, LuxuryCardProps>(
 
 LuxuryCard.displayName = "LuxuryCard"
 
+// Export as Card for backward compatibility
+export const Card = LuxuryCard
+
 // Executive stat card with animation
 export function ExecutiveStatCard({
   value,

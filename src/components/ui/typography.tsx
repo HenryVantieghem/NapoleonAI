@@ -127,3 +127,42 @@ export const Quote = forwardRef<HTMLQuoteElement, HTMLAttributes<HTMLQuoteElemen
   )
 )
 Quote.displayName = "Quote"
+
+// Typography variant component
+interface TypographyProps extends HTMLAttributes<HTMLElement> {
+  variant?: 'h1' | 'h2' | 'h3' | 'body' | 'body-sm' | 'display' | 'lead'
+  gradient?: boolean
+  as?: keyof JSX.IntrinsicElements
+}
+
+export const Typography = forwardRef<HTMLElement, TypographyProps>(
+  ({ variant = 'body', gradient = false, as, className, children, ...props }, ref) => {
+    const Component = as || (variant.startsWith('h') ? variant as keyof JSX.IntrinsicElements : 'div')
+    
+    const variants = {
+      h1: "font-serif font-bold text-4xl sm:text-5xl lg:text-6xl leading-tight tracking-tight",
+      h2: "font-serif font-bold text-3xl sm:text-4xl lg:text-5xl leading-tight tracking-tight", 
+      h3: "font-serif font-semibold text-2xl sm:text-3xl lg:text-4xl leading-snug",
+      body: "font-sans text-base sm:text-lg leading-relaxed text-gray-700",
+      'body-sm': "font-sans text-sm leading-relaxed text-gray-600",
+      display: "font-serif font-bold text-5xl sm:text-6xl lg:text-7xl xl:text-8xl leading-none tracking-tight",
+      lead: "font-sans text-lg sm:text-xl lg:text-2xl leading-relaxed text-gray-600"
+    }
+
+    return (
+      <Component
+        ref={ref}
+        className={cn(
+          variants[variant],
+          gradient && "text-gradient-burgundy",
+          className
+        )}
+        {...props}
+      >
+        {children}
+      </Component>
+    )
+  }
+)
+
+Typography.displayName = "Typography"

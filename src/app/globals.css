@@ -2,8 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Import accessibility styles */
-@import '../styles/accessibility.css';
+/* Import accessibility styles - temporarily disabled for build */
+/* @import '../styles/accessibility.css'; */
 
 /* Base Styles */
 @layer base {

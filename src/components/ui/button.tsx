@@ -9,17 +9,19 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary: 
-          "bg-gradient-to-r from-burgundy-600 to-burgundy-700 text-white shadow-burgundy hover:shadow-burgundy-lg hover:scale-105 focus-visible:ring-burgundy-500",
+          "bg-gradient-to-r from-navy to-navy/90 text-white shadow-lg hover:shadow-xl hover:scale-105 focus-visible:ring-navy/50",
         secondary:
-          "bg-white text-burgundy-700 border-2 border-burgundy-200 hover:bg-burgundy-50 hover:border-burgundy-300 focus-visible:ring-burgundy-500",
+          "bg-white text-navy border-2 border-gray-200 hover:bg-gray-50 hover:border-gray-300 focus-visible:ring-navy/50",
         ghost: 
           "bg-transparent text-gray-700 border border-gray-200 hover:bg-gray-50 hover:text-gray-900 focus-visible:ring-gray-500",
         luxury:
-          "bg-gradient-to-r from-burgundy-600 via-burgundy-700 to-burgundy-800 text-white shadow-luxury hover:shadow-luxury-lg hover:scale-105 focus-visible:ring-burgundy-500 relative overflow-hidden",
+          "bg-gradient-to-r from-navy via-navy/90 to-navy/80 text-white shadow-luxury hover:shadow-luxury-lg hover:scale-105 focus-visible:ring-navy/50 relative overflow-hidden",
         outline:
-          "border-2 border-burgundy-200 bg-transparent text-burgundy-700 hover:bg-burgundy-50 hover:border-burgundy-400 focus-visible:ring-burgundy-500",
+          "border-2 border-gray-200 bg-transparent text-navy hover:bg-gray-50 hover:border-gray-300 focus-visible:ring-navy/50",
         link: 
-          "text-burgundy-600 underline-offset-4 hover:underline hover:text-burgundy-700 focus-visible:ring-burgundy-500"
+          "text-navy underline-offset-4 hover:underline hover:text-navy/80 focus-visible:ring-navy/50",
+        destructive:
+          "bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-500"
       },
       size: {
         sm: "h-10 px-4 py-2 text-sm",

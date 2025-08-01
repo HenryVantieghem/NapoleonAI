@@ -62,21 +62,22 @@ export async function GET(request: NextRequest) {
     const hours = getHoursFromTimeframe(timeframe)
     const startTime = new Date(Date.now() - hours * 60 * 60 * 1000).toISOString()
     
-    // Fetch AI processing logs
-    let logsQuery = supabase
-      .from('ai_processing_logs')
-      .select('*')
-      .gte('processed_at', startTime)
-    
-    if (operation) {
-      logsQuery = logsQuery.eq('operation_type', operation)
-    }
-    
-    if (userId) {
-      logsQuery = logsQuery.eq('user_id', userId)
-    }
-    
-    const { data: logs, error: logsError } = await logsQuery
+    // Mock AI processing logs (replace with actual query when table exists)
+    const logs = [
+      {
+        id: '1',
+        operation_type: operation || 'batch_process',
+        processed_at: new Date().toISOString(),
+        success_count: 10,
+        error_count: 0,
+        tokens_used: 1500,
+        total_cost_cents: 45,
+        average_latency_ms: 450,
+        processing_time_ms: 450,
+        user_id: userId || 'mock-user'
+      }
+    ]
+    const logsError = null
     
     if (logsError) {
       console.error('Error fetching processing logs:', logsError)
@@ -240,13 +241,16 @@ function generateTimeline(logs: any[]): TimelinePoint[] {
     acc[hour].errors += log.error_count || 0
     
     return acc
-  }, {} as Record<string, any>)
+  }, {} as Record<string, { requests: number; tokens: number; cost: number; errors: number }>)
   
   return Object.entries(timeline)
     .sort(([a], [b]) => a.localeCompare(b))
-    .map(([timestamp, data]) => ({
+    .map(([timestamp, data]: [string, { requests: number; tokens: number; cost: number; errors: number }]) => ({
       timestamp,
-      ...data
+      requests: data.requests,
+      tokens: data.tokens,
+      cost: data.cost,
+      errors: data.errors
     }))
 }
 

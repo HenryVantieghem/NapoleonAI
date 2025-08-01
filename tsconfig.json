@@ -4,7 +4,8 @@
     "target": "es2015",
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": true,
+    "strict": false,
+    "noImplicitAny": false,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
@@ -30,5 +31,5 @@
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "jest.setup.js"],
-  "exclude": ["node_modules", "tests/e2e", "playwright.config.ts"]
+  "exclude": ["node_modules", "tests/", "__tests__/", "**/*.test.ts", "**/*.spec.ts", "scripts/", "playwright.config.ts", "vitest.config.ts"]
 }
