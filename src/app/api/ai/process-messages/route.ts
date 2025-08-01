@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server'
 import { currentUser } from '@clerk/nextjs/server'
 import { createClient } from '@/lib/supabase/server'
-import { aiService } from '@/lib/ai/ai-service'
+import { enhancedAIService } from '@/lib/ai/enhanced-ai-service'
+import { aiService } from '@/lib/ai/ai-service' // Fallback for compatibility
 
 export async function POST(request: Request) {
   try {
@@ -55,25 +56,50 @@ export async function POST(request: Request) {
 
     console.log(`Processing ${messagesToProcess.length} messages for user ${user.id}`)
 
-    // Process messages in parallel (but limit concurrency)
+    // Process messages with enhanced AI service
     const processMessage = async (message: any) => {
       try {
-        const analysis = await aiService.processMessage(message, user.id)
-        await aiService.saveMessageAnalysis(message.id, analysis, user.id)
+        // Try enhanced AI service first
+        const enhancedAnalysis = await enhancedAIService.processMessage(message, user.id)
+        await enhancedAIService.saveEnhancedAnalysis(message.id, enhancedAnalysis, user.id)
         
         return {
           messageId: message.id,
           success: true,
-          summary: analysis.summary,
-          priorityScore: analysis.priority.score,
-          actionItemsCount: analysis.actionItems.length
+          summary: enhancedAnalysis.executiveSummary.summary,
+          priorityScore: enhancedAnalysis.priorityAnalysis.finalScore,
+          actionItemsCount: enhancedAnalysis.actionItems.length,
+          processingTime: enhancedAnalysis.processingMetrics.processingTime,
+          tokensUsed: enhancedAnalysis.processingMetrics.tokensUsed,
+          cost: enhancedAnalysis.processingMetrics.cost,
+          vipBoost: enhancedAnalysis.priorityAnalysis.vipBoost,
+          enhanced: true
         }
-      } catch (error) {
-        console.error(`Failed to process message ${message.id}:`, error)
-        return {
-          messageId: message.id,
-          success: false,
-          error: error instanceof Error ? error.message : 'Processing failed'
+      } catch (enhancedError) {
+        console.warn(`Enhanced AI processing failed for message ${message.id}, falling back to simple AI:`, enhancedError)
+        
+        try {
+          // Fallback to simple AI service
+          const analysis = await aiService.processMessage(message, user.id)
+          await aiService.saveMessageAnalysis(message.id, analysis, user.id)
+          
+          return {
+            messageId: message.id,
+            success: true,
+            summary: analysis.summary,
+            priorityScore: analysis.priority.score,
+            actionItemsCount: analysis.actionItems.length,
+            enhanced: false,
+            fallback: true
+          }
+        } catch (fallbackError) {
+          console.error(`Both enhanced and simple AI processing failed for message ${message.id}:`, fallbackError)
+          return {
+            messageId: message.id,
+            success: false,
+            error: fallbackError instanceof Error ? fallbackError.message : 'Processing failed',
+            enhanced: false
+          }
         }
       }
     }

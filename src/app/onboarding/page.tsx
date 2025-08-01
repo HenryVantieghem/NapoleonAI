@@ -186,145 +186,268 @@ export default function OnboardingPage() {
     }
   }
 
-  // Success modal
+  // Success modal - Luxury Celebration
   if (showSuccess) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-navy-900 via-navy-800 to-navy-700 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-gradient-jet-black flex items-center justify-center px-4 relative overflow-hidden">
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-champagneGold/20 rounded-full blur-3xl animate-float" />
+          <div className="absolute bottom-32 right-16 w-96 h-96 bg-champagneGold/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
+          <div className="absolute top-1/2 left-1/3 w-64 h-64 bg-champagneGold/5 rounded-full blur-2xl animate-float" style={{ animationDelay: '4s' }} />
+        </div>
+
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6 }}
-          className="text-center max-w-md mx-auto"
+          transition={{ duration: 0.8 }}
+          className="text-center max-w-2xl mx-auto relative z-10"
         >
-          <div className="w-24 h-24 bg-gradient-gold rounded-full flex items-center justify-center mx-auto mb-8 shadow-gold-lg">
-            <Crown className="w-12 h-12 text-navy-900" />
+          {/* Glassmorphic Success Card */}
+          <div className="bg-jetBlack/40 backdrop-blur-executive rounded-3xl p-12 border border-champagneGold/30 shadow-private-jet-glass">
+            <motion.div
+              initial={{ scale: 0, rotate: -180 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ duration: 1, delay: 0.2 }}
+              className="w-32 h-32 bg-gradient-champagne/20 backdrop-blur-luxury rounded-full flex items-center justify-center mx-auto mb-8 shadow-champagne-glow border border-champagneGold/30"
+            >
+              <Crown className="w-16 h-16 text-champagneGold" />
+            </motion.div>
+            
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="text-5xl font-serif font-bold text-text-primary mb-6"
+            >
+              Welcome to Your Command Center!
+            </motion.h1>
+            
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              className="text-2xl text-text-secondary mb-8 leading-relaxed"
+            >
+              Your executive intelligence platform is ready to transform communication chaos into strategic clarity
+            </motion.p>
+
+            {/* Success Metrics */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.8 }}
+              className="grid grid-cols-3 gap-6 mb-10"
+            >
+              <div className="text-center">
+                <div className="text-3xl font-bold text-champagneGold mb-2">2+</div>
+                <div className="text-sm text-text-secondary">Hours Saved Daily</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-champagneGold mb-2">95%</div>
+                <div className="text-sm text-text-secondary">Priority Accuracy</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-champagneGold mb-2">1</div>
+                <div className="text-sm text-text-secondary">Unified Inbox</div>
+              </div>
+            </motion.div>
+            
+            <motion.button
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 1 }}
+              onClick={() => router.push('/dashboard')}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="px-12 py-6 bg-gradient-champagne text-jetBlack rounded-2xl text-xl font-bold shadow-champagne-glow hover:shadow-champagne-lg transition-all duration-300 flex items-center gap-3 mx-auto"
+            >
+              <Crown className="w-6 h-6" />
+              Enter Command Center
+              <ArrowRight className="w-6 h-6" />
+            </motion.button>
           </div>
-          
-          <h1 className="text-4xl font-serif font-bold text-white mb-4">
-            Welcome to Your Command Center!
-          </h1>
-          
-          <p className="text-xl text-gold-200 mb-8">
-            Your executive intelligence platform is ready
-          </p>
-          
-          <motion.button
-            onClick={() => router.push('/dashboard')}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="px-8 py-4 bg-gradient-gold text-navy-900 rounded-xl font-semibold shadow-gold-lg hover:shadow-gold-xl transition-all"
-          >
-            Enter Dashboard
-          </motion.button>
         </motion.div>
       </div>
     )
   }
 
-  // Progress indicator
+  // Luxury Progress indicator
   const ProgressBar = () => (
-    <div className="w-full max-w-md mx-auto mb-8">
-      <div className="flex justify-between items-center mb-2">
-        <span className="text-sm text-gold-200">Step {currentStep} of 3</span>
-        <span className="text-sm text-gold-200">{Math.round((currentStep / 3) * 100)}% complete</span>
+    <div className="w-full max-w-lg mx-auto mb-12">
+      <div className="flex justify-between items-center mb-4">
+        <span className="text-lg font-medium text-text-secondary">Step {currentStep} of 3</span>
+        <span className="text-lg font-medium text-champagneGold">{Math.round((currentStep / 3) * 100)}% Complete</span>
       </div>
-      <div className="w-full bg-navy-800 rounded-full h-2">
+      <div className="w-full bg-jetBlack/40 backdrop-blur-glass rounded-full h-3 border border-champagneGold/20 shadow-luxury-glass">
         <motion.div
-          className="bg-gradient-gold h-2 rounded-full"
+          className="bg-gradient-champagne h-3 rounded-full shadow-champagne-glow"
           initial={{ width: 0 }}
           animate={{ width: `${(currentStep / 3) * 100}%` }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.8, ease: "easeInOut" }}
         />
+      </div>
+      
+      {/* Step indicators */}
+      <div className="flex justify-between mt-4">
+        {[1, 2, 3].map((step) => (
+          <div key={step} className="flex flex-col items-center">
+            <motion.div
+              initial={false}
+              animate={{
+                scale: currentStep >= step ? 1.2 : 1,
+                backgroundColor: currentStep >= step ? "#D4AF37" : "rgba(212, 175, 55, 0.3)"
+              }}
+              transition={{ duration: 0.3 }}
+              className="w-3 h-3 rounded-full mb-2"
+            />
+            <span className={`text-sm font-medium ${currentStep >= step ? 'text-champagneGold' : 'text-text-secondary/60'}`}>
+              {step === 1 ? 'Profile' : step === 2 ? 'Connect' : 'VIP Setup'}
+            </span>
+          </div>
+        ))}
       </div>
     </div>
   )
 
-  // Step 1: Profile Setup
+  // Step 1: Executive Profile Setup - Glassmorphic Luxury
   if (currentStep === 1) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-navy-900 via-navy-800 to-navy-700 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-gradient-jet-black flex items-center justify-center px-4 relative overflow-hidden">
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-champagneGold/10 rounded-full blur-3xl animate-float" />
+          <div className="absolute bottom-32 right-16 w-96 h-96 bg-midnightBlue/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
+          <div className="absolute top-1/2 left-1/3 w-64 h-64 bg-champagneGold/5 rounded-full blur-2xl animate-float" style={{ animationDelay: '4s' }} />
+        </div>
+
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="max-w-4xl mx-auto"
+          transition={{ duration: 0.8 }}
+          className="max-w-5xl mx-auto relative z-10"
         >
-          {/* Header */}
-          <div className="text-center mb-8">
-            <div className="w-20 h-20 bg-gradient-gold rounded-full flex items-center justify-center mx-auto mb-6 shadow-gold-lg">
-              <Crown className="w-10 h-10 text-navy-900" />
-            </div>
+          {/* Luxury Header */}
+          <div className="text-center mb-12">
+            <motion.div
+              initial={{ scale: 0, rotate: -180 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ duration: 1, delay: 0.2 }}
+              className="w-24 h-24 bg-gradient-champagne/20 backdrop-blur-luxury rounded-full flex items-center justify-center mx-auto mb-8 shadow-champagne-glow border border-champagneGold/30"
+            >
+              <Crown className="w-12 h-12 text-champagneGold" />
+            </motion.div>
             
-            <h1 className="text-4xl font-serif font-bold text-white mb-4">
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="text-5xl md:text-6xl font-serif font-bold text-text-primary mb-6"
+            >
               Welcome, {user?.firstName || 'Executive'}!
-            </h1>
+            </motion.h1>
             
-            <p className="text-xl text-gold-200 mb-6">
-              Let's personalize your executive command center
-            </p>
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              className="text-2xl text-text-secondary mb-8 max-w-3xl mx-auto leading-relaxed"
+            >
+              Let's personalize your executive command center for strategic communication mastery
+            </motion.p>
             
             <ProgressBar />
           </div>
 
-          {/* Main Content */}
-          <div className="bg-white/95 backdrop-blur-luxury rounded-2xl p-8 shadow-luxury border border-gold-200/20">
-            <h2 className="text-2xl font-serif font-semibold text-navy-900 mb-2">Executive Profile</h2>
-            <p className="text-navy-600 mb-8">Complete in under 60 seconds</p>
+          {/* Glassmorphic Main Content */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.8 }}
+            className="bg-jetBlack/40 backdrop-blur-executive rounded-3xl p-10 shadow-private-jet-glass border border-champagneGold/20"
+          >
+            <div className="text-center mb-10">
+              <h2 className="text-3xl font-serif font-bold text-text-primary mb-3">Executive Profile</h2>
+              <p className="text-xl text-text-secondary">Complete in under 60 seconds • Your time is precious</p>
+            </div>
             
-            {/* Role Selection */}
-            <div className="mb-8">
-              <h3 className="text-lg font-semibold text-navy-900 mb-4">Your Executive Role</h3>
-              <div className="grid md:grid-cols-4 gap-3">
-                {executiveRoles.map((roleOption) => (
-                  <SelectableCard
+            {/* Role Selection with Animation */}
+            <div className="mb-12">
+              <h3 className="text-2xl font-serif font-semibold text-text-primary mb-6 text-center">Select Your Executive Role</h3>
+              <div className="grid md:grid-cols-4 gap-4">
+                {executiveRoles.map((roleOption, index) => (
+                  <motion.div
                     key={roleOption.id}
-                    icon={roleOption.icon}
-                    title={roleOption.title}
-                    description={roleOption.description}
-                    selected={role === roleOption.id}
-                    onClick={() => setRole(roleOption.id)}
-                    variant="compact"
-                  />
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                  >
+                    <SelectableCard
+                      icon={roleOption.icon}
+                      title={roleOption.title}
+                      description={roleOption.description}
+                      selected={role === roleOption.id}
+                      onClick={() => setRole(roleOption.id)}
+                      variant="luxury"
+                    />
+                  </motion.div>
                 ))}
               </div>
             </div>
 
-            {/* Pain Points */}
-            <div className="mb-8">
-              <h3 className="text-lg font-semibold text-navy-900 mb-2">
-                Top Communication Challenges 
-                <span className="text-sm font-normal text-navy-600 ml-2">(Select up to 3)</span>
+            {/* Pain Points with Staggered Animation */}
+            <div className="mb-12">
+              <h3 className="text-2xl font-serif font-semibold text-text-primary mb-3 text-center">
+                Communication Challenges
               </h3>
-              <div className="grid md:grid-cols-3 gap-3">
-                {painPoints.map((point) => (
-                  <SelectableCard
+              <p className="text-lg text-text-secondary mb-8 text-center">
+                Select up to 3 areas where you need the most support
+              </p>
+              <div className="grid md:grid-cols-3 gap-4">
+                {painPoints.map((point, index) => (
+                  <motion.div
                     key={point.id}
-                    icon={<Zap className="w-5 h-5" />}
-                    title={point.title}
-                    description={point.description}
-                    selected={selectedPainPoints.includes(point.id)}
-                    onClick={() => togglePainPoint(point.id)}
-                    variant="compact"
-                    disabled={!selectedPainPoints.includes(point.id) && selectedPainPoints.length >= 3}
-                  />
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                  >
+                    <SelectableCard
+                      icon={<Zap className="w-6 h-6" />}
+                      title={point.title}
+                      description={point.description}
+                      selected={selectedPainPoints.includes(point.id)}
+                      onClick={() => togglePainPoint(point.id)}
+                      variant="luxury"
+                      disabled={!selectedPainPoints.includes(point.id) && selectedPainPoints.length >= 3}
+                    />
+                  </motion.div>
                 ))}
               </div>
+              {selectedPainPoints.length >= 3 && (
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="text-center text-champagneGold font-medium mt-4"
+                >
+                  Perfect! You've selected your priority areas.
+                </motion.p>
+              )}
             </div>
 
-            {/* Actions */}
-            <div className="flex justify-between items-center">
-              <div className="flex space-x-4">
+            {/* Luxury Actions */}
+            <div className="flex justify-between items-center pt-8 border-t border-champagneGold/20">
+              <div className="flex space-x-6">
                 <button
                   onClick={handleSkip}
-                  className="text-navy-600 hover:text-navy-900 transition-colors"
+                  className="text-text-secondary hover:text-text-primary transition-colors text-lg font-medium"
                 >
                   Skip for now
                 </button>
                 <button
                   onClick={handleConcierge}
-                  className="text-gold-600 hover:text-gold-700 transition-colors flex items-center space-x-1"
+                  className="text-champagneGold hover:text-champagneGold/80 transition-colors flex items-center space-x-2 text-lg font-medium"
                 >
-                  <Phone className="w-4 h-4" />
+                  <Phone className="w-5 h-5" />
                   <span>Schedule Concierge</span>
                 </button>
               </div>
@@ -334,136 +457,193 @@ export default function OnboardingPage() {
                 disabled={!role}
                 whileHover={role ? { scale: 1.05 } : {}}
                 whileTap={role ? { scale: 0.95 } : {}}
-                className={`px-6 py-3 rounded-xl font-semibold transition-all flex items-center space-x-2 ${
+                className={`px-8 py-4 rounded-2xl text-xl font-bold transition-all flex items-center space-x-3 ${
                   role
-                    ? 'bg-gradient-gold text-navy-900 hover:shadow-gold-lg'
-                    : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    ? 'bg-gradient-champagne text-jetBlack shadow-champagne-glow hover:shadow-champagne-lg'
+                    : 'bg-jetBlack/20 border border-champagneGold/20 text-text-secondary/50 cursor-not-allowed'
                 }`}
               >
-                <span>Continue</span>
-                <ChevronRight className="w-4 h-4" />
+                <span>Continue to Connections</span>
+                <ChevronRight className="w-5 h-5" />
               </motion.button>
             </div>
-          </div>
+          </motion.div>
         </motion.div>
       </div>
     )
   }
 
-  // Step 2: Connect Accounts  
+  // Step 2: Platform Connections - Glassmorphic Luxury
   if (currentStep === 2) {
     const gmailAccount = connectedAccounts.find(acc => acc.provider === 'gmail')
     const isGmailConnected = gmailAccount?.status === 'connected'
     
     return (
-      <div className="min-h-screen bg-gradient-to-br from-navy-900 via-navy-800 to-navy-700 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-gradient-jet-black flex items-center justify-center px-4 relative overflow-hidden">
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-champagneGold/10 rounded-full blur-3xl animate-float" />
+          <div className="absolute bottom-32 right-16 w-96 h-96 bg-midnightBlue/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
+          <div className="absolute top-1/2 left-1/3 w-64 h-64 bg-champagneGold/5 rounded-full blur-2xl animate-float" style={{ animationDelay: '4s' }} />
+        </div>
+
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="max-w-2xl mx-auto"
+          transition={{ duration: 0.8 }}
+          className="max-w-4xl mx-auto relative z-10"
         >
-          {/* Header */}
-          <div className="text-center mb-8">
-            <div className="w-20 h-20 bg-gradient-gold rounded-full flex items-center justify-center mx-auto mb-6 shadow-gold-lg">
-              <Crown className="w-10 h-10 text-navy-900" />
-            </div>
+          {/* Luxury Header */}
+          <div className="text-center mb-12">
+            <motion.div
+              initial={{ scale: 0, rotate: -180 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ duration: 1, delay: 0.2 }}
+              className="w-24 h-24 bg-gradient-champagne/20 backdrop-blur-luxury rounded-full flex items-center justify-center mx-auto mb-8 shadow-champagne-glow border border-champagneGold/30"
+            >
+              <Crown className="w-12 h-12 text-champagneGold" />
+            </motion.div>
             
-            <h1 className="text-4xl font-serif font-bold text-white mb-4">
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="text-5xl md:text-6xl font-serif font-bold text-text-primary mb-6"
+            >
               Connect Your Platforms
-            </h1>
+            </motion.h1>
             
-            <p className="text-xl text-gold-200 mb-6">
-              Unify your communication channels for strategic clarity
-            </p>
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              className="text-2xl text-text-secondary mb-8 max-w-3xl mx-auto leading-relaxed"
+            >
+              Unify your communication channels for strategic clarity and executive intelligence
+            </motion.p>
             
             <ProgressBar />
           </div>
 
-          {/* Main Content */}
-          <div className="bg-white/95 backdrop-blur-luxury rounded-2xl p-8 shadow-luxury border border-gold-200/20">
-            <h2 className="text-2xl font-serif font-semibold text-navy-900 mb-2">Platform Integration</h2>
-            <p className="text-navy-600 mb-8">Connect Gmail now. Slack and Teams in Phase 2.</p>
+          {/* Glassmorphic Main Content */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.8 }}
+            className="bg-jetBlack/40 backdrop-blur-executive rounded-3xl p-10 shadow-private-jet-glass border border-champagneGold/20"
+          >
+            <div className="text-center mb-10">
+              <h2 className="text-3xl font-serif font-bold text-text-primary mb-3">Platform Integration</h2>
+              <p className="text-xl text-text-secondary">Connect Gmail now • Slack and Teams launching in Phase 2</p>
+            </div>
             
-            <div className="space-y-4 mb-8">
-              {/* Gmail Connection */}
+            <div className="space-y-6 mb-12">
+              {/* Gmail Connection - Luxury Card */}
               <motion.button
                 onClick={handleGmailConnect}
                 disabled={isGmailConnected || isLoading}
                 whileHover={!isGmailConnected && !isLoading ? { scale: 1.02 } : {}}
                 whileTap={!isGmailConnected && !isLoading ? { scale: 0.98 } : {}}
-                className={`w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all ${
+                className={`w-full flex items-center justify-between p-6 rounded-2xl border transition-all ${
                   isGmailConnected
-                    ? 'border-emerald-500 bg-emerald-50'
+                    ? 'border-emerald-400 bg-emerald-500/10 backdrop-blur-glass shadow-emerald-500/20 shadow-lg'
                     : isLoading && gmailAccount?.status === 'connecting'
-                    ? 'border-gold bg-gold-50'
-                    : 'border-gray-200 hover:border-gold hover:bg-gold-50'
+                    ? 'border-champagneGold bg-champagneGold/10 backdrop-blur-glass shadow-champagne'
+                    : 'border-champagneGold/20 bg-jetBlack/20 backdrop-blur-glass hover:border-champagneGold/40 hover:bg-champagneGold/5 hover:shadow-champagne'
                 }`}
               >
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
-                    <Mail className="w-6 h-6 text-red-500" />
+                <div className="flex items-center space-x-6">
+                  <div className="w-16 h-16 bg-red-500/20 backdrop-blur-glass rounded-2xl flex items-center justify-center border border-red-400/30">
+                    <Mail className="w-8 h-8 text-red-400" />
                   </div>
                   <div className="text-left">
-                    <div className="font-semibold text-navy-900">Gmail</div>
-                    <div className="text-sm text-navy-600">
-                      {isGmailConnected ? 'Connected successfully' : 'Connect your Gmail account'}
+                    <div className="text-2xl font-serif font-bold text-text-primary">Gmail</div>
+                    <div className="text-lg text-text-secondary">
+                      {isGmailConnected ? 'Connected successfully • Ready for intelligence' : 'Connect your Gmail account for unified inbox'}
                     </div>
                   </div>
                 </div>
                 
                 {isGmailConnected ? (
-                  <CheckCircle className="w-6 h-6 text-emerald-500" />
+                  <CheckCircle className="w-8 h-8 text-emerald-400" />
                 ) : isLoading && gmailAccount?.status === 'connecting' ? (
-                  <div className="w-6 h-6 border-2 border-gold border-t-transparent rounded-full animate-spin" />
+                  <div className="w-8 h-8 border-2 border-champagneGold border-t-transparent rounded-full animate-spin" />
                 ) : (
-                  <ArrowRight className="w-6 h-6 text-navy-600" />
+                  <ArrowRight className="w-8 h-8 text-champagneGold" />
                 )}
               </motion.button>
 
-              {/* Placeholder integrations */}
-              <div className="w-full flex items-center justify-between p-4 rounded-xl border-2 border-gray-200 opacity-50">
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                    <MessageSquare className="w-6 h-6 text-purple-500" />
+              {/* Coming Soon Integrations */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 1 }}
+                className="w-full flex items-center justify-between p-6 rounded-2xl border border-champagneGold/10 bg-jetBlack/10 backdrop-blur-glass opacity-60"
+              >
+                <div className="flex items-center space-x-6">
+                  <div className="w-16 h-16 bg-purple-500/20 backdrop-blur-glass rounded-2xl flex items-center justify-center border border-purple-400/20">
+                    <MessageSquare className="w-8 h-8 text-purple-400" />
                   </div>
                   <div className="text-left">
-                    <div className="font-semibold text-navy-900">Slack</div>
-                    <div className="text-sm text-navy-600">Coming in Phase 2</div>
+                    <div className="text-2xl font-serif font-bold text-text-primary">Slack</div>
+                    <div className="text-lg text-text-secondary">Team communication integration • Coming in Phase 2</div>
                   </div>
                 </div>
-                <Clock className="w-6 h-6 text-gray-400" />
-              </div>
+                <Clock className="w-8 h-8 text-text-secondary/50" />
+              </motion.div>
 
-              <div className="w-full flex items-center justify-between p-4 rounded-xl border-2 border-gray-200 opacity-50">
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                    <Users className="w-6 h-6 text-blue-500" />
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 1.2 }}
+                className="w-full flex items-center justify-between p-6 rounded-2xl border border-champagneGold/10 bg-jetBlack/10 backdrop-blur-glass opacity-60"
+              >
+                <div className="flex items-center space-x-6">
+                  <div className="w-16 h-16 bg-blue-500/20 backdrop-blur-glass rounded-2xl flex items-center justify-center border border-blue-400/20">
+                    <Users className="w-8 h-8 text-blue-400" />
                   </div>
                   <div className="text-left">
-                    <div className="font-semibold text-navy-900">Microsoft Teams</div>
-                    <div className="text-sm text-navy-600">Coming in Phase 2</div>
+                    <div className="text-2xl font-serif font-bold text-text-primary">Microsoft Teams</div>
+                    <div className="text-lg text-text-secondary">Enterprise collaboration platform • Coming in Phase 2</div>
                   </div>
                 </div>
-                <Clock className="w-6 h-6 text-gray-400" />
-              </div>
+                <Clock className="w-8 h-8 text-text-secondary/50" />
+              </motion.div>
             </div>
 
-            {/* Actions */}
-            <div className="flex justify-between items-center">
-              <div className="flex space-x-4">
+            {/* Connection Progress */}
+            {isGmailConnected && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6 }}
+                className="bg-emerald-500/10 backdrop-blur-glass rounded-2xl p-6 mb-8 border border-emerald-400/20"
+              >
+                <div className="flex items-center justify-center space-x-4">
+                  <CheckCircle className="w-8 h-8 text-emerald-400" />
+                  <div className="text-center">
+                    <div className="text-xl font-serif font-bold text-text-primary mb-2">Platform Connected</div>
+                    <div className="text-text-secondary">Your Gmail is now unified with Napoleon AI intelligence</div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Luxury Actions */}
+            <div className="flex justify-between items-center pt-8 border-t border-champagneGold/20">
+              <div className="flex space-x-6">
                 <button
                   onClick={prevStep}
-                  className="text-navy-600 hover:text-navy-900 transition-colors"
+                  className="text-text-secondary hover:text-text-primary transition-colors text-lg font-medium"
                 >
-                  Back
+                  Back to Profile
                 </button>
                 <button
                   onClick={handleConcierge}
-                  className="text-gold-600 hover:text-gold-700 transition-colors flex items-center space-x-1"
+                  className="text-champagneGold hover:text-champagneGold/80 transition-colors flex items-center space-x-2 text-lg font-medium"
                 >
-                  <Phone className="w-4 h-4" />
-                  <span>Need Help?</span>
+                  <Phone className="w-5 h-5" />
+                  <span>Need Integration Help?</span>
                 </button>
               </div>
               
@@ -471,151 +651,207 @@ export default function OnboardingPage() {
                 onClick={nextStep}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-6 py-3 rounded-xl font-semibold bg-gradient-gold text-navy-900 hover:shadow-gold-lg transition-all flex items-center space-x-2"
+                className="px-8 py-4 rounded-2xl text-xl font-bold bg-gradient-champagne text-jetBlack shadow-champagne-glow hover:shadow-champagne-lg transition-all flex items-center space-x-3"
               >
-                <span>Continue</span>
-                <ChevronRight className="w-4 h-4" />
+                <span>Continue to VIP Setup</span>
+                <ChevronRight className="w-5 h-5" />
               </motion.button>
             </div>
-          </div>
+          </motion.div>
         </motion.div>
       </div>
     )
   }
 
-  // Step 3: VIP Configuration
+  // Step 3: VIP Configuration - Glassmorphic Luxury
   return (
-    <div className="min-h-screen bg-gradient-to-br from-navy-900 via-navy-800 to-navy-700 flex items-center justify-center px-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="max-w-5xl mx-auto"
-      >
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="w-20 h-20 bg-gradient-gold rounded-full flex items-center justify-center mx-auto mb-6 shadow-gold-lg">
-            <Crown className="w-10 h-10 text-navy-900" />
-          </div>
-          
-          <h1 className="text-4xl font-serif font-bold text-white mb-4">
-            Select Your VIP Contacts
-          </h1>
-          
-          <p className="text-xl text-gold-200 mb-6">
-            Mark board members, investors, and key stakeholders for priority treatment
-          </p>
-          
-          <ProgressBar />
+    <div className="min-h-screen bg-gradient-jet-black flex items-center justify-center px-4 relative overflow-hidden">
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-champagneGold/10 rounded-full blur-3xl animate-float" />
+          <div className="absolute bottom-32 right-16 w-96 h-96 bg-midnightBlue/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
+          <div className="absolute top-1/2 left-1/3 w-64 h-64 bg-champagneGold/5 rounded-full blur-2xl animate-float" style={{ animationDelay: '4s' }} />
         </div>
 
-        {/* Main Content */}
-        <div className="bg-white/95 backdrop-blur-luxury rounded-2xl p-8 shadow-luxury border border-gold-200/20">
-          <div className="flex justify-between items-center mb-6">
-            <div>
-              <h2 className="text-2xl font-serif font-semibold text-navy-900">VIP Intelligence</h2>
-              <p className="text-navy-600">AI will prioritize messages from these contacts</p>
-            </div>
-            <div className="text-right">
-              <div className="text-lg font-semibold text-gold-600">
-                Selected {vipContacts.length}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="max-w-7xl mx-auto relative z-10"
+        >
+          {/* Luxury Header */}
+          <div className="text-center mb-12">
+            <motion.div
+              initial={{ scale: 0, rotate: -180 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ duration: 1, delay: 0.2 }}
+              className="w-24 h-24 bg-gradient-champagne/20 backdrop-blur-luxury rounded-full flex items-center justify-center mx-auto mb-8 shadow-champagne-glow border border-champagneGold/30"
+            >
+              <Crown className="w-12 h-12 text-champagneGold" />
+            </motion.div>
+            
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="text-5xl md:text-6xl font-serif font-bold text-text-primary mb-6"
+            >
+              Select Your VIP Contacts
+            </motion.h1>
+            
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              className="text-2xl text-text-secondary mb-8 max-w-4xl mx-auto leading-relaxed"
+            >
+              Mark board members, investors, and key stakeholders for priority treatment. AI will ensure their messages never go unnoticed.
+            </motion.p>
+            
+            <ProgressBar />
+          </div>
+
+          {/* Glassmorphic Main Content */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.8 }}
+            className="bg-jetBlack/40 backdrop-blur-executive rounded-3xl p-10 shadow-private-jet-glass border border-champagneGold/20"
+          >
+            {/* Header with Selection Counter */}
+            <div className="flex justify-between items-center mb-10">
+              <div>
+                <h2 className="text-3xl font-serif font-bold text-text-primary mb-2">VIP Intelligence Network</h2>
+                <p className="text-xl text-text-secondary">AI prioritizes messages from these critical relationships</p>
               </div>
-              <div className="text-sm text-navy-600">
-                {vipContacts.length >= 3 ? 'Minimum reached' : `Select ${3 - vipContacts.length} more`}
+              <div className="text-right">
+                <div className="bg-champagneGold/10 backdrop-blur-glass rounded-2xl px-6 py-4 border border-champagneGold/20">
+                  <div className="text-2xl font-bold text-champagneGold">
+                    {vipContacts.length}
+                  </div>
+                  <div className="text-sm text-text-secondary">
+                    {vipContacts.length >= 3 ? 'VIPs Selected' : `Need ${3 - vipContacts.length} more`}
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          
-          {/* Search */}
-          <div className="relative mb-6">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search contacts..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:border-gold focus:ring-2 focus:ring-gold/20 transition-all"
-            />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2"
-              >
-                <X className="w-5 h-5 text-gray-400 hover:text-gray-600" />
-              </button>
-            )}
-          </div>
-
-          {/* VIP Contacts Grid */}
-          <div className="grid md:grid-cols-2 gap-4 mb-8 max-h-96 overflow-y-auto">
-            <AnimatePresence>
-              {filteredContacts.map((contact, index) => (
-                <motion.div
-                  key={contact.email}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.3, delay: index * 0.05 }}
-                >
-                  <VipCard
-                    contact={contact}
-                    selected={vipContacts.some(v => v.email === contact.email)}
-                    onToggle={() => toggleVipContact(contact)}
-                  />
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
-
-          {/* No results */}
-          {filteredContacts.length === 0 && (
-            <div className="text-center py-8">
-              <div className="text-gray-400 mb-2">No contacts found</div>
-              <button
-                onClick={() => setSearchQuery('')}
-                className="text-gold-600 hover:text-gold-700 transition-colors"
-              >
-                Clear search
-              </button>
-            </div>
-          )}
-
-          {/* Actions */}
-          <div className="flex justify-between items-center pt-6 border-t border-gray-200">
-            <div className="flex space-x-4">
-              <button
-                onClick={prevStep}
-                className="text-navy-600 hover:text-navy-900 transition-colors"
-              >
-                Back
-              </button>
-              <button
-                onClick={handleSkip}
-                className="text-navy-600 hover:text-navy-900 transition-colors"
-              >
-                Skip VIP Selection
-              </button>
-              <button
-                onClick={handleConcierge}
-                className="text-gold-600 hover:text-gold-700 transition-colors flex items-center space-x-1"
-              >
-                <Calendar className="w-4 h-4" />
-                <span>Schedule Setup Call</span>
-              </button>
             </div>
             
-            <motion.button
-              onClick={handleComplete}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-8 py-4 rounded-xl font-semibold bg-gradient-gold text-navy-900 hover:shadow-gold-lg transition-all flex items-center space-x-2"
-            >
-              <Crown className="w-5 h-5" />
-              <span>Enter Command Center</span>
-            </motion.button>
-          </div>
-        </div>
-      </motion.div>
+            {/* Luxury Search */}
+            <div className="relative mb-8">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-champagneGold/60" />
+              <input
+                type="text"
+                placeholder="Search executives, board members, investors..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-14 pr-12 py-4 bg-jetBlack/20 backdrop-blur-glass border border-champagneGold/20 rounded-2xl text-text-primary placeholder-text-secondary/60 focus:border-champagneGold/40 focus:ring-2 focus:ring-champagneGold/20 transition-all text-lg"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-champagneGold/60 hover:text-champagneGold transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              )}
+            </div>
+
+            {/* VIP Contacts Grid with Luxury Styling */}
+            <div className="grid lg:grid-cols-2 gap-6 mb-8 max-h-96 overflow-y-auto">
+              <AnimatePresence>
+                {filteredContacts.map((contact, index) => (
+                  <motion.div
+                    key={contact.email}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.4, delay: index * 0.05 }}
+                  >
+                    <VipCard
+                      contact={contact}
+                      selected={vipContacts.some(v => v.email === contact.email)}
+                      onToggle={() => toggleVipContact(contact)}
+                    />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
+
+            {/* No Results State */}
+            {filteredContacts.length === 0 && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-center py-12"
+              >
+                <div className="w-20 h-20 bg-champagneGold/10 backdrop-blur-glass rounded-full flex items-center justify-center mx-auto mb-6 border border-champagneGold/20">
+                  <Search className="w-10 h-10 text-champagneGold/60" />
+                </div>
+                <div className="text-xl text-text-secondary mb-4">No contacts found matching your search</div>
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="text-champagneGold hover:text-champagneGold/80 transition-colors text-lg font-medium"
+                >
+                  Clear search and view all contacts
+                </button>
+              </motion.div>
+            )}
+
+            {/* Selection Progress */}
+            {vipContacts.length >= 3 && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6 }}
+                className="bg-champagneGold/10 backdrop-blur-glass rounded-2xl p-6 mb-8 border border-champagneGold/20"
+              >
+                <div className="flex items-center justify-center space-x-4">
+                  <CheckCircle className="w-8 h-8 text-champagneGold" />
+                  <div className="text-center">
+                    <div className="text-xl font-serif font-bold text-text-primary mb-2">VIP Network Ready</div>
+                    <div className="text-text-secondary">Your priority contacts are configured for executive intelligence</div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Luxury Actions */}
+            <div className="flex justify-between items-center pt-8 border-t border-champagneGold/20">
+              <div className="flex space-x-6">
+                <button
+                  onClick={prevStep}
+                  className="text-text-secondary hover:text-text-primary transition-colors text-lg font-medium"
+                >
+                  Back to Connections
+                </button>
+                <button
+                  onClick={handleSkip}
+                  className="text-text-secondary hover:text-text-primary transition-colors text-lg font-medium"
+                >
+                  Skip VIP Selection
+                </button>
+                <button
+                  onClick={handleConcierge}
+                  className="text-champagneGold hover:text-champagneGold/80 transition-colors flex items-center space-x-2 text-lg font-medium"
+                >
+                  <Calendar className="w-5 h-5" />
+                  <span>Schedule Setup Call</span>
+                </button>
+              </div>
+              
+              <motion.button
+                onClick={handleComplete}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-10 py-5 rounded-2xl text-xl font-bold bg-gradient-champagne text-jetBlack shadow-champagne-glow hover:shadow-champagne-lg transition-all flex items-center space-x-3"
+              >
+                <Crown className="w-6 h-6" />
+                <span>Enter Command Center</span>
+                <ArrowRight className="w-6 h-6" />
+              </motion.button>
+            </div>
+          </motion.div>
+        </motion.div>
     </div>
   )
 }

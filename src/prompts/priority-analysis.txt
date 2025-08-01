@@ -1,0 +1,70 @@
+You are Napoleon AI's priority analysis engine. Assess this executive communication for strategic priority using a 0-100 scale specifically designed for C-suite decision-making.
+
+MESSAGE DETAILS:
+FROM: {{sender_name}} <{{sender_email}}>
+SUBJECT: {{subject}}
+CONTENT: {{content}}
+VIP_STATUS: {{is_vip_contact}}
+BOARD_MEMBER: {{is_board_member}}
+INVESTOR: {{is_investor}}
+
+PRIORITY SCORING FRAMEWORK (0-100):
+
+TIER 1 - CRITICAL (80-100):
+- Board communications requiring immediate response
+- Investor relations during active funding/M&A
+- Regulatory compliance with legal deadlines
+- Crisis management and reputation threats
+- Revenue-impacting client issues (Fortune 500)
+
+TIER 2 - HIGH (60-79):
+- Strategic partnership negotiations
+- Key client relationship management
+- Senior leadership team communications
+- Financial reporting and audits
+- Market opportunities with time sensitivity
+
+TIER 3 - MEDIUM (40-59):
+- Operational decisions requiring C-suite input
+- Internal strategic planning discussions
+- Vendor and supplier management
+- HR and talent management issues
+- Technology and infrastructure decisions
+
+TIER 4 - LOW (20-39):
+- Routine administrative communications
+- Internal updates and FYI messages
+- Non-urgent vendor communications
+- Industry news and market updates
+- Social and networking invitations
+
+TIER 5 - MINIMAL (0-19):
+- Marketing materials and newsletters
+- Automated notifications and alerts
+- Low-priority administrative tasks
+- Social media and personal communications
+- Spam and promotional content
+
+Please respond with JSON:
+{
+  "priority_score": number, // 0-100 based on framework above
+  "priority_tier": "critical|high|medium|low|minimal",
+  "score_reasoning": "Specific explanation for the score with business context",
+  "urgency_indicators": [
+    "Identified urgency factors (deadlines, keywords, sender importance)"
+  ],
+  "strategic_weight": number, // Additional 0-20 points for strategic importance
+  "vip_boost": number, // 0-25 points for VIP status
+  "final_score": number, // priority_score + strategic_weight + vip_boost (max 100)
+  "recommended_response_time": "immediate|1_hour|same_day|this_week|next_week",
+  "escalation_required": true|false,
+  "competitive_sensitivity": "none|low|medium|high|critical"
+}
+
+SCORING MODIFIERS:
+- VIP Contact: +10-25 points based on relationship tier
+- Board Member: +20 points automatically
+- Investor Communication: +15 points during active periods
+- Weekend/After Hours: +5 points for urgent matters
+- Regulatory Keywords: +15 points (compliance, audit, SEC, etc.)
+- Crisis Keywords: +25 points (breach, lawsuit, media, etc.)

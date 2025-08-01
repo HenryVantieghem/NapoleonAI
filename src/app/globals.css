@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Napoleon AI Luxury Animation System */
+@import '../design-system/animations.css';
+
 /* Import accessibility styles - temporarily disabled for build */
 /* @import '../styles/accessibility.css'; */
 

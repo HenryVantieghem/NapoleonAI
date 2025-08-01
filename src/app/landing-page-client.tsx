@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
-import { Crown, ChevronDown, CheckCircle, Star, Users, ArrowRight } from "lucide-react"
+import { Crown, ChevronDown, CheckCircle, Star, Users, ArrowRight, TrendingUp, Shield, Clock, Sparkles, Mail } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 

@@ -83,86 +83,109 @@ export default function CommandCenter() {
       : '280px 1fr 340px'
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-navy-900 via-navy-800 to-navy-700">
-      {/* Executive Header */}
-      <header className="bg-navy-900 border-b border-gold/20 px-6 py-4 relative z-50">
+    <div className="min-h-screen bg-gradient-jet-black relative overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-20 left-10 w-96 h-96 bg-champagneGold/5 rounded-full blur-3xl animate-float" />
+        <div className="absolute bottom-32 right-16 w-80 h-80 bg-midnightBlue/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '3s' }} />
+        <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-champagneGold/3 rounded-full blur-2xl animate-float" style={{ animationDelay: '6s' }} />
+      </div>
+
+      {/* Executive Glassmorphic Header */}
+      <motion.header 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="bg-jetBlack/60 backdrop-blur-executive border-b border-champagneGold/20 px-6 py-4 relative z-50 shadow-private-jet-glass"
+      >
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-6">
             {/* Mobile menu button */}
             <button
               onClick={() => setActivePanel(activePanel === 'main' ? 'sidebar' : 'main')}
-              className="lg:hidden p-2 text-gold-200 hover:text-gold transition-colors"
+              className="lg:hidden p-3 text-champagneGold/80 hover:text-champagneGold transition-all duration-300 rounded-xl hover:bg-champagneGold/10"
             >
-              <Menu className="w-5 h-5" />
+              <Menu className="w-6 h-6" />
             </button>
 
             {/* Desktop sidebar toggle */}
             <button
               onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-              className="hidden lg:block p-2 text-gold-200 hover:text-gold transition-colors"
+              className="hidden lg:block p-3 text-champagneGold/80 hover:text-champagneGold transition-all duration-300 rounded-xl hover:bg-champagneGold/10"
             >
-              <Menu className="w-5 h-5" />
+              <Menu className="w-6 h-6" />
             </button>
 
             <div className="flex items-center">
-              <div className="w-10 h-10 bg-gradient-gold rounded-full flex items-center justify-center mr-3 shadow-gold">
-                <Crown className="w-5 h-5 text-navy-900" />
-              </div>
+              <motion.div 
+                whileHover={{ scale: 1.1, rotate: 5 }}
+                transition={{ duration: 0.3 }}
+                className="w-12 h-12 bg-gradient-champagne/20 backdrop-blur-luxury rounded-full flex items-center justify-center mr-4 shadow-champagne-glow border border-champagneGold/30"
+              >
+                <Crown className="w-6 h-6 text-champagneGold" />
+              </motion.div>
               <div>
-                <h1 className="text-xl lg:text-2xl font-serif font-bold text-white">Command Center</h1>
-                <p className="text-xs text-gold-200 hidden lg:block">Executive Intelligence Platform</p>
+                <h1 className="text-2xl lg:text-3xl font-serif font-bold text-text-primary">Command Center</h1>
+                <p className="text-sm text-champagneGold/80 hidden lg:block font-medium">Executive Intelligence Platform</p>
               </div>
             </div>
           </div>
 
-          <div className="flex items-center space-x-4">
-            <div className="hidden md:block text-sm text-gold-200">
-              Welcome, {user?.firstName || 'Executive'}
+          <div className="flex items-center space-x-6">
+            <div className="hidden md:flex items-center space-x-4">
+              <div className="text-right">
+                <div className="text-lg font-medium text-text-primary">Welcome, {user?.firstName || 'Executive'}</div>
+                <div className="text-sm text-champagneGold/80">Ready for strategic clarity</div>
+              </div>
             </div>
-            <button 
+            <motion.button 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => window.location.href = '/'}
-              className="flex items-center space-x-2 text-gold-200 hover:text-gold transition-colors"
+              className="flex items-center space-x-2 px-4 py-2 bg-jetBlack/40 backdrop-blur-glass border border-champagneGold/20 text-champagneGold hover:border-champagneGold/40 transition-all duration-300 rounded-xl"
             >
-              <LogOut className="w-4 h-4" />
-              <span className="hidden md:inline">Logout</span>
-            </button>
+              <LogOut className="w-5 h-5" />
+              <span className="hidden md:inline font-medium">Logout</span>
+            </motion.button>
           </div>
         </div>
-      </header>
+      </motion.header>
 
-      {/* Three-Column Command Center Layout */}
+      {/* Three-Panel Executive Command Center Layout */}
       <div 
-        className="h-[calc(100vh-80px)] grid transition-all duration-300 ease-in-out"
+        className="h-[calc(100vh-88px)] grid transition-all duration-500 ease-in-out relative z-10"
         style={{
           gridTemplateAreas,
           gridTemplateColumns,
-          gap: '0'
+          gap: '1px'
         }}
       >
-        {/* Sidebar Panel - Daily Digest & Filters */}
+        {/* Sidebar Panel - Strategic Digest & Intelligence */}
         <AnimatePresence mode="wait">
           {(!isMobile || activePanel === 'sidebar') && !sidebarCollapsed && (
             <motion.div
               key="sidebar"
-              initial={{ x: isMobile ? -280 : 0, opacity: isMobile ? 0 : 1 }}
+              initial={{ x: isMobile ? -320 : 0, opacity: isMobile ? 0 : 1 }}
               animate={{ x: 0, opacity: 1 }}
-              exit={{ x: isMobile ? -280 : 0, opacity: isMobile ? 0 : 1 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
+              exit={{ x: isMobile ? -320 : 0, opacity: isMobile ? 0 : 1 }}
+              transition={{ duration: 0.4, ease: "easeInOut" }}
               className={`
-                bg-white/95 backdrop-blur-luxury border-r border-gold/20 overflow-y-auto
+                bg-jetBlack/40 backdrop-blur-executive border-r border-champagneGold/20 overflow-y-auto shadow-private-jet-glass
                 ${isMobile ? 'fixed inset-y-0 left-0 z-40 w-80' : ''}
               `}
               style={{ gridArea: 'sidebar' }}
             >
               {/* Mobile close button */}
               {isMobile && (
-                <div className="flex justify-end p-4">
-                  <button
+                <div className="flex justify-end p-6">
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
                     onClick={() => setActivePanel('main')}
-                    className="p-2 text-navy-600 hover:text-navy-900"
+                    className="p-3 text-champagneGold/80 hover:text-champagneGold rounded-xl hover:bg-champagneGold/10 transition-all duration-300"
                   >
-                    <X className="w-5 h-5" />
-                  </button>
+                    <X className="w-6 h-6" />
+                  </motion.button>
                 </div>
               )}
               
@@ -176,62 +199,70 @@ export default function CommandCenter() {
           )}
         </AnimatePresence>
 
-        {/* Main Panel - Unified Inbox */}
+        {/* Main Panel - Executive Unified Inbox */}
         <div 
           className={`
-            bg-cream/50 backdrop-blur-luxury overflow-hidden flex flex-col
+            bg-jetBlack/30 backdrop-blur-executive overflow-hidden flex flex-col shadow-private-jet-glass
             ${(!isMobile || activePanel === 'main') ? 'block' : 'hidden'}
           `}
           style={{ gridArea: 'main' }}
         >
-          {/* Search Header */}
-          <div className="bg-white/95 backdrop-blur-luxury border-b border-gold/20 p-4 lg:p-6">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
-              <div className="relative flex-1 max-w-md">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-navy-600 w-4 h-4" />
+          {/* Executive Search & Filter Header */}
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="bg-jetBlack/60 backdrop-blur-executive border-b border-champagneGold/20 p-6 shadow-luxury-glass"
+          >
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-6 lg:space-y-0">
+              {/* Executive Search */}
+              <div className="relative flex-1 max-w-lg">
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-champagneGold/60 w-5 h-5" />
                 <input
                   type="text"
-                  placeholder="Search messages, contacts, content..."
+                  placeholder="Search messages, contacts, strategic insights..."
                   value={searchQuery}
                   onChange={(e) => {
                     setSearchQuery(e.target.value)
                     searchMessages(e.target.value)
                   }}
-                  className="w-full pl-10 pr-4 py-2 border border-gold/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent bg-white/80 transition-all"
+                  className="w-full pl-12 pr-4 py-4 bg-jetBlack/20 backdrop-blur-glass border border-champagneGold/20 rounded-2xl text-text-primary placeholder-text-secondary/60 focus:border-champagneGold/40 focus:ring-2 focus:ring-champagneGold/20 transition-all text-lg font-medium"
                 />
               </div>
               
-              {/* Filter Chips */}
-              <div className="flex items-center space-x-2 overflow-x-auto">
+              {/* Executive Filter Chips */}
+              <div className="flex items-center space-x-3 overflow-x-auto">
                 {[
-                  { id: 'all', label: 'All', icon: Mail },
-                  { id: 'vip', label: 'VIP', icon: Crown },
+                  { id: 'all', label: 'All Messages', icon: Mail },
+                  { id: 'vip', label: 'VIP Priority', icon: Crown },
                   { id: 'high-priority', label: 'Urgent', icon: AlertCircle },
                   { id: 'unread', label: 'Unread', icon: Eye },
                   { id: 'today', label: 'Today', icon: Clock }
                 ].map(({ id, label, icon: Icon }) => (
-                  <button
+                  <motion.button
                     key={id}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={() => toggleFilter(id)}
                     className={`
-                      flex items-center space-x-1 px-3 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap
+                      flex items-center space-x-2 px-4 py-3 rounded-xl text-sm font-semibold transition-all whitespace-nowrap border
                       ${activeFilters.includes(id)
                         ? id === 'vip' 
-                          ? 'bg-gradient-gold text-navy-900 shadow-gold'
+                          ? 'bg-gradient-champagne text-jetBlack shadow-champagne-glow border-champagneGold'
                           : id === 'high-priority'
-                          ? 'bg-red-500 text-white shadow-lg'
-                          : 'bg-navy-900 text-white shadow-lg'
-                        : 'bg-white/80 text-navy-700 hover:bg-white border border-gold/20'
+                          ? 'bg-red-500/80 backdrop-blur-glass text-white shadow-lg border-red-400'
+                          : 'bg-champagneGold/20 backdrop-blur-glass text-champagneGold shadow-champagne border-champagneGold/40'
+                        : 'bg-jetBlack/20 backdrop-blur-glass text-text-secondary hover:text-champagneGold border-champagneGold/20 hover:border-champagneGold/40'
                       }
                     `}
                   >
                     <Icon className="w-4 h-4" />
                     <span>{label}</span>
-                  </button>
+                  </motion.button>
                 ))}
               </div>
             </div>
-          </div>
+          </motion.div>
 
           <UnifiedInbox
             messages={messages}
@@ -246,31 +277,33 @@ export default function CommandCenter() {
           />
         </div>
 
-        {/* Context Panel - Message Details & Actions */}
+        {/* Context Panel - Executive Intelligence & Actions */}
         <AnimatePresence mode="wait">
           {(!isMobile || activePanel === 'context') && (
             <motion.div
               key="context"
-              initial={{ x: isMobile ? 340 : 0, opacity: isMobile ? 0 : 1 }}
+              initial={{ x: isMobile ? 360 : 0, opacity: isMobile ? 0 : 1 }}
               animate={{ x: 0, opacity: 1 }}
-              exit={{ x: isMobile ? 340 : 0, opacity: isMobile ? 0 : 1 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
+              exit={{ x: isMobile ? 360 : 0, opacity: isMobile ? 0 : 1 }}
+              transition={{ duration: 0.4, ease: "easeInOut" }}
               className={`
-                bg-white/95 backdrop-blur-luxury border-l border-gold/20 overflow-y-auto
+                bg-jetBlack/40 backdrop-blur-executive border-l border-champagneGold/20 overflow-y-auto shadow-private-jet-glass
                 ${isMobile ? 'fixed inset-y-0 right-0 z-40 w-80' : ''}
               `}
               style={{ gridArea: 'context' }}
             >
               {/* Mobile close button */}
               {isMobile && (
-                <div className="flex justify-between items-center p-4 border-b border-gold/20">
-                  <h2 className="text-lg font-serif font-bold text-navy-900">Message Details</h2>
-                  <button
+                <div className="flex justify-between items-center p-6 border-b border-champagneGold/20">
+                  <h2 className="text-xl font-serif font-bold text-text-primary">Executive Intelligence</h2>
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
                     onClick={() => setActivePanel('main')}
-                    className="p-2 text-navy-600 hover:text-navy-900"
+                    className="p-3 text-champagneGold/80 hover:text-champagneGold rounded-xl hover:bg-champagneGold/10 transition-all duration-300"
                   >
-                    <X className="w-5 h-5" />
-                  </button>
+                    <X className="w-6 h-6" />
+                  </motion.button>
                 </div>
               )}
 
@@ -285,38 +318,48 @@ export default function CommandCenter() {
         </AnimatePresence>
       </div>
 
-      {/* Mobile Bottom Navigation */}
+      {/* Executive Mobile Navigation */}
       {isMobile && (
-        <div className="fixed bottom-0 left-0 right-0 bg-navy-900 border-t border-gold/20 px-4 py-2 z-50">
+        <motion.div 
+          initial={{ y: 100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="fixed bottom-0 left-0 right-0 bg-jetBlack/80 backdrop-blur-executive border-t border-champagneGold/20 px-6 py-4 z-50 shadow-private-jet-glass"
+        >
           <div className="flex justify-around">
             {[
-              { id: 'sidebar', label: 'Digest', icon: Crown },
-              { id: 'main', label: 'Inbox', icon: Mail },
-              { id: 'context', label: 'Details', icon: Eye }
+              { id: 'sidebar', label: 'Strategic Digest', icon: Crown },
+              { id: 'main', label: 'Unified Inbox', icon: Mail },
+              { id: 'context', label: 'Intelligence', icon: Eye }
             ].map(({ id, label, icon: Icon }) => (
-              <button
+              <motion.button
                 key={id}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => setActivePanel(id as any)}
                 className={`
-                  flex flex-col items-center space-y-1 py-2 px-3 rounded-lg transition-all
+                  flex flex-col items-center space-y-2 py-3 px-4 rounded-xl transition-all duration-300
                   ${activePanel === id 
-                    ? 'text-gold bg-gold/10' 
-                    : 'text-gold-200 hover:text-gold'
+                    ? 'text-champagneGold bg-champagneGold/10 shadow-champagne border border-champagneGold/30' 
+                    : 'text-text-secondary hover:text-champagneGold hover:bg-champagneGold/5'
                   }
                 `}
               >
-                <Icon className="w-5 h-5" />
-                <span className="text-xs">{label}</span>
-              </button>
+                <Icon className="w-6 h-6" />
+                <span className="text-xs font-medium">{label}</span>
+              </motion.button>
             ))}
           </div>
-        </div>
+        </motion.div>
       )}
 
-      {/* Mobile overlay */}
+      {/* Executive Mobile Overlay */}
       {isMobile && activePanel !== 'main' && (
-        <div
-          className="fixed inset-0 bg-black/50 z-30"
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-jetBlack/60 backdrop-blur-glass z-30"
           onClick={() => setActivePanel('main')}
         />
       )}

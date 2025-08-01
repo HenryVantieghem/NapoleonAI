@@ -49,16 +49,6 @@ export function useAccessibility() {
     setMounted(true)
   }, [])
 
-  // Save settings when they change
-  useEffect(() => {
-    if (mounted) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(settings))
-      
-      // Apply settings to document
-      applySettingsToDocument(settings)
-    }
-  }, [settings, mounted, applySettingsToDocument])
-
   const applySettingsToDocument = useCallback((settings: AccessibilitySettings) => {
     const root = document.documentElement
     
@@ -87,6 +77,16 @@ export function useAccessibility() {
       root.classList.remove('large-touch-targets')
     }
   }, [])
+
+  // Save settings when they change
+  useEffect(() => {
+    if (mounted) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(settings))
+      
+      // Apply settings to document
+      applySettingsToDocument(settings)
+    }
+  }, [settings, mounted, applySettingsToDocument])
 
   const updateSetting = useCallback(<K extends keyof AccessibilitySettings>(
     key: K,

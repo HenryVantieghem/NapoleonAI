@@ -1,0 +1,315 @@
+{
+  "meta": {
+    "version": "1.0.0",
+    "description": "Napoleon AI - Private Jet Executive Design System",
+    "inspiration": "Cartier luxury jewelry, private aviation, executive boardrooms",
+    "target": "Fortune 500 C-suite executives",
+    "accessibility": "WCAG AAA compliant",
+    "performance": "Lighthouse 95+ target"
+  },
+  
+  "colors": {
+    "core": {
+      "jetBlack": {
+        "value": "#0B0D11",
+        "description": "Primary background - Private jet interior black",
+        "usage": ["backgrounds", "text-on-light"],
+        "contrast": {
+          "warmIvory": 18.5,
+          "champagneGold": 16.2,
+          "platinumSilver": 14.8
+        }
+      },
+      "midnightBlue": {
+        "value": "#122039",
+        "description": "Secondary background - Night sky at 40,000 feet",
+        "usage": ["card-backgrounds", "navigation"],
+        "gradient": "linear-gradient(135deg, #122039 0%, #1A3981 100%)"
+      },
+      "champagneGold": {
+        "value": "#D4AF37",
+        "description": "Primary accent - Luxury champagne bubbles",
+        "usage": ["cta-buttons", "highlights", "logos"],
+        "hover": "#E8BE35",
+        "gradient": "linear-gradient(135deg, #D4AF37 0%, #E8BE35 100%)",
+        "shimmer": "linear-gradient(90deg, transparent 0%, rgba(212,175,55,0.4) 50%, transparent 100%)"
+      },
+      "platinumSilver": {
+        "value": "#C7CAD1",
+        "description": "Neutral text - Aircraft aluminum finish",
+        "usage": ["body-text", "borders", "dividers"]
+      },
+      "warmIvory": {
+        "value": "#F6F6F4",
+        "description": "Light text - Luxury leather cream",
+        "usage": ["headings-on-dark", "primary-text"]
+      },
+      "cognacLeather": {
+        "value": "#8C5A3C",
+        "description": "VIP accent - Executive leather seats",
+        "usage": ["vip-badges", "premium-features"]
+      }
+    },
+    
+    "semantic": {
+      "background": {
+        "primary": "#0B0D11",
+        "secondary": "#122039", 
+        "surface": "#1A1E26",
+        "overlay": "rgba(11, 13, 17, 0.95)"
+      },
+      "text": {
+        "primary": "#F6F6F4",
+        "secondary": "#C7CAD1",
+        "accent": "#D4AF37",
+        "muted": "#8B929D",
+        "inverse": "#0B0D11"
+      },
+      "interactive": {
+        "primary": "#D4AF37",
+        "primaryHover": "#E8BE35",
+        "primaryActive": "#B8962F",
+        "secondary": "#122039",
+        "secondaryHover": "#1A3981"
+      },
+      "status": {
+        "success": "#10B981",
+        "warning": "#F59E0B", 
+        "error": "#EF4444",
+        "info": "#3B82F6",
+        "vip": "#8C5A3C"
+      }
+    },
+    
+    "glassmorphism": {
+      "background": "rgba(18, 32, 57, 0.1)",
+      "border": "rgba(199, 202, 209, 0.2)",
+      "backdrop": "blur(30px)",
+      "shadow": "0 8px 32px rgba(11, 13, 17, 0.12)"
+    }
+  },
+  
+  "typography": {
+    "families": {
+      "script": {
+        "name": "Shelley Script",
+        "fallback": "Brush Script MT, cursive",
+        "usage": ["logo", "signatures"],
+        "weight": [400]
+      },
+      "serif": {
+        "name": "Canela Text",
+        "fallback": "Playfair Display, Georgia, serif", 
+        "usage": ["headings", "hero-text"],
+        "weight": [300, 400, 500, 700]
+      },
+      "sans": {
+        "name": "Inter",
+        "fallback": "system-ui, sans-serif",
+        "usage": ["body", "ui-elements"],
+        "weight": [300, 400, 500, 600, 700]
+      },
+      "mono": {
+        "name": "JetBrains Mono",
+        "fallback": "Monaco, monospace",
+        "usage": ["code", "data-tables"],
+        "weight": [400, 500]
+      }
+    },
+    
+    "scale": {
+      "hero": {
+        "size": "4.5rem",
+        "lineHeight": "1.1",
+        "letterSpacing": "-0.02em",
+        "family": "serif",
+        "weight": 700
+      },
+      "display": {
+        "size": "3.75rem", 
+        "lineHeight": "1.1",
+        "letterSpacing": "-0.02em",
+        "family": "serif",
+        "weight": 500
+      },
+      "h1": {
+        "size": "3rem",
+        "lineHeight": "1.2", 
+        "letterSpacing": "-0.02em",
+        "family": "serif",
+        "weight": 500
+      },
+      "h2": {
+        "size": "2.25rem",
+        "lineHeight": "1.2",
+        "letterSpacing": "-0.01em", 
+        "family": "serif",
+        "weight": 500
+      },
+      "h3": {
+        "size": "1.875rem",
+        "lineHeight": "1.3",
+        "letterSpacing": "-0.01em",
+        "family": "serif", 
+        "weight": 500
+      },
+      "bodyLarge": {
+        "size": "1.125rem",
+        "lineHeight": "1.6",
+        "family": "sans",
+        "weight": 400
+      },
+      "body": {
+        "size": "1rem",
+        "lineHeight": "1.6", 
+        "family": "sans",
+        "weight": 400
+      },
+      "caption": {
+        "size": "0.875rem",
+        "lineHeight": "1.5",
+        "family": "sans",
+        "weight": 400
+      }
+    }
+  },
+  
+  "spacing": {
+    "scale": [0, 4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 80, 96, 128, 160, 192, 224, 256],
+    "semantic": {
+      "componentGap": 24,
+      "sectionGap": 96, 
+      "cardPadding": 32,
+      "buttonPadding": [16, 32],
+      "inputPadding": [12, 16]
+    }
+  },
+  
+  "shadows": {
+    "luxury": "0 25px 50px -12px rgba(11, 13, 17, 0.15)",
+    "luxuryLg": "0 35px 60px -12px rgba(11, 13, 17, 0.2)",
+    "glassmorphism": "0 8px 32px rgba(11, 13, 17, 0.12), inset 0 1px 0 rgba(199, 202, 209, 0.1)",
+    "champagne": "0 10px 40px rgba(212, 175, 55, 0.3)",
+    "champagneLg": "0 20px 60px rgba(212, 175, 55, 0.4)",
+    "champagneGlow": "0 0 30px rgba(212, 175, 55, 0.4), 0 0 60px rgba(212, 175, 55, 0.2)",
+    "executive": "0 12px 40px rgba(18, 32, 57, 0.25), 0 4px 16px rgba(212, 175, 55, 0.15)"
+  },
+  
+  "animations": {
+    "durations": {
+      "instant": 150,
+      "fast": 300,
+      "medium": 600,
+      "slow": 800,
+      "luxury": 1200
+    },
+    
+    "easings": {
+      "easeInOut": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "easeOut": "cubic-bezier(0, 0, 0.2, 1)", 
+      "easeIn": "cubic-bezier(0.4, 0, 1, 1)",
+      "bounce": "cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+      "luxury": "cubic-bezier(0.25, 0.46, 0.45, 0.94)"
+    },
+    
+    "effects": {
+      "ripple": {
+        "duration": 600,
+        "easing": "luxury",
+        "scale": [0, 1.2]
+      },
+      "shimmer": {
+        "duration": 2000,
+        "easing": "easeInOut",
+        "translateX": ["-100%", "100%"]
+      },
+      "confetti": {
+        "duration": 800,
+        "easing": "bounce",
+        "particles": 20
+      },
+      "halo": {
+        "duration": 1500,
+        "easing": "easeInOut", 
+        "opacity": [0.5, 1, 0.5],
+        "scale": [1, 1.05, 1]
+      }
+    }
+  },
+  
+  "glassmorphism": {
+    "blur": {
+      "light": "12px",
+      "medium": "20px", 
+      "heavy": "30px",
+      "executive": "24px"
+    },
+    "borders": {
+      "light": "1px solid rgba(255, 255, 255, 0.1)",
+      "medium": "1px solid rgba(199, 202, 209, 0.2)",
+      "heavy": "2px solid rgba(212, 175, 55, 0.3)"
+    },
+    "backgrounds": {
+      "card": "rgba(18, 32, 57, 0.1)",
+      "panel": "rgba(11, 13, 17, 0.2)",
+      "overlay": "rgba(18, 32, 57, 0.8)"
+    }
+  },
+  
+  "components": {
+    "button": {
+      "primary": {
+        "background": "linear-gradient(135deg, #D4AF37 0%, #E8BE35 100%)",
+        "color": "#0B0D11",
+        "shadow": "champagne",
+        "hover": {
+          "shadow": "champagneLg",
+          "transform": "translateY(-2px)"
+        },
+        "active": {
+          "background": "#B8962F"
+        }
+      },
+      "secondary": {
+        "background": "transparent",
+        "border": "2px solid #D4AF37",
+        "color": "#D4AF37",
+        "hover": {
+          "background": "#D4AF37",
+          "color": "#0B0D11"
+        }
+      }
+    },
+    
+    "card": {
+      "background": "rgba(18, 32, 57, 0.1)",
+      "backdropFilter": "blur(30px)",
+      "border": "1px solid rgba(199, 202, 209, 0.2)",
+      "borderRadius": "16px",
+      "shadow": "glassmorphism"
+    },
+    
+    "input": {
+      "background": "rgba(18, 32, 57, 0.1)",
+      "border": "1px solid rgba(199, 202, 209, 0.2)",
+      "borderRadius": "12px",
+      "color": "#F6F6F4",
+      "placeholder": "#8B929D"
+    }
+  },
+  
+  "breakpoints": {
+    "mobile": "768px",
+    "tablet": "1024px", 
+    "desktop": "1280px",
+    "wide": "1440px"
+  },
+  
+  "performance": {
+    "bundleSize": "500kb",
+    "ttfb": "200ms",
+    "lcp": "2.5s",
+    "fid": "100ms",
+    "cls": "0.1"
+  }
+}

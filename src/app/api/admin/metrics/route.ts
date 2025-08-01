@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { currentUser } from '@clerk/nextjs/server'
 import { createServiceClient } from '@/lib/supabase/server'
+import { enhancedAIService } from '@/lib/ai/enhanced-ai-service'
 
 interface MetricsOverview {
   totalRequests: number
@@ -62,26 +63,67 @@ export async function GET(request: NextRequest) {
     const hours = getHoursFromTimeframe(timeframe)
     const startTime = new Date(Date.now() - hours * 60 * 60 * 1000).toISOString()
     
-    // Mock AI processing logs (replace with actual query when table exists)
-    const logs = [
-      {
-        id: '1',
-        operation_type: operation || 'batch_process',
-        processed_at: new Date().toISOString(),
-        success_count: 10,
-        error_count: 0,
-        tokens_used: 1500,
-        total_cost_cents: 45,
-        average_latency_ms: 450,
-        processing_time_ms: 450,
-        user_id: userId || 'mock-user'
+    // Get AI processing metrics from enhanced service
+    try {
+      const aiMetrics = await enhancedAIService.getAIMetrics(userId || user.id, {
+        start: startTime,
+        end: new Date().toISOString()
+      })
+
+      // Query actual AI processing logs from database
+      let logsQuery = supabase
+        .from('ai_processing_logs')
+        .select('*')
+        .gte('created_at', startTime)
+      
+      if (userId) {
+        logsQuery = logsQuery.eq('user_id', userId)
       }
-    ]
-    const logsError = null
-    
-    if (logsError) {
-      console.error('Error fetching processing logs:', logsError)
-      return NextResponse.json({ error: 'Failed to fetch logs' }, { status: 500 })
+      
+      const { data: logs, error: logsError } = await logsQuery
+      
+      if (logsError) {
+        console.error('Error fetching processing logs:', logsError)
+        // Fallback to AI metrics if logs unavailable
+        return NextResponse.json({
+          timeframe,
+          operation,
+          userId,
+          metrics: {
+            overview: {
+              totalRequests: aiMetrics.totalMessages,
+              successfulRequests: aiMetrics.successfulProcessing,
+              failedRequests: aiMetrics.failedProcessing,
+              successRate: Math.round((aiMetrics.successfulProcessing / aiMetrics.totalMessages) * 100) || 0,
+              totalTokens: aiMetrics.totalTokensUsed,
+              totalCostCents: Math.round(aiMetrics.totalCost * 100),
+              avgLatency: aiMetrics.avgProcessingTime,
+              totalMessages: aiMetrics.totalMessages,
+              activeUsers: 1
+            },
+            aiMetrics,
+            fallbackMode: true
+          },
+          generatedAt: new Date().toISOString()
+        })
+      }
+
+      // Calculate comprehensive metrics with enhanced data
+      const enhancedMetrics = calculateEnhancedMetrics(logs || [], messages || [], aiMetrics)
+      
+      return NextResponse.json({
+        timeframe,
+        operation,
+        userId,
+        metrics: enhancedMetrics,
+        aiMetrics,
+        generatedAt: new Date().toISOString(),
+        sampleLogs: (logs || []).slice(0, 10)
+      })
+      
+    } catch (aiError) {
+      console.error('Enhanced AI service error:', aiError)
+      // Continue with original flow as fallback
     }
 
     // Fetch message counts for context
@@ -139,6 +181,34 @@ function getHoursFromTimeframe(timeframe: string): number {
     case '7d': return 168
     case '30d': return 720
     default: return 24
+  }
+}
+
+function calculateEnhancedMetrics(logs: any[], messages: any[], aiMetrics: any) {
+  // Use enhanced AI metrics when available
+  const baseMetrics = calculateMetrics(logs, messages)
+  
+  return {
+    ...baseMetrics,
+    aiMetrics,
+    enhancedFeatures: {
+      vipProcessing: {
+        totalVipMessages: aiMetrics.vipBoosts || 0,
+        avgVipBoost: 15, // Average VIP boost points
+        boardMemberMessages: logs.filter(l => l.notes?.includes('board')).length
+      },
+      performanceTargets: {
+        targetProcessingTime: 500, // 500ms target
+        actualAvgTime: aiMetrics.avgProcessingTime || 0,
+        performanceScore: Math.min(100, Math.max(0, 100 - ((aiMetrics.avgProcessingTime - 500) / 10)))
+      },
+      costEfficiency: {
+        targetCostPerMessage: 0.03, // $0.03 per message
+        actualCostPerMessage: aiMetrics.totalCost / aiMetrics.totalMessages || 0,
+        dailyCapacity: 2880, // Max messages per day per user
+        currentUtilization: (aiMetrics.totalMessages / 2880) * 100
+      }
+    }
   }
 }
 

@@ -1,0 +1,318 @@
+/**
+ * Napoleon AI - Luxury Animation System
+ * Executive-grade micro-interactions and effects
+ */
+
+/* Core Animation Keyframes */
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.2);
+    opacity: 0;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes confetti {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-200px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes halo {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(1);
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+    box-shadow: 0 0 40px rgba(212, 175, 55, 0.6);
+  }
+}
+
+@keyframes luxury-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes luxury-slide-up {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes glass-emerge {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+    backdrop-filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    backdrop-filter: blur(30px);
+  }
+}
+
+@keyframes champagne-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(212, 175, 55, 0.8), 0 0 60px rgba(212, 175, 55, 0.4);
+  }
+}
+
+@keyframes executive-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.02);
+    opacity: 0.9;
+  }
+}
+
+/* Luxury Button Effects */
+.luxury-button {
+  position: relative;
+  overflow: hidden;
+  transition: all 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.luxury-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.luxury-button:hover::before {
+  left: 100%;
+}
+
+.luxury-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 60px rgba(212, 175, 55, 0.4);
+}
+
+.luxury-button:active {
+  transform: translateY(0);
+  transition: all 150ms cubic-bezier(0.4, 0, 1, 1);
+}
+
+/* Ripple Effect */
+.ripple-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple-effect::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(212, 175, 55, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+              height 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.ripple-effect:active::after {
+  width: 300px;
+  height: 300px;
+}
+
+/* Shimmer Effect */
+.shimmer-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-effect::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent 0%, rgba(212,175,55,0.4) 50%, transparent 100%);
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+/* Glass Card Animations */
+.glass-card {
+  backdrop-filter: blur(30px);
+  border: 1px solid rgba(199, 202, 209, 0.2);
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  backdrop-filter: blur(40px);
+  border-color: rgba(212, 175, 55, 0.3);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(11, 13, 17, 0.3);
+}
+
+/* Confetti Animation */
+.confetti-particle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #D4AF37;
+  animation: confetti 800ms cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+}
+
+.confetti-particle:nth-child(2n) {
+  background: #E8BE35;
+  animation-delay: 100ms;
+}
+
+.confetti-particle:nth-child(3n) {
+  background: #B8962F;
+  animation-delay: 200ms;
+}
+
+/* Halo Effect */
+.halo-effect {
+  animation: halo 1500ms ease-in-out infinite;
+}
+
+/* Executive Hover States */
+.executive-hover {
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.executive-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(18, 32, 57, 0.25), 0 4px 16px rgba(212, 175, 55, 0.15);
+}
+
+/* Luxury Text Animations */
+.luxury-fade-in {
+  animation: luxury-fade-in 800ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.luxury-slide-up {
+  animation: luxury-slide-up 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.glass-emerge {
+  animation: glass-emerge 800ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* Staggered Animation Delays */
+.stagger-1 { animation-delay: 100ms; }
+.stagger-2 { animation-delay: 200ms; }
+.stagger-3 { animation-delay: 300ms; }
+.stagger-4 { animation-delay: 400ms; }
+.stagger-5 { animation-delay: 500ms; }
+
+/* Loading States */
+.luxury-loading {
+  position: relative;
+  overflow: hidden;
+}
+
+.luxury-loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.3), transparent);
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* Focus States for Accessibility */
+.luxury-focus:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.5);
+  border-color: #D4AF37;
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .luxury-button,
+  .glass-card,
+  .executive-hover,
+  .luxury-fade-in,
+  .luxury-slide-up,
+  .glass-emerge {
+    animation: none;
+    transition: none;
+  }
+  
+  .shimmer-effect::before,
+  .confetti-particle,
+  .halo-effect {
+    animation: none;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .glass-card {
+    backdrop-filter: none;
+    background: rgba(18, 32, 57, 0.95);
+    border: 2px solid #D4AF37;
+  }
+  
+  .luxury-button {
+    border: 2px solid;
+  }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .executive-hover:hover,
+  .glass-card:hover,
+  .luxury-button:hover {
+    transform: none;
+  }
+  
+  .executive-hover:active,
+  .glass-card:active,
+  .luxury-button:active {
+    transform: scale(0.98);
+    transition: transform 150ms cubic-bezier(0.4, 0, 1, 1);
+  }
+}

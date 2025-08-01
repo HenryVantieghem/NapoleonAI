@@ -15,6 +15,9 @@ export interface GestureHandlers {
   onSwipeRight?: () => void  
   onLongPress?: () => void
   onTap?: () => void
+  onPriorityBoost?: () => void // Executive-specific: Golden swipe for VIP boost
+  onQuickArchive?: () => void // Executive-specific: Quick archive with champagne animation
+  onVipAction?: () => void // Executive-specific: VIP contact quick action
 }
 
 export interface SwipeState {
@@ -24,9 +27,9 @@ export interface SwipeState {
 }
 
 const defaultConfig: GestureConfig = {
-  swipeThreshold: 100,
-  velocityThreshold: 500,
-  longPressDelay: 500,
+  swipeThreshold: 120, // Increased for executive precision
+  velocityThreshold: 600, // Higher threshold for intentional gestures
+  longPressDelay: 400, // Faster for executive efficiency
   hapticFeedback: true
 }
 
@@ -40,10 +43,29 @@ export function useGestures(
   const isDragging = useRef(false)
   const hasTriggeredLongPress = useRef(false)
 
-  // Haptic feedback helper
-  const triggerHaptic = useCallback((pattern: number | number[] = 50) => {
+  // Enhanced haptic feedback helper with executive patterns
+  const triggerHaptic = useCallback((pattern: number | number[] = 50, type?: 'success' | 'priority' | 'vip' | 'archive') => {
     if (fullConfig.hapticFeedback && typeof window !== 'undefined' && 'vibrate' in navigator) {
-      navigator.vibrate(pattern)
+      let hapticPattern: number | number[]
+
+      switch (type) {
+        case 'success':
+          hapticPattern = [50, 25, 50, 25, 100] // Executive success pattern
+          break
+        case 'priority':
+          hapticPattern = [100, 50, 100] // Golden priority boost
+          break
+        case 'vip':
+          hapticPattern = [30, 30, 30, 30, 200] // VIP recognition pattern
+          break
+        case 'archive':
+          hapticPattern = [75, 25, 25] // Quick archive confirmation
+          break
+        default:
+          hapticPattern = pattern
+      }
+
+      navigator.vibrate(hapticPattern)
     }
   }, [fullConfig.hapticFeedback])
 
@@ -111,13 +133,25 @@ export function useGestures(
                      Math.abs(velocity) > fullConfig.velocityThreshold
 
     if (wasSwipe && !wasLongPress) {
-      // Trigger swipe action
-      if (x > 0 && handlers.onSwipeRight) {
-        triggerHaptic([50, 25, 50]) // Swipe success haptic
-        handlers.onSwipeRight()
-      } else if (x < 0 && handlers.onSwipeLeft) {
-        triggerHaptic([50, 25, 50]) // Swipe success haptic
-        handlers.onSwipeLeft()
+      // Enhanced executive swipe actions
+      if (x > 0) {
+        // Right swipe - Priority boost or VIP action
+        if (x > fullConfig.swipeThreshold * 1.5 && handlers.onPriorityBoost) {
+          triggerHaptic([], 'priority') // Golden priority boost
+          handlers.onPriorityBoost()
+        } else if (handlers.onSwipeRight) {
+          triggerHaptic([], 'success')
+          handlers.onSwipeRight()
+        }
+      } else if (x < 0) {
+        // Left swipe - Archive or quick action
+        if (Math.abs(x) > fullConfig.swipeThreshold * 1.5 && handlers.onQuickArchive) {
+          triggerHaptic([], 'archive') // Quick archive with champagne animation
+          handlers.onQuickArchive()
+        } else if (handlers.onSwipeLeft) {
+          triggerHaptic([], 'success')
+          handlers.onSwipeLeft()
+        }
       }
     } else if (wasQuickTap && !wasLongPress && handlers.onTap) {
       // Trigger tap action

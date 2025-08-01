@@ -72,10 +72,6 @@ export function MetricsDashboard() {
   const [timeframe, setTimeframe] = useState('24h')
   const [selectedOperation, setSelectedOperation] = useState<string>('')
 
-  useEffect(() => {
-    fetchMetrics()
-  }, [timeframe, selectedOperation, fetchMetrics])
-
   const fetchMetrics = useCallback(async () => {
     setLoading(true)
     setError(null)
@@ -98,6 +94,10 @@ export function MetricsDashboard() {
       setLoading(false)
     }
   }, [timeframe, selectedOperation])
+
+  useEffect(() => {
+    fetchMetrics()
+  }, [fetchMetrics])
 
   const refresh = () => {
     fetchMetrics()
