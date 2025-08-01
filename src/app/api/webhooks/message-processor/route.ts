@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
     await aiService.saveMessageAnalysis(messageId, analysis, userId)
 
     // Trigger real-time update via Supabase
-    const { error: broadcastError } = await supabase
+    const broadcastResult = await supabase
       .channel('message_updates')
       .send({
         type: 'broadcast',
@@ -67,8 +67,8 @@ export async function POST(request: NextRequest) {
         }
       })
 
-    if (broadcastError) {
-      console.error('Failed to broadcast update:', broadcastError)
+    if (!broadcastResult) {
+      console.error('Failed to broadcast update')
     }
 
     return NextResponse.json({

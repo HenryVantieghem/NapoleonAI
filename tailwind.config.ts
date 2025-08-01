@@ -269,6 +269,8 @@ const config: Config = {
         'luxury': '0 25px 50px -12px rgba(11, 13, 17, 0.15)',
         'luxury-lg': '0 35px 60px -12px rgba(11, 13, 17, 0.2)',
         'luxury-glass': '0 8px 32px rgba(11, 13, 17, 0.12), inset 0 1px 0 rgba(246, 246, 244, 0.1)',
+        'glassmorphism': '0 0 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(199, 202, 209, 0.1)',
+        'private-jet-glass': '0 0 24px rgba(0, 0, 0, 0.5), 0 8px 32px rgba(11, 13, 17, 0.3)',
         'executive': '0 12px 40px rgba(18, 32, 57, 0.25), 0 4px 16px rgba(212, 175, 55, 0.15)',
         'jet-black': '0 10px 40px rgba(11, 13, 17, 0.3)',
         'jet-black-lg': '0 20px 60px rgba(11, 13, 17, 0.4)',
@@ -290,6 +292,8 @@ const config: Config = {
         'luxury': '16px',
         'executive': '24px',
         'glass': '12px',
+        'private-jet': '30px',
+        'glassmorphism': '30px',
       },
       backgroundImage: {
         'gradient-luxury': 'linear-gradient(135deg, #F6F6F4 0%, #FDFDFC 100%)',

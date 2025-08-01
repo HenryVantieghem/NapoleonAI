@@ -7,7 +7,7 @@ import confetti from 'canvas-confetti'
 import { Card } from '@/components/ui/luxury-card'
 import { Typography } from '@/components/ui/typography'
 import { Button } from '@/components/ui/luxury-button'
-import { VipCard } from '@/components/onboarding/VipCard'
+import VipCard from '@/components/onboarding/VipCard'
 import { useOnboardingStore } from '@/stores/onboardingStore'
 import { ChevronLeft, Search, Plus, Sparkles } from 'lucide-react'
 import { mockVipContacts } from '@/lib/mockVipContacts'
@@ -24,7 +24,7 @@ export default function OnboardingStep3() {
   const filteredContacts = mockVipContacts.filter(contact =>
     contact.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     contact.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    contact.relationship.toLowerCase().includes(searchQuery.toLowerCase())
+    contact.relationshipType.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
   const handleVipToggle = (contact: typeof mockVipContacts[0]) => {
@@ -39,11 +39,10 @@ export default function OnboardingStep3() {
   const handleAddCustom = () => {
     if (customName && customEmail) {
       addVipContact({
-        id: `custom-${Date.now()}`,
         name: customName,
         email: customEmail,
-        relationship: 'Other',
-        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(customName)}&background=1B2951&color=fff`,
+        relationshipType: 'Other',
+        source: 'manual' as const,
       })
       setCustomName('')
       setCustomEmail('')
@@ -88,7 +87,7 @@ export default function OnboardingStep3() {
           <Typography variant="h1" className="text-navy mb-4">
             Welcome to Napoleon AI!
           </Typography>
-          <Typography variant="body-lg" className="text-gray-600">
+          <Typography variant="body" className="text-gray-600">
             Your executive command center is ready.
           </Typography>
         </motion.div>
@@ -129,7 +128,7 @@ export default function OnboardingStep3() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-96 overflow-y-auto">
             {filteredContacts.map((contact) => (
               <VipCard
-                key={contact.id}
+                key={contact.email}
                 contact={contact}
                 selected={vipContacts.some(c => c.email === contact.email)}
                 onToggle={() => handleVipToggle(contact)}

@@ -35,7 +35,7 @@ const platforms = [
 
 export default function OnboardingStep2() {
   const router = useRouter()
-  const { connectedPlatforms, addConnectedPlatform, removeConnectedPlatform } = useOnboardingStore()
+  const { connectedAccounts, setAccountStatus, removeAccount } = useOnboardingStore()
   const [connecting, setConnecting] = useState<string | null>(null)
 
   const handleConnect = async (platformId: string) => {
@@ -49,13 +49,13 @@ export default function OnboardingStep2() {
         // In real app, this would be OAuth redirect
         window.location.href = '/api/integrations/callback/gmail'
       }
-      addConnectedPlatform(platformId)
+      setAccountStatus(platformId, 'connected')
       setConnecting(null)
     }, 1500)
   }
 
   const handleDisconnect = (platformId: string) => {
-    removeConnectedPlatform(platformId)
+    removeAccount(platformId)
   }
 
   const handleContinue = () => {
@@ -89,7 +89,7 @@ export default function OnboardingStep2() {
 
           <div className="space-y-4">
             {platforms.map((platform) => {
-              const isConnected = connectedPlatforms.includes(platform.id)
+              const isConnected = connectedAccounts.some(acc => acc.provider === platform.id && acc.status === 'connected')
               const isConnecting = connecting === platform.id
 
               return (
@@ -111,7 +111,7 @@ export default function OnboardingStep2() {
                         }`} />
                       </div>
                       <div>
-                        <Typography variant="h4" className="text-navy">
+                        <Typography variant="h3" className="text-navy">
                           {platform.name}
                         </Typography>
                         <Typography variant="body-sm" className="text-gray-600">
@@ -123,7 +123,7 @@ export default function OnboardingStep2() {
                     {platform.available ? (
                       <Button
                         onClick={() => isConnected ? handleDisconnect(platform.id) : handleConnect(platform.id)}
-                        variant={isConnected ? 'outline' : 'default'}
+                        variant={isConnected ? 'outline' : 'luxury'}
                         disabled={isConnecting}
                         className="min-w-[120px]"
                       >
@@ -174,7 +174,7 @@ export default function OnboardingStep2() {
               </Button>
               <Button
                 onClick={handleContinue}
-                disabled={connectedPlatforms.length === 0}
+                disabled={connectedAccounts.filter(acc => acc.status === 'connected').length === 0}
                 className="flex items-center gap-2"
               >
                 Continue

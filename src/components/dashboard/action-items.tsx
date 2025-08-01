@@ -315,3 +315,5 @@ export function ActionItems({ onMessageSelect, selectedMessage }: ActionItemsPro
     </div>
   )
 }
+
+export default ActionItems

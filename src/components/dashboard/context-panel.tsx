@@ -339,3 +339,5 @@ export function ContextPanel({ selectedMessage, onClose }: ContextPanelProps) {
     </motion.div>
   )
 }
+
+export default ContextPanel

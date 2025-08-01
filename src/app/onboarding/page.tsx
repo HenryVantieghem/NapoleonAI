@@ -560,8 +560,7 @@ export default function OnboardingPage() {
                   <VipCard
                     contact={contact}
                     selected={vipContacts.some(v => v.email === contact.email)}
-                    onClick={() => toggleVipContact(contact)}
-                    showSource
+                    onToggle={() => toggleVipContact(contact)}
                   />
                 </motion.div>
               ))}

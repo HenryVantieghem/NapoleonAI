@@ -280,3 +280,5 @@ export function MessagesList({ onMessageSelect, selectedMessage }: MessagesListP
     </div>
   )
 }
+
+export default MessagesList

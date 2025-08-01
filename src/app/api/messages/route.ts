@@ -144,21 +144,21 @@ async function getMessagesFromGmail(userId: string, limit: number = 50) {
     // Get Gmail OAuth tokens from database
     const { data: gmailAccount } = await supabase
       .from('connected_accounts')
-      .select('tokens, metadata')
+      .select('access_token, refresh_token, expires_at')
       .eq('user_id', userId)
       .eq('provider', 'gmail')
-      .eq('is_active', true)
+      .eq('status', 'active')
       .single()
 
-    if (!gmailAccount?.tokens) {
+    if (!gmailAccount?.access_token) {
       console.log('No Gmail account connected for user:', userId)
       return null // Fall back to sample data
     }
 
     // Set up Gmail API with user's tokens
     gmailAPI.setAccessToken(
-      gmailAccount.tokens.access_token,
-      gmailAccount.tokens.refresh_token
+      gmailAccount.access_token,
+      gmailAccount.refresh_token
     )
 
     // Fetch recent messages from Gmail
@@ -201,9 +201,9 @@ async function getMessagesFromGmail(userId: string, limit: number = 50) {
               content: gmailMessage.content || '',
               subject: gmailMessage.subject || '',
               sender_name: gmailMessage.sender || '',
-              sender_email: gmailMessage.senderEmail || '',
+              sender_email: gmailMessage.sender || '',
               message_date: gmailMessage.timestamp || new Date(),
-              source_platform: 'gmail',
+              source: 'gmail',
               external_id: gmailMessage.id || '',
               user_id: userId
             }
@@ -215,20 +215,17 @@ async function getMessagesFromGmail(userId: string, limit: number = 50) {
 
             // Save to database for future reference
             await supabase.from('messages').insert({
-              id: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
               user_id: userId,
-              source_platform: 'gmail',
+              source: 'gmail',
               external_id: gmailMessage.id,
               sender_name: gmailMessage.sender,
-              sender_email: gmailMessage.senderEmail,
+              sender_email: gmailMessage.sender || '',
               subject: gmailMessage.subject,
               content: gmailMessage.content,
               ai_summary: aiSummary,
               priority_score: priorityScore,
               is_vip: isVip,
-              is_read: gmailMessage.isRead || false,
-              is_archived: false,
-              is_snoozed: false,
+              status: 'unread',
               message_date: gmailMessage.timestamp?.toISOString() || new Date().toISOString(),
               created_at: new Date().toISOString(),
               updated_at: new Date().toISOString()
@@ -248,18 +245,16 @@ async function getMessagesFromGmail(userId: string, limit: number = 50) {
         processedMessages.push({
           id: gmailMessage.id || `gmail_${Date.now()}`,
           user_id: userId,
-          source_platform: 'gmail',
+          source: 'gmail',
           external_id: gmailMessage.id,
           sender_name: gmailMessage.sender || 'Unknown Sender',
-          sender_email: gmailMessage.senderEmail || '',
+          sender_email: gmailMessage.sender || '',
           subject: gmailMessage.subject || 'No Subject',
           content: gmailMessage.content || '',
           ai_summary: aiSummary,
           priority_score: priorityScore,
           is_vip: isVip,
-          is_read: gmailMessage.isRead || false,
-          is_archived: false,
-          is_snoozed: false,
+          status: 'unread',
           created_at: gmailMessage.timestamp?.toISOString() || new Date().toISOString(),
           updated_at: new Date().toISOString()
         })
@@ -366,10 +361,10 @@ export async function GET(request: NextRequest) {
       priority: message.priority_score >= 80 ? 'high' : 
                 message.priority_score >= 50 ? 'medium' : 'low',
       isVip: message.is_vip,
-      isRead: message.is_read,
-      isArchived: message.is_archived,
-      isSnoozed: message.is_snoozed,
-      source: message.source_platform,
+      isRead: message.status === 'read',
+      isArchived: message.status === 'archived',
+      isSnoozed: message.status === 'snoozed',
+      source: message.source,
       createdAt: message.created_at,
       updatedAt: message.updated_at,
       timeAgo: formatTimeAgo(message.created_at),

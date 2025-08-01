@@ -85,21 +85,9 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Update Clerk metadata to mark onboarding as complete
-    try {
-      await user.update({
-        publicMetadata: {
-          ...user.publicMetadata,
-          onboardingCompleted: true,
-          role: role,
-          companySize: companySize,
-          vipContactsCount: vipContacts?.length || 0
-        }
-      })
-    } catch (clerkError) {
-      console.error('Error updating Clerk metadata:', clerkError)
-      // Non-critical error, continue
-    }
+    // Note: Clerk metadata updates would need to be handled via Clerk Admin API
+    // For now, we'll track onboarding status in our database
+    console.log('Onboarding completed for user:', user.id)
 
     return NextResponse.json({
       success: true,

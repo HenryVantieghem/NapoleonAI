@@ -1,3 +1,13 @@
+// Bundle analyzer - only load if available
+let withBundleAnalyzer = (config) => config;
+try {
+  withBundleAnalyzer = require('@next/bundle-analyzer')({
+    enabled: process.env.ANALYZE === 'true',
+  });
+} catch (e) {
+  console.log('Bundle analyzer not available, skipping...');
+}
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -91,4 +101,4 @@ const nextConfig = {
   },
 }
 
-module.exports = nextConfig
+module.exports = withBundleAnalyzer(nextConfig)

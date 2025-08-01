@@ -3,17 +3,18 @@
  * Executive Intelligence Platform Design Tokens
  */
 
+import * as colorSystem from './colors';
 export { 
-  colors,
   jetBlack,
   midnightBlue,
   champagneGold,
   platinumSilver,
   cognacLeather,
   warmIvory,
-  contrastPairs,
-  default as designColors
+  contrastPairs
 } from './colors';
+
+const colors = colorSystem.colors;
 
 // Typography tokens
 export const typography = {

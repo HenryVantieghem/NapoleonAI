@@ -32,8 +32,8 @@ export const LuxuryCard = forwardRef<HTMLDivElement, LuxuryCardProps>(
       elevated: "bg-midnightBlue shadow-luxury-lg border border-platinumSilver/30",
       bordered: "bg-midnightBlue border-2 border-platinumSilver shadow-sm hover:border-champagneGold/40",
       gradient: "bg-gradient-to-br from-midnightBlue to-jetBlack shadow-luxury border border-platinumSilver/20",
-      glass: "backdrop-blur-luxury bg-midnightBlue/60 border border-platinumSilver/20 shadow-luxury-glass",
-      executive: "backdrop-blur-executive bg-jetBlack/80 border border-champagneGold/30 shadow-executive hover:bg-jetBlack/90 hover:border-champagneGold/50"
+      glass: "backdrop-blur-[30px] bg-midnightBlue/10 border border-platinumSilver shadow-[0_0_24px_rgba(0,0,0,0.5)] hover:bg-midnightBlue/20 hover:shadow-[0_0_32px_rgba(212,175,55,0.3)]",
+      executive: "backdrop-blur-[30px] bg-jetBlack/20 border border-champagneGold/30 shadow-[0_0_24px_rgba(0,0,0,0.5)] hover:bg-jetBlack/30 hover:border-champagneGold/50 hover:shadow-[0_0_32px_rgba(212,175,55,0.4)]"
     }
     
     return (

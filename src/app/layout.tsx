@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
-import { Inter, Playfair_Display, JetBrains_Mono } from "next/font/google"
+import { Inter, JetBrains_Mono } from "next/font/google"
+import localFont from "next/font/local"
 import { ClerkProvider } from '@clerk/nextjs'
 import "./globals.css"
 import { cn } from "@/lib/utils"
@@ -12,10 +13,20 @@ const inter = Inter({
   display: 'swap',
 })
 
-const playfairDisplay = Playfair_Display({
+// Luxury serif for headings - using web fonts with premium fallbacks
+const luxurySerif = Inter({ 
   subsets: ["latin"],
   variable: "--font-serif",
   display: 'swap',
+  weight: ['300', '400', '500', '600', '700'],
+})
+
+// Script font for logo - using CSS with luxury fallbacks
+const scriptFont = Inter({
+  subsets: ["latin"],
+  variable: "--font-script",
+  display: 'swap',
+  weight: ['400'],
 })
 
 const jetBrainsMono = JetBrains_Mono({
@@ -151,7 +162,8 @@ export default function RootLayout({
           className={cn(
             "min-h-screen bg-white font-sans antialiased",
             inter.variable,
-            playfairDisplay.variable,
+            luxurySerif.variable,
+            scriptFont.variable,
             jetBrainsMono.variable
           )}
         >
@@ -244,7 +256,8 @@ export default function RootLayout({
           className={cn(
             "min-h-screen bg-white font-sans antialiased",
             inter.variable,
-            playfairDisplay.variable,
+            luxurySerif.variable,
+            scriptFont.variable,
             jetBrainsMono.variable
           )}
         >

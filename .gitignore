@@ -68,3 +68,14 @@ coverage/
 
 # clerk configuration (can include secrets)
 /.clerk/
+
+# Personal/scratch files
+*.scratch
+*.temp
+*.tmp
+*_draft*
+*_old*
+*.bak
+*.backup
+.claude-dev/
+CLAUDE.local.md

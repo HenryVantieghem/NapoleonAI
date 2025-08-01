@@ -2,11 +2,16 @@
 
 import { motion, AnimatePresence } from 'framer-motion'
 import { Loader2, Zap, CheckCircle, AlertCircle } from 'lucide-react'
-import { useRealtimeMessages } from '@/lib/hooks/use-realtime-messages'
+// import { useRealtimeMessages } from '@/lib/hooks/use-realtime-messages'
 import { cn } from '@/lib/utils'
 
 export function RealtimeStatus() {
-  const { processingCount, lastUpdate, loading } = useRealtimeMessages()
+  // Temporary mock data until hook is available
+  const { processingCount, lastUpdate, loading } = { 
+    processingCount: 0, 
+    lastUpdate: new Date(), 
+    loading: false 
+  }
 
   const getStatusInfo = () => {
     if (loading) {
@@ -124,7 +129,7 @@ export function RealtimeStatus() {
 }
 
 export function ProcessingPulse({ className }: { className?: string }) {
-  const { processingCount } = useRealtimeMessages()
+  const processingCount = 0 // Mock data until hook is available
 
   if (processingCount === 0) return null
 

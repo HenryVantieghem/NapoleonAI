@@ -1,9 +1,10 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Menu, X, Crown, Shield, Zap } from "lucide-react"
+import { Menu, X, Crown, Shield, Zap, Plane } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { NapoleonLogo } from "@/components/ui/napoleon-logo"
 import { cn } from "@/lib/utils"
 
 interface NavbarProps {
@@ -12,30 +13,33 @@ interface NavbarProps {
 
 const navigationItems = [
   {
-    name: "Features",
+    name: "Command Center",
     href: "#features",
-    description: "AI-powered executive tools"
+    description: "Executive intelligence dashboard"
   },
   {
-    name: "How It Works",
+    name: "Flight Plan",
     href: "#how-it-works", 
-    description: "Strategic communication process"
+    description: "Strategic implementation process"
   },
   {
-    name: "Testimonials",
+    name: "Executive Testimonials", 
     href: "#testimonials",
-    description: "C-suite success stories"
+    description: "Fortune 500 success stories"
   },
   {
-    name: "Pricing",
+    name: "Investment",
     href: "#pricing",
-    description: "Executive investment plans"
+    description: "Private jet experience pricing"
   }
 ]
 
 export function Navbar({ className }: NavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null)
+  const [hoverPosition, setHoverPosition] = useState({ left: 0, width: 0 })
+  const navRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -46,6 +50,24 @@ export function Navbar({ className }: NavbarProps) {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
+  const handleMouseEnter = (event: React.MouseEvent<HTMLAnchorElement>, itemName: string) => {
+    const element = event.currentTarget
+    const rect = element.getBoundingClientRect()
+    const navRect = navRef.current?.getBoundingClientRect()
+    
+    if (navRect) {
+      setHoverPosition({
+        left: rect.left - navRect.left,
+        width: rect.width
+      })
+      setHoveredItem(itemName)
+    }
+  }
+
+  const handleMouseLeave = () => {
+    setHoveredItem(null)
+  }
+
   return (
     <>
       <motion.nav
@@ -53,94 +75,142 @@ export function Navbar({ className }: NavbarProps) {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
         className={cn(
-          "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+          "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
           isScrolled 
-            ? "backdrop-luxury border-b border-gray-200 shadow-luxury" 
-            : "bg-transparent",
+            ? "backdrop-blur-executive bg-jetBlack/80 border-b border-platinumSilver/20 shadow-luxury-glass" 
+            : "bg-jetBlack/60 backdrop-blur-glass",
           className
         )}
       >
-        <div className="container-luxury">
+        <div className="container mx-auto px-6">
           <div className="flex items-center justify-between h-20">
-            {/* Logo */}
+            {/* Napoleon Logo */}
             <motion.div
               whileHover={{ scale: 1.05 }}
-              className="flex items-center space-x-3"
+              transition={{ duration: 0.3 }}
+              className="cursor-pointer"
             >
-              <div className="relative">
-                <Crown className="w-8 h-8 text-burgundy-600" />
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-gold-400 rounded-full animate-pulse" />
-              </div>
-              <div className="flex flex-col">
-                <span className="logo-text text-xl">Napoleon AI</span>
-                <span className="text-xs text-gray-500 font-medium">Executive Commander</span>
-              </div>
+              <NapoleonLogo 
+                variant={isScrolled ? "gold" : "light"} 
+                size="md" 
+                showIcon={true}
+              />
             </motion.div>
 
-            {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center space-x-8">
-              {navigationItems.map((item, index) => (
-                <motion.div
-                  key={item.name}
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 * index + 0.3 }}
-                  className="group relative"
-                >
-                  <a
-                    href={item.href}
-                    className="text-gray-700 hover:text-burgundy-600 font-medium transition-colors duration-200 flex items-center space-x-1"
-                  >
-                    <span>{item.name}</span>
-                  </a>
-                  
-                  {/* Hover Tooltip */}
+            {/* Hover-Bar Desktop Navigation */}
+            <div 
+              ref={navRef}
+              className="hidden lg:flex items-center relative"
+              onMouseLeave={handleMouseLeave}
+            >
+              {/* Interactive Underline Slider */}
+              <AnimatePresence>
+                {hoveredItem && (
                   <motion.div
-                    initial={{ opacity: 0, y: 10, scale: 0.9 }}
-                    whileHover={{ opacity: 1, y: 0, scale: 1 }}
-                    className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-200"
+                    layoutId="hover-underline"
+                    initial={{ opacity: 0, scaleX: 0 }}
+                    animate={{ 
+                      opacity: 1, 
+                      scaleX: 1,
+                      x: hoverPosition.left,
+                      width: hoverPosition.width
+                    }}
+                    exit={{ opacity: 0, scaleX: 0 }}
+                    transition={{ 
+                      type: "spring", 
+                      stiffness: 400, 
+                      damping: 30,
+                      duration: 0.3
+                    }}
+                    className="absolute bottom-0 h-0.5 bg-gradient-champagne rounded-full"
+                    style={{ 
+                      transformOrigin: "left center"
+                    }}
+                  />
+                )}
+              </AnimatePresence>
+
+              {/* Navigation Items */}
+              <div className="flex items-center space-x-8 px-8 py-4">
+                {navigationItems.map((item, index) => (
+                  <motion.div
+                    key={item.name}
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 * index + 0.3 }}
+                    className="group relative"
                   >
-                    {item.description}
-                    <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45" />
+                    <a
+                      href={item.href}
+                      onMouseEnter={(e) => handleMouseEnter(e, item.name)}
+                      className="relative text-warmIvory hover:text-champagneGold font-medium transition-colors duration-300 py-2 px-1 tracking-wide"
+                    >
+                      <span className="relative z-10">{item.name}</span>
+                      
+                      {/* Luxury glow effect on hover */}
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        whileHover={{ opacity: 1 }}
+                        className="absolute inset-0 rounded-lg bg-champagneGold/5 backdrop-blur-glass transition-opacity duration-300"
+                      />
+                    </a>
+                    
+                    {/* Executive Tooltip */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                      whileHover={{ opacity: 1, y: 0, scale: 1 }}
+                      className="absolute top-full left-1/2 -translate-x-1/2 mt-3 px-4 py-3 bg-midnightBlue/90 backdrop-blur-executive border border-platinumSilver/20 text-warmIvory text-sm rounded-xl whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-luxury-glass"
+                    >
+                      {item.description}
+                      <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-midnightBlue/90 border-l border-t border-platinumSilver/20 rotate-45" />
+                    </motion.div>
                   </motion.div>
-                </motion.div>
-              ))}
+                ))}
+              </div>
             </div>
 
-            {/* Desktop CTA Buttons */}
+            {/* Gold Pill CTA Buttons */}
             <div className="hidden lg:flex items-center space-x-4">
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.5 }}
               >
-                <Button variant="ghost" size="md">
-                  Sign In
+                <Button 
+                  variant="ghost" 
+                  size="md"
+                  className="text-warmIvory hover:text-champagneGold hover:bg-midnightBlue/20 backdrop-blur-glass border border-transparent hover:border-platinumSilver/20 transition-all duration-300"
+                >
+                  Executive Access
                 </Button>
               </motion.div>
               
+              {/* Gold Pill Sign Up */}
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.6 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.98 }}
               >
                 <Button 
-                  variant="luxury" 
-                  size="md"
-                  className="group"
+                  className="relative bg-gradient-champagne text-jetBlack font-semibold px-6 py-2 rounded-full border-0 shadow-champagne hover:shadow-champagne-lg transition-all duration-300 group overflow-hidden"
                   onClick={() => document.getElementById('cta-section')?.scrollIntoView({ behavior: 'smooth' })}
                 >
-                  <Crown className="w-4 h-4 mr-2 group-hover:animate-pulse" />
-                  Take Command Now
+                  <Plane className="w-4 h-4 mr-2 group-hover:animate-pulse" />
+                  <span className="relative z-10">Take Flight</span>
+                  
+                  {/* Gold shimmer effect */}
+                  <div className="absolute inset-0 -skew-x-12 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 translate-x-[-200%] group-hover:translate-x-[200%] transition-all duration-700" />
                 </Button>
               </motion.div>
             </div>
 
-            {/* Mobile Menu Button */}
+            {/* Private Jet Mobile Menu Button */}
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 text-gray-700 hover:text-burgundy-600 transition-colors"
+              className="lg:hidden p-3 text-warmIvory hover:text-champagneGold transition-colors duration-300 rounded-xl hover:bg-midnightBlue/20 backdrop-blur-glass"
             >
               {isMobileMenuOpen ? (
                 <X className="w-6 h-6" />
@@ -152,79 +222,115 @@ export function Navbar({ className }: NavbarProps) {
         </div>
       </motion.nav>
 
-      {/* Mobile Menu */}
+      {/* Private Jet Mobile Menu */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
-            className="fixed top-20 left-0 right-0 z-40 backdrop-luxury border-b border-gray-200 lg:hidden"
+            transition={{ duration: 0.4, ease: "easeInOut" }}
+            className="fixed top-20 left-0 right-0 z-40 backdrop-blur-executive bg-jetBlack/90 border-b border-platinumSilver/20 lg:hidden shadow-luxury-glass"
           >
-            <div className="container-luxury">
-              <div className="py-6 space-y-6">
+            <div className="container mx-auto px-6">
+              <div className="py-8 space-y-8">
                 {/* Mobile Navigation Links */}
-                <div className="space-y-4">
+                <div className="space-y-6">
                   {navigationItems.map((item, index) => (
                     <motion.div
                       key={item.name}
-                      initial={{ opacity: 0, x: -20 }}
+                      initial={{ opacity: 0, x: -30 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.1 * index }}
+                      transition={{ delay: 0.1 * index + 0.1 }}
+                      className="group"
                     >
                       <a
                         href={item.href}
                         onClick={() => setIsMobileMenuOpen(false)}
-                        className="block text-lg font-medium text-gray-700 hover:text-burgundy-600 transition-colors"
+                        className="block text-xl font-medium text-warmIvory hover:text-champagneGold transition-colors duration-300 py-2"
                       >
                         {item.name}
                       </a>
-                      <p className="text-sm text-gray-500 mt-1">{item.description}</p>
+                      <p className="text-sm text-platinumSilver-400 mt-1 opacity-80">{item.description}</p>
                     </motion.div>
                   ))}
                 </div>
 
-                {/* Mobile Executive Features */}
-                <div className="border-t border-gray-200 pt-6">
-                  <div className="grid grid-cols-3 gap-4 mb-6">
-                    <div className="text-center">
-                      <Shield className="w-8 h-8 text-burgundy-600 mx-auto mb-2" />
-                      <span className="text-sm font-medium text-gray-700">Secure</span>
-                    </div>
-                    <div className="text-center">
-                      <Crown className="w-8 h-8 text-burgundy-600 mx-auto mb-2" />
-                      <span className="text-sm font-medium text-gray-700">Luxury</span>
-                    </div>
-                    <div className="text-center">
-                      <Zap className="w-8 h-8 text-burgundy-600 mx-auto mb-2" />
-                      <span className="text-sm font-medium text-gray-700">AI-Powered</span>
-                    </div>
+                {/* Private Jet Mobile Features */}
+                <div className="border-t border-platinumSilver/20 pt-8">
+                  <div className="grid grid-cols-3 gap-6 mb-8">
+                    <motion.div 
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.5 }}
+                      className="text-center group"
+                    >
+                      <div className="backdrop-blur-glass bg-midnightBlue/20 border border-platinumSilver/20 rounded-2xl p-4 mb-3 group-hover:shadow-luxury-glass transition-all duration-300">
+                        <Shield className="w-8 h-8 text-champagneGold mx-auto group-hover:animate-pulse" />
+                      </div>
+                      <span className="text-sm font-medium text-warmIvory">Executive Security</span>
+                    </motion.div>
+                    <motion.div 
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.6 }}
+                      className="text-center group"
+                    >
+                      <div className="backdrop-blur-glass bg-midnightBlue/20 border border-platinumSilver/20 rounded-2xl p-4 mb-3 group-hover:shadow-luxury-glass transition-all duration-300">
+                        <Plane className="w-8 h-8 text-champagneGold mx-auto group-hover:animate-pulse" />
+                      </div>
+                      <span className="text-sm font-medium text-warmIvory">Private Jet Experience</span>
+                    </motion.div>
+                    <motion.div 
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.7 }}
+                      className="text-center group"
+                    >
+                      <div className="backdrop-blur-glass bg-midnightBlue/20 border border-platinumSilver/20 rounded-2xl p-4 mb-3 group-hover:shadow-luxury-glass transition-all duration-300">
+                        <Crown className="w-8 h-8 text-champagneGold mx-auto group-hover:animate-pulse" />
+                      </div>
+                      <span className="text-sm font-medium text-warmIvory">AI Intelligence</span>
+                    </motion.div>
                   </div>
                 </div>
 
-                {/* Mobile CTA Buttons */}
-                <div className="space-y-3 border-t border-gray-200 pt-6">
-                  <Button 
-                    variant="ghost" 
-                    size="lg" 
-                    className="w-full"
-                    onClick={() => setIsMobileMenuOpen(false)}
+                {/* Private Jet Mobile CTA Buttons */}
+                <div className="space-y-4 border-t border-platinumSilver/20 pt-8">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.8 }}
                   >
-                    Sign In
-                  </Button>
-                  <Button 
-                    variant="luxury" 
-                    size="lg"
-                    className="w-full group"
-                    onClick={() => {
-                      setIsMobileMenuOpen(false)
-                      document.getElementById('cta-section')?.scrollIntoView({ behavior: 'smooth' })
-                    }}
+                    <Button 
+                      variant="ghost" 
+                      size="lg" 
+                      className="w-full text-warmIvory hover:text-champagneGold hover:bg-midnightBlue/20 backdrop-blur-glass border border-platinumSilver/20 rounded-2xl"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Executive Access
+                    </Button>
+                  </motion.div>
+                  
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.9 }}
                   >
-                    <Crown className="w-5 h-5 mr-2 group-hover:animate-pulse" />
-                    Take Command Now
-                  </Button>
+                    <Button 
+                      className="w-full bg-gradient-champagne text-jetBlack font-semibold py-4 rounded-2xl border-0 shadow-champagne group overflow-hidden relative"
+                      onClick={() => {
+                        setIsMobileMenuOpen(false)
+                        document.getElementById('cta-section')?.scrollIntoView({ behavior: 'smooth' })
+                      }}
+                    >
+                      <Plane className="w-5 h-5 mr-2 group-hover:animate-pulse" />
+                      <span className="relative z-10">Take Flight</span>
+                      
+                      {/* Mobile gold shimmer */}
+                      <div className="absolute inset-0 -skew-x-12 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 translate-x-[-200%] group-hover:translate-x-[200%] transition-all duration-700" />
+                    </Button>
+                  </motion.div>
                 </div>
               </div>
             </div>
@@ -232,14 +338,42 @@ export function Navbar({ className }: NavbarProps) {
         )}
       </AnimatePresence>
 
-      {/* Scroll Progress Indicator */}
+      {/* Private Jet Runway Progress Indicator */}
       <motion.div
-        className="fixed top-20 left-0 right-0 h-0.5 bg-burgundy-600 z-40 origin-left"
+        className="fixed top-20 left-0 right-0 h-1 bg-gradient-champagne z-40 origin-left shadow-champagne"
         style={{
           scaleX: isScrolled ? 1 : 0
         }}
         transition={{ duration: 0.3 }}
       />
+      
+      {/* Runway Lights Effect */}
+      {isScrolled && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="fixed top-[81px] left-0 right-0 h-0.5 z-40"
+        >
+          <div className="flex justify-between px-8">
+            {[...Array(20)].map((_, i) => (
+              <motion.div
+                key={i}
+                animate={{ 
+                  opacity: [0.3, 1, 0.3],
+                  scale: [0.8, 1, 0.8]
+                }}
+                transition={{ 
+                  duration: 2, 
+                  repeat: Infinity, 
+                  delay: i * 0.1,
+                  ease: "easeInOut"
+                }}
+                className="w-1 h-1 bg-champagneGold rounded-full"
+              />
+            ))}
+          </div>
+        </motion.div>
+      )}
     </>
   )
 }

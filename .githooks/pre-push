@@ -1,0 +1,296 @@
+#!/bin/bash
+
+# Napoleon AI - Pre-Push Quality Gate Hook
+# Runs comprehensive checks before allowing push to remote
+
+set -e
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+print_status() {
+    echo -e "${BLUE}[QUALITY-GATE]${NC} $1"
+}
+
+print_success() {
+    echo -e "${GREEN}[PASS]${NC} $1"
+}
+
+print_warning() {
+    echo -e "${YELLOW}[WARNING]${NC} $1"
+}
+
+print_error() {
+    echo -e "${RED}[FAIL]${NC} $1"
+}
+
+echo "🛡️  Napoleon AI Quality Gate - Pre-Push Hook"
+echo "============================================="
+
+# Function to run TypeScript check
+run_type_check() {
+    print_status "Running TypeScript type checking..."
+    
+    if npm run type-check --silent; then
+        print_success "TypeScript type check passed"
+        return 0
+    else
+        print_error "TypeScript type check failed"
+        echo ""
+        echo "Fix TypeScript errors before pushing:"
+        echo "  npx tsc --noEmit --pretty"
+        return 1
+    fi
+}
+
+# Function to run linting
+run_linting() {
+    print_status "Running ESLint with auto-fix..."
+    
+    # Try to auto-fix first
+    if npx eslint . --ext .ts,.tsx --fix --max-warnings 10 --quiet; then
+        print_success "ESLint passed"
+        
+        # Check if auto-fixes were made
+        if ! git diff --quiet; then
+            print_warning "ESLint made auto-fixes. Please review and commit changes:"
+            git diff --name-only
+            return 1
+        fi
+        
+        return 0
+    else
+        print_error "ESLint failed"
+        echo ""
+        echo "Fix linting errors before pushing:"
+        echo "  npx eslint . --ext .ts,.tsx --fix"
+        return 1
+    fi
+}
+
+# Function to run tests
+run_tests() {
+    print_status "Running test suite..."
+    
+    # Run unit tests first (fastest)
+    if npm run test:unit --silent 2>/dev/null; then
+        print_success "Unit tests passed"
+    else
+        print_error "Unit tests failed"
+        echo ""
+        echo "Fix failing tests before pushing:"
+        echo "  npm run test:unit"
+        return 1
+    fi
+    
+    # Run integration tests if they exist
+    if [ -d "tests/integration" ] && [ "$(ls -A tests/integration)" ]; then
+        if npm run test:integration --silent 2>/dev/null; then
+            print_success "Integration tests passed"
+        else
+            print_warning "Integration tests failed (non-blocking)"
+        fi
+    fi
+    
+    return 0
+}
+
+# Function to check build
+run_build_check() {
+    print_status "Running build check..."
+    
+    if npm run build --silent; then
+        print_success "Build successful"
+        
+        # Check bundle size after build
+        check_bundle_size_hook
+        
+        return 0
+    else
+        print_error "Build failed"
+        echo ""
+        echo "Fix build errors before pushing:"
+        echo "  npm run build"
+        return 1
+    fi
+}
+
+# Function to check bundle size
+check_bundle_size_hook() {
+    print_status "Checking bundle size..."
+    
+    if [ -d ".next" ]; then
+        local total_size=$(find .next -name "*.js" -type f -exec du -k {} \; | awk '{total += $1} END {print total}')
+        
+        if [ "$total_size" -gt 500 ]; then
+            print_warning "Bundle size is ${total_size}kB (target: <500kB)"
+            echo "Consider optimizing:"
+            echo "  - Use dynamic imports for large dependencies"
+            echo "  - Enable tree shaking for unused code"
+            echo "  - Analyze bundle: ANALYZE=true npm run build"
+            return 1
+        else
+            print_success "Bundle size: ${total_size}kB (<500kB target)"
+            return 0
+        fi
+    else
+        print_warning "No build output found, skipping bundle size check"
+        return 0
+    fi
+}
+
+# Function to check for RLS policies
+check_rls_policies() {
+    print_status "Checking for Row Level Security policies..."
+    
+    local rls_violations=0
+    
+    # Check if any new migration files were added without RLS
+    for migration_file in supabase/migrations/*.sql; do
+        if [ -f "$migration_file" ]; then
+            if grep -q "CREATE TABLE" "$migration_file" && ! grep -q "ALTER TABLE.*ENABLE ROW LEVEL SECURITY\|RLS" "$migration_file"; then
+                print_warning "Migration may be missing RLS: $(basename "$migration_file")"
+                rls_violations=$((rls_violations + 1))
+            fi
+        fi
+    done
+    
+    if [ $rls_violations -gt 0 ]; then
+        print_error "Found $rls_violations potential RLS violations"
+        echo ""
+        echo "Ensure all tables have Row Level Security enabled:"
+        echo "  ALTER TABLE table_name ENABLE ROW LEVEL SECURITY;"
+        echo "  CREATE POLICY policy_name ON table_name FOR SELECT USING (...);"
+        return 1
+    else
+        print_success "No RLS policy violations detected"
+        return 0
+    fi
+}
+
+# Function to check for sensitive data
+check_sensitive_data() {
+    print_status "Checking for sensitive data exposure..."
+    
+    # Check for common secrets patterns
+    if git diff --cached --name-only | xargs grep -l "sk-\|pk_\|OPENAI_API_KEY\|SECRET_KEY" 2>/dev/null; then
+        print_error "Potential secrets detected in staged files"
+        echo ""
+        echo "Remove sensitive data before pushing:"
+        git diff --cached --name-only | xargs grep -n "sk-\|pk_\|OPENAI_API_KEY\|SECRET_KEY" 2>/dev/null || true
+        return 1
+    fi
+    
+    # Check for hardcoded URLs
+    if git diff --cached --name-only | xargs grep -l "localhost:3000\|127.0.0.1" 2>/dev/null; then
+        print_warning "Found hardcoded localhost URLs"
+        echo "Consider using environment variables for URLs"
+    fi
+    
+    print_success "No sensitive data exposure detected"
+    return 0
+}
+
+# Function to validate commit messages
+validate_commit_messages() {
+    print_status "Validating recent commit messages..."
+    
+    # Check the last commit message format
+    local last_commit=$(git log -1 --pretty=format:"%s")
+    
+    if echo "$last_commit" | grep -E "^(feat|fix|docs|style|refactor|test|chore)(\(.+\))?: .{1,}"; then
+        print_success "Commit message follows conventional format"
+        return 0
+    else
+        print_warning "Commit message doesn't follow conventional format"
+        echo "Last commit: $last_commit"
+        echo ""
+        echo "Use conventional commits format:"
+        echo "  feat(scope): add new feature"
+        echo "  fix(scope): fix bug"
+        echo "  docs: update documentation"
+        echo "  chore: maintenance tasks"
+        # Don't fail on this, just warn
+        return 0
+    fi
+}
+
+# Main execution
+main() {
+    local failed_checks=0
+    
+    # Skip checks for certain branches (emergency deployments)
+    local current_branch=$(git rev-parse --abbrev-ref HEAD)
+    if [ "$current_branch" = "hotfix" ] || [ "$current_branch" = "emergency" ]; then
+        print_warning "Skipping quality gate for emergency branch: $current_branch"
+        exit 0
+    fi
+    
+    # Run all quality checks
+    echo ""
+    print_status "Starting comprehensive quality checks..."
+    echo ""
+    
+    # Critical checks (will block push)
+    if ! check_sensitive_data; then
+        failed_checks=$((failed_checks + 1))
+    fi
+    
+    if ! run_type_check; then
+        failed_checks=$((failed_checks + 1))
+    fi
+    
+    if ! run_linting; then
+        failed_checks=$((failed_checks + 1))
+    fi
+    
+    if ! run_tests; then
+        failed_checks=$((failed_checks + 1))
+    fi
+    
+    if ! check_rls_policies; then
+        failed_checks=$((failed_checks + 1))
+    fi
+    
+    # Build check (may be expensive, run last)
+    if ! run_build_check; then
+        failed_checks=$((failed_checks + 1))
+    fi
+    
+    # Non-critical checks (warnings only)
+    validate_commit_messages
+    
+    echo ""
+    echo "============================================="
+    
+    if [ $failed_checks -eq 0 ]; then
+        print_success "🎉 All quality checks passed! Push approved."
+        echo ""
+        echo "✅ TypeScript: Clean"
+        echo "✅ ESLint: Clean"  
+        echo "✅ Tests: Passing"
+        echo "✅ Build: Successful"
+        echo "✅ Bundle Size: Optimized"
+        echo "✅ Security: No issues"
+        echo "✅ RLS: Compliant"
+        echo ""
+        exit 0
+    else
+        print_error "❌ $failed_checks quality check(s) failed!"
+        echo ""
+        echo "Fix the issues above before pushing to maintain Napoleon AI's"
+        echo "executive-grade quality standards."
+        echo ""
+        echo "To skip this hook (emergency only):"
+        echo "  git push --no-verify"
+        echo ""
+        exit 1
+    fi
+}
+
+# Execute main function
+main "$@"

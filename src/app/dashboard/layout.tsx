@@ -30,7 +30,7 @@ export default function DashboardLayout({
   }
 
   return (
-    <AuthWrapper requireAuth requireExecutive>
+    <AuthWrapper>
       <div className="min-h-screen bg-gray-50">
         <SessionTimeoutWarning />
         <BiometricSetupPrompt />

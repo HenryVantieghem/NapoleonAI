@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
     "allow": [
       "Bash(claude-code --help)",
@@ -55,7 +56,14 @@
       "mcp__terminal-commands__run_command",
       "Bash(npm test)",
       "Bash(jest --coverage)",
-      "Bash(./scripts/deploy-and-verify.sh:*)"
+      "Bash(./scripts/deploy-and-verify.sh:*)",
+      "Bash(npx ts-unused-exports:*)",
+      "Bash(npm audit:*)",
+      "Bash(npx depcheck:*)",
+      "Bash(npx playwright install:*)",
+      "Bash(./scripts/test-infrastructure-verify.sh:*)",
+      "WebFetch(domain:napoleon-nhedoc9ag-napoleon.vercel.app)",
+      "WebFetch(domain:napoleon-10agvcmpx-napoleon.vercel.app)"
     ],
     "deny": []
   }

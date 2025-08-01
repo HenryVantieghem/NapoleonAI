@@ -151,13 +151,12 @@ export const Typography = forwardRef<HTMLElement, TypographyProps>(
 
     return (
       <Component
-        ref={ref}
         className={cn(
           variants[variant],
           gradient && "text-gradient-burgundy",
           className
         )}
-        {...props}
+        {...(props as any)}
       >
         {children}
       </Component>

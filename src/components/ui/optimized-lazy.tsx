@@ -150,7 +150,7 @@ export function withLazyLoading<P extends object>(
         fallback={loadingComponent} 
         delay={delay}
       >
-        <LazyComponent {...props} />
+        <LazyComponent {...(props as any)} />
       </LazyWrapper>
     )
   }

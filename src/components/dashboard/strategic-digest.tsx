@@ -303,3 +303,5 @@ export function StrategicDigest({ onMessageSelect, selectedMessage }: StrategicD
     </div>
   )
 }
+
+export default StrategicDigest
