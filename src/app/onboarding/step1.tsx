@@ -6,7 +6,7 @@ import { motion } from 'framer-motion'
 import { Card } from '@/components/ui/luxury-card'
 import { Typography } from '@/components/ui/typography'
 import { Button } from '@/components/ui/luxury-button'
-import { SelectableCard } from '@/components/onboarding/SelectableCard'
+import SelectableCard from '@/components/onboarding/SelectableCard'
 import { useOnboardingStore } from '@/stores/onboardingStore'
 import { Briefcase, Target, Clock, Users, ChevronRight } from 'lucide-react'
 
@@ -26,7 +26,7 @@ const painPoints = [
 
 export default function OnboardingStep1() {
   const router = useRouter()
-  const { role, painPoints: selectedPainPoints, setRole, setPainPoints } = useOnboardingStore()
+  const { role, painPoints: selectedPainPoints, setRole, togglePainPoint } = useOnboardingStore()
   const [localRole, setLocalRole] = useState(role)
   const [localPainPoints, setLocalPainPoints] = useState<string[]>(selectedPainPoints)
 
@@ -44,7 +44,12 @@ export default function OnboardingStep1() {
 
   const handleContinue = () => {
     setRole(localRole)
-    setPainPoints(localPainPoints)
+    // Update pain points using the store's API
+    localPainPoints.forEach(point => {
+      if (!selectedPainPoints.includes(point)) {
+        togglePainPoint(point)
+      }
+    })
     router.push('/onboarding/step2')
   }
 
@@ -71,36 +76,37 @@ export default function OnboardingStep1() {
 
           <div className="space-y-8">
             <div>
-              <Typography variant="h4" className="text-navy mb-4">
+              <Typography variant="h3" className="text-navy mb-4">
                 Select your role
               </Typography>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {roles.map((r) => (
                   <SelectableCard
                     key={r.id}
+                    icon={<r.icon className="w-8 h-8 text-navy" />}
+                    title={r.label}
+                    description={`Executive ${r.label.toLowerCase()} role`}
                     selected={localRole === r.id}
                     onClick={() => handleRoleSelect(r.id)}
-                  >
-                    <r.icon className="w-8 h-8 mb-2 text-navy" />
-                    <span className="text-sm font-medium">{r.label}</span>
-                  </SelectableCard>
+                  />
                 ))}
               </div>
             </div>
 
             <div>
-              <Typography variant="h4" className="text-navy mb-4">
+              <Typography variant="h3" className="text-navy mb-4">
                 What's consuming your time? (Select all that apply)
               </Typography>
               <div className="grid grid-cols-2 gap-4">
                 {painPoints.map((p) => (
                   <SelectableCard
                     key={p.id}
+                    icon={<Clock className="w-6 h-6 text-navy" />}
+                    title={p.label}
+                    description="Common executive challenge"
                     selected={localPainPoints.includes(p.id)}
                     onClick={() => handlePainPointToggle(p.id)}
-                  >
-                    <span className="text-sm font-medium">{p.label}</span>
-                  </SelectableCard>
+                  />
                 ))}
               </div>
             </div>
