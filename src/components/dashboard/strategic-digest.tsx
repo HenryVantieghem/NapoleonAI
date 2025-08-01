@@ -119,37 +119,37 @@ export function StrategicDigest({ onMessageSelect, selectedMessage }: StrategicD
   }
 
   return (
-    <div className="p-6 space-y-6 overflow-y-auto h-full bg-gradient-to-br from-gray-50 to-white">
+    <div className="p-6 space-y-6 overflow-y-auto h-full bg-gradient-to-br from-warmIvory to-platinumSilver/10">
       {/* Executive Summary Card */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="bg-gradient-to-r from-burgundy-600 to-burgundy-700 rounded-2xl p-6 text-white shadow-luxury"
+        className="bg-gradient-to-r from-jetBlack to-midnightBlue rounded-2xl p-6 text-warmIvory shadow-luxury border border-champagneGold/20"
       >
         <div className="flex items-center mb-4">
           <Crown className="w-6 h-6 mr-3" />
           <h2 className="text-xl font-serif font-bold">Executive Command Center</h2>
         </div>
         
-        <p className="text-burgundy-100 mb-6">{digestData.executiveSummary.highlight}</p>
+        <p className="text-platinumSilver mb-6">{digestData.executiveSummary.highlight}</p>
         
         <div className="grid grid-cols-4 gap-4">
           <div className="text-center">
-            <div className="text-2xl font-bold text-white">{digestData.executiveSummary.metrics.priorityMessages}</div>
-            <div className="text-xs text-burgundy-200">Priority Messages</div>
+            <div className="text-2xl font-bold text-champagneGold">{digestData.executiveSummary.metrics.priorityMessages}</div>
+            <div className="text-xs text-platinumSilver">Priority Messages</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-white">{digestData.executiveSummary.metrics.actionItems}</div>
-            <div className="text-xs text-burgundy-200">Action Items</div>
+            <div className="text-2xl font-bold text-champagneGold">{digestData.executiveSummary.metrics.actionItems}</div>
+            <div className="text-xs text-platinumSilver">Action Items</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-white">{digestData.executiveSummary.metrics.meetings}</div>
-            <div className="text-xs text-burgundy-200">Meetings Today</div>
+            <div className="text-2xl font-bold text-champagneGold">{digestData.executiveSummary.metrics.meetings}</div>
+            <div className="text-xs text-platinumSilver">Meetings Today</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-white">{digestData.executiveSummary.metrics.revenue}</div>
-            <div className="text-xs text-burgundy-200">Revenue Impact</div>
+            <div className="text-2xl font-bold text-champagneGold">{digestData.executiveSummary.metrics.revenue}</div>
+            <div className="text-xs text-platinumSilver">Revenue Impact</div>
           </div>
         </div>
       </motion.div>
@@ -223,7 +223,7 @@ export function StrategicDigest({ onMessageSelect, selectedMessage }: StrategicD
                   <div className="text-sm text-gray-700">
                     <strong>Action Required:</strong> {message.actionRequired}
                   </div>
-                  <button className="flex items-center text-sm text-burgundy-600 hover:text-burgundy-700 font-medium">
+                  <button className="flex items-center text-sm text-champagneGold hover:text-champagneGold/80 font-medium">
                     Review <ArrowRight className="w-4 h-4 ml-1" />
                   </button>
                 </div>
@@ -260,7 +260,7 @@ export function StrategicDigest({ onMessageSelect, selectedMessage }: StrategicD
               >
                 <h5 className="font-medium text-gray-900 text-sm mb-1">{insight.title}</h5>
                 <p className="text-xs text-gray-600 mb-2">{insight.description}</p>
-                <p className="text-xs text-burgundy-600 font-medium">{insight.impact}</p>
+                <p className="text-xs text-champagneGold font-medium">{insight.impact}</p>
               </motion.div>
             ))}
           </div>

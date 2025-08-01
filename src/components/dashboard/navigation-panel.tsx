@@ -132,22 +132,45 @@ export function NavigationPanel({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="p-6 border-b border-gray-100"
+        className="p-6 border-b border-platinumSilver/20 bg-gradient-to-br from-warmIvory/20 to-jetBlack/5 backdrop-blur-[10px]"
       >
         <div className="flex items-center mb-4">
-          <Crown className="w-5 h-5 text-burgundy-600 mr-2" />
-          <h2 className="font-serif font-semibold text-gray-900">Command Center</h2>
+          <motion.div
+            animate={{ rotate: [0, 360], scale: [1, 1.1, 1] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <Crown className="w-5 h-5 text-champagneGold mr-2" />
+          </motion.div>
+          <h2 className="font-serif font-semibold text-jetBlack">Command Center</h2>
         </div>
         
         <div className="grid grid-cols-2 gap-3">
-          <div className="bg-gradient-to-br from-burgundy-50 to-burgundy-100 p-3 rounded-lg">
-            <div className="text-2xl font-bold text-burgundy-700">{messageStats.priority}</div>
-            <div className="text-xs text-burgundy-600">Priority</div>
-          </div>
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-3 rounded-lg">
-            <div className="text-2xl font-bold text-blue-700">{messageStats.actionItems}</div>
-            <div className="text-xs text-blue-600">Actions</div>
-          </div>
+          <motion.div 
+            whileHover={{ scale: 1.05, rotateY: 5 }}
+            className="bg-gradient-to-br from-champagneGold/20 to-midnightBlue/20 p-3 rounded-lg border border-champagneGold/30 backdrop-blur-sm"
+          >
+            <motion.div 
+              animate={{ scale: [1, 1.1, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="text-2xl font-bold text-champagneGold"
+            >
+              {messageStats.priority}
+            </motion.div>
+            <div className="text-xs text-jetBlack font-medium">Priority</div>
+          </motion.div>
+          <motion.div 
+            whileHover={{ scale: 1.05, rotateY: -5 }}
+            className="bg-gradient-to-br from-midnightBlue/20 to-cognacLeather/20 p-3 rounded-lg border border-platinumSilver/30 backdrop-blur-sm"
+          >
+            <motion.div 
+              animate={{ scale: [1, 1.1, 1] }}
+              transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+              className="text-2xl font-bold text-midnightBlue"
+            >
+              {messageStats.actionItems}
+            </motion.div>
+            <div className="text-xs text-jetBlack font-medium">Actions</div>
+          </motion.div>
         </div>
       </motion.div>
 
@@ -156,37 +179,53 @@ export function NavigationPanel({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
-        className="p-6 border-b border-gray-100"
+        className="p-6 border-b border-platinumSilver/20 bg-gradient-to-br from-midnightBlue/5 to-champagneGold/5 backdrop-blur-[10px]"
       >
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-medium text-gray-900">Filters</h3>
-          <Filter className="w-4 h-4 text-gray-400" />
+          <h3 className="font-medium text-jetBlack">Filters</h3>
+          <motion.div
+            animate={{ rotate: [0, 180, 360] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+          >
+            <Filter className="w-4 h-4 text-champagneGold" />
+          </motion.div>
         </div>
         
         <div className="space-y-2">
           {quickFilters.map(({ id, label, count, icon: Icon }) => (
-            <button
+            <motion.button
               key={id}
               onClick={() => setFilter(id)}
+              whileHover={{ scale: 1.02, x: 5 }}
+              whileTap={{ scale: 0.98 }}
               className={`
-                w-full flex items-center justify-between p-2 rounded-lg text-sm transition-colors
+                w-full flex items-center justify-between p-2 rounded-lg text-sm transition-all duration-300
                 ${filter === id
-                  ? 'bg-burgundy-50 text-burgundy-700'
-                  : 'text-gray-600 hover:bg-gray-50'
+                  ? 'bg-champagneGold/20 text-champagneGold border border-champagneGold/30 backdrop-blur-sm'
+                  : 'text-jetBlack hover:bg-midnightBlue/10 hover:border hover:border-platinumSilver/30'
                 }
               `}
             >
               <div className="flex items-center">
-                <Icon className="w-4 h-4 mr-2" />
+                <motion.div
+                  animate={filter === id ? { rotate: [0, 360] } : {}}
+                  transition={{ duration: 1 }}
+                >
+                  <Icon className="w-4 h-4 mr-2" />
+                </motion.div>
                 {label}
               </div>
-              <span className={`
-                text-xs px-2 py-1 rounded-full
-                ${filter === id ? 'bg-burgundy-100' : 'bg-gray-100'}
-              `}>
+              <motion.span 
+                animate={{ scale: filter === id ? [1, 1.2, 1] : 1 }}
+                transition={{ duration: 0.3 }}
+                className={`
+                  text-xs px-2 py-1 rounded-full font-medium
+                  ${filter === id ? 'bg-champagneGold/30 text-champagneGold' : 'bg-platinumSilver/20 text-jetBlack'}
+                `}
+              >
                 {count}
-              </span>
-            </button>
+              </motion.span>
+            </motion.button>
           ))}
         </div>
       </motion.div>
@@ -196,29 +235,49 @@ export function NavigationPanel({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="p-6 border-b border-gray-100"
+        className="p-6 border-b border-platinumSilver/20 bg-gradient-to-br from-cognacLeather/5 to-midnightBlue/5 backdrop-blur-[10px]"
       >
-        <h3 className="font-medium text-gray-900 mb-4">Connected Channels</h3>
+        <h3 className="font-medium text-jetBlack mb-4">Connected Channels</h3>
         
         <div className="space-y-3">
-          {channels.map(({ id, name, icon: Icon, color, unread, status }) => (
-            <div key={id} className="flex items-center justify-between">
+          {channels.map(({ id, name, icon: Icon, color, unread, status }, index) => (
+            <motion.div 
+              key={id} 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x:0 }}
+              transition={{ delay: index * 0.1 }}
+              whileHover={{ scale: 1.02, x: 8 }}
+              className="flex items-center justify-between p-2 rounded-lg hover:bg-midnightBlue/10 transition-all duration-300"
+            >
               <div className="flex items-center">
-                <div className={`w-3 h-3 ${color} rounded-full mr-3`}></div>
-                <Icon className="w-4 h-4 text-gray-500 mr-2" />
-                <span className="text-sm text-gray-700">{name}</span>
+                <motion.div 
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 2, repeat: Infinity, delay: index * 0.3 }}
+                  className={`w-3 h-3 rounded-full mr-3`}
+                  style={{ backgroundColor: id === 'gmail' ? '#D4AF37' : id === 'slack' ? '#8C5A3C' : '#122039' }}
+                />
+                <Icon className="w-4 h-4 text-platinumSilver mr-2" />
+                <span className="text-sm text-jetBlack font-medium">{name}</span>
               </div>
               <div className="flex items-center space-x-2">
                 {unread > 0 && (
-                  <span className="text-xs bg-red-500 text-white px-2 py-1 rounded-full">
+                  <motion.span 
+                    animate={{ scale: [1, 1.1, 1] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                    className="text-xs bg-champagneGold text-jetBlack px-2 py-1 rounded-full font-bold"
+                  >
                     {unread}
-                  </span>
+                  </motion.span>
                 )}
-                <div className={`w-2 h-2 rounded-full ${
-                  status === 'connected' ? 'bg-green-400' : 'bg-gray-300'
-                }`}></div>
+                <motion.div 
+                  animate={status === 'connected' ? { opacity: [0.5, 1, 0.5] } : {}}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className={`w-2 h-2 rounded-full ${
+                    status === 'connected' ? 'bg-champagneGold' : 'bg-platinumSilver'
+                  }`}
+                />
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </motion.div>
@@ -228,9 +287,9 @@ export function NavigationPanel({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
-        className="flex-1 p-6 overflow-y-auto"
+        className="flex-1 p-6 overflow-y-auto bg-gradient-to-b from-warmIvory/10 to-transparent"
       >
-        <h3 className="font-medium text-gray-900 mb-4">Recent Messages</h3>
+        <h3 className="font-medium text-jetBlack mb-4">Recent Messages</h3>
         
         <div className="space-y-3">
           {recentMessages.map((message, index) => {
@@ -243,36 +302,50 @@ export function NavigationPanel({
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.1 * index }}
                 onClick={() => onMessageSelect(message)}
+                whileHover={{ scale: 1.02, x: 5, rotateY: 2 }}
+                whileTap={{ scale: 0.98 }}
                 className={`
-                  w-full text-left p-3 rounded-lg border transition-all
+                  w-full text-left p-3 rounded-lg border transition-all duration-300
                   ${selectedMessage?.id === message.id
-                    ? 'border-burgundy-200 bg-burgundy-50'
-                    : 'border-gray-100 hover:border-gray-200 hover:bg-gray-50'
+                    ? 'border-champagneGold/50 bg-champagneGold/10 backdrop-blur-sm shadow-champagne'
+                    : 'border-platinumSilver/30 hover:border-champagneGold/40 hover:bg-midnightBlue/5 hover:backdrop-blur-sm'
                   }
                 `}
               >
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex items-center">
                     <Icon className="w-3 h-3 text-gray-400 mr-2" />
-                    <span className={`text-xs px-2 py-1 rounded-full ${getPriorityColor(message.priority)}`}>
+                    <motion.span 
+                      animate={{ scale: message.priority === 'high' ? [1, 1.1, 1] : 1 }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                      className={`text-xs px-2 py-1 rounded-full font-medium ${
+                        message.priority === 'high' ? 'bg-champagneGold/30 text-champagneGold' :
+                        message.priority === 'medium' ? 'bg-cognacLeather/30 text-cognacLeather' :
+                        'bg-platinumSilver/30 text-jetBlack'
+                      }`}
+                    >
                       {message.priority}
-                    </span>
+                    </motion.span>
                   </div>
                   <span className="text-xs text-gray-500">{message.time}</span>
                 </div>
                 
                 <div className={`font-medium text-sm mb-1 ${
-                  message.isUnread ? 'text-gray-900' : 'text-gray-700'
+                  message.isUnread ? 'text-jetBlack' : 'text-platinumSilver'
                 }`}>
                   {message.subject}
                 </div>
                 
-                <div className="text-xs text-gray-500">
+                <div className="text-xs text-platinumSilver/70">
                   from {message.sender}
                 </div>
                 
                 {message.isUnread && (
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                  <motion.div 
+                    animate={{ scale: [1, 1.3, 1], opacity: [0.7, 1, 0.7] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                    className="w-2 h-2 bg-champagneGold rounded-full mt-2 shadow-champagne"
+                  />
                 )}
               </motion.button>
             )

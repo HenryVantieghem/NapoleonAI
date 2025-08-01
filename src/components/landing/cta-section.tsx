@@ -50,14 +50,14 @@ export function CTASection() {
     >
       {/* Background Elements */}
       <div className="absolute inset-0">
-        {/* Luxury geometric patterns */}
-        <div className="absolute top-10 left-10 w-20 h-20 border-2 border-burgundy-200 rounded-full opacity-30 animate-pulse" />
-        <div className="absolute bottom-20 right-20 w-16 h-16 border-2 border-gold-200 rounded-full opacity-30" />
-        <div className="absolute top-1/2 left-1/4 w-12 h-12 bg-burgundy-100 rounded-full opacity-20" />
-        <div className="absolute top-1/3 right-1/3 w-8 h-8 bg-gold-100 rounded-full opacity-30" />
+        {/* Executive geometric patterns */}
+        <div className="absolute top-10 left-10 w-20 h-20 border-2 border-champagneGold/30 rounded-full opacity-30 animate-pulse" />
+        <div className="absolute bottom-20 right-20 w-16 h-16 border-2 border-platinumSilver/40 rounded-full opacity-30" />
+        <div className="absolute top-1/2 left-1/4 w-12 h-12 bg-midnightBlue/20 rounded-full opacity-20" />
+        <div className="absolute top-1/3 right-1/3 w-8 h-8 bg-champagneGold/30 rounded-full opacity-30" />
         
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-burgundy-50/50 via-transparent to-cream/50" />
+        {/* Executive gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-midnightBlue/10 via-transparent to-warmIvory/50" />
       </div>
 
       <div className="container-luxury relative">
@@ -115,7 +115,7 @@ export function CTASection() {
                 transition={{ duration: 0.6, delay: 0.1 * index + 0.7 }}
                 className="flex items-center text-left"
               >
-                <CheckCircle className="w-5 h-5 text-burgundy-600 mr-3 flex-shrink-0" />
+                <CheckCircle className="w-5 h-5 text-champagneGold mr-3 flex-shrink-0" />
                 <span className="text-gray-700 font-medium text-sm">{feature}</span>
               </motion.div>
             ))}
@@ -142,8 +142,8 @@ export function CTASection() {
               {/* Luxury shine effect */}
               <div className="absolute inset-0 -skew-x-12 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 group-hover:translate-x-full transform -translate-x-full" />
               
-              {/* Glow effect */}
-              <div className="absolute inset-0 bg-burgundy-600 opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur-xl" />
+              {/* Executive glow effect */}
+              <div className="absolute inset-0 bg-champagneGold opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur-xl" />
             </Button>
           </motion.div>
 
@@ -163,7 +163,7 @@ export function CTASection() {
               onClick={() => window.open('https://calendly.com/napoleon-ai-briefing', '_blank')}
               className="group"
             >
-              <Zap className="w-5 h-5 mr-2 group-hover:text-burgundy-600 transition-colors" />
+              <Zap className="w-5 h-5 mr-2 group-hover:text-champagneGold transition-colors" />
               <span>Book Executive Demo</span>
             </Button>
           </motion.div>
@@ -183,16 +183,16 @@ export function CTASection() {
                   factor.urgency === 'high' 
                     ? 'bg-red-50 border-red-200 text-red-700'
                     : factor.urgency === 'medium'
-                    ? 'bg-burgundy-50 border-burgundy-200 text-burgundy-700'
-                    : 'bg-gray-50 border-gray-200 text-gray-700'
+                    ? 'bg-midnightBlue/10 border-champagneGold/30 text-champagneGold'
+                    : 'bg-jetBlack/5 border-platinumSilver/30 text-jetBlack'
                 }`}
               >
                 <factor.icon className={`w-6 h-6 mx-auto mb-2 ${
                   factor.urgency === 'high' 
                     ? 'text-red-600'
                     : factor.urgency === 'medium'
-                    ? 'text-burgundy-600'
-                    : 'text-gray-600'
+                    ? 'text-champagneGold'
+                    : 'text-jetBlack'
                 }`} />
                 <span className="text-sm font-medium">{factor.text}</span>
               </motion.div>
@@ -207,7 +207,7 @@ export function CTASection() {
           transition={{ duration: 1, delay: 1.4 }}
           className="absolute left-8 bottom-20 hidden lg:block"
         >
-          <div className="bg-white rounded-2xl shadow-luxury p-6 max-w-xs border border-burgundy-100 transform hover:scale-105 transition-transform">
+          <div className="bg-warmIvory/90 backdrop-blur-[20px] rounded-2xl shadow-luxury p-6 max-w-xs border border-champagneGold/30 transform hover:scale-105 transition-transform">
             <div className="flex items-center mb-3">
               {[...Array(5)].map((_, i) => (
                 <Star key={i} className="w-4 h-4 fill-gold-400 text-gold-400" />
@@ -217,7 +217,7 @@ export function CTASection() {
               "Finally, a communication tool worthy of the C-suite. Revolutionary."
             </p>
             <div className="flex items-center">
-              <Crown className="w-4 h-4 text-burgundy-600 mr-2" />
+              <Crown className="w-4 h-4 text-champagneGold mr-2" />
               <span className="text-xs font-medium text-gray-600">Fortune 500 CEO</span>
             </div>
           </div>
@@ -230,16 +230,16 @@ export function CTASection() {
           transition={{ duration: 1, delay: 1.6 }}
           className="absolute right-8 bottom-32 hidden lg:block"
         >
-          <div className="bg-white rounded-2xl shadow-luxury p-6 border border-burgundy-100 transform hover:scale-105 transition-transform">
+          <div className="bg-warmIvory/90 backdrop-blur-[20px] rounded-2xl shadow-luxury p-6 border border-champagneGold/30 transform hover:scale-105 transition-transform">
             <div className="text-center">
-              <div className="text-2xl font-bold text-burgundy-600 mb-2">8 hrs</div>
+              <div className="text-2xl font-bold text-champagneGold mb-2">8 hrs</div>
               <div className="text-sm text-gray-600 mb-2">Saved Weekly</div>
               <div className="w-full bg-gray-200 rounded-full h-2">
                 <motion.div 
                   initial={{ width: 0 }}
                   animate={isInView ? { width: '94%' } : {}}
                   transition={{ duration: 2, delay: 2 }}
-                  className="bg-burgundy-600 h-2 rounded-full"
+                  className="bg-champagneGold h-2 rounded-full"
                 />
               </div>
             </div>
@@ -253,8 +253,8 @@ export function CTASection() {
           transition={{ duration: 0.8, delay: 1.8 }}
           className="text-center mt-16"
         >
-          <div className="inline-flex items-center bg-white rounded-full px-6 py-3 shadow-lg border border-burgundy-100">
-            <Shield className="w-5 h-5 text-burgundy-600 mr-3" />
+          <div className="inline-flex items-center bg-warmIvory/90 backdrop-blur-[20px] rounded-full px-6 py-3 shadow-luxury border border-champagneGold/30">
+            <Shield className="w-5 h-5 text-champagneGold mr-3" />
             <span className="text-sm font-medium text-gray-700">
               30-Day Executive Satisfaction Guarantee
             </span>

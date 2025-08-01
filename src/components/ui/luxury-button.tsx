@@ -37,11 +37,11 @@ export const LuxuryButton = forwardRef<HTMLButtonElement, MotionButtonProps>(
     const baseStyles = "relative inline-flex items-center justify-center font-medium transition-all duration-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden"
     
     const variants = {
-      primary: "bg-gradient-to-r from-navy to-navy/90 text-white hover:from-navy/90 hover:to-navy/80 focus:ring-navy/50 shadow-lg",
-      secondary: "bg-white text-navy border-2 border-gray-200 hover:bg-gray-50 hover:border-gray-300 focus:ring-navy/50",
-      ghost: "bg-transparent text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:ring-gray-300",
-      luxury: "bg-gradient-to-br from-navy via-navy/90 to-navy/80 text-white shadow-luxury hover:shadow-luxury-lg focus:ring-navy/50",
-      outline: "bg-transparent text-navy border-2 border-gray-200 hover:bg-gray-50 hover:border-gray-300 focus:ring-navy/50"
+      primary: "bg-gradient-to-r from-midnightBlue to-jetBlack text-warmIvory hover:from-midnightBlue/90 hover:to-jetBlack/80 focus:ring-champagneGold/50 shadow-luxury",
+      secondary: "bg-warmIvory text-jetBlack border-2 border-platinumSilver/30 hover:bg-platinumSilver/20 hover:border-champagneGold/40 focus:ring-champagneGold/50",
+      ghost: "bg-transparent text-jetBlack hover:bg-platinumSilver/20 hover:text-jetBlack focus:ring-champagneGold/30",
+      luxury: "bg-gradient-to-br from-jetBlack via-midnightBlue to-jetBlack/80 text-warmIvory shadow-luxury hover:shadow-luxury-lg focus:ring-champagneGold/50 border border-champagneGold/20",
+      outline: "bg-transparent text-midnightBlue border-2 border-platinumSilver/40 hover:bg-warmIvory/30 hover:border-champagneGold/50 focus:ring-champagneGold/50"
     }
     
     const sizes = {

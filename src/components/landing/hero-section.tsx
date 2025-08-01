@@ -17,6 +17,33 @@ export function HeroSection() {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-jetBlack">
+      {/* CSS for 3D Ripple Animation */}
+      <style jsx>{`
+        @keyframes executive-ripple {
+          0% {
+            transform: scale(0) rotateZ(0deg);
+            opacity: 1;
+          }
+          50% {
+            transform: scale(0.8) rotateZ(180deg);
+            opacity: 0.8;
+          }
+          100% {
+            transform: scale(2) rotateZ(360deg);
+            opacity: 0;
+          }
+        }
+        
+        @keyframes micro-float {
+          0%, 100% {
+            transform: translateY(0px) rotateX(0deg);
+          }
+          50% {
+            transform: translateY(-10px) rotateX(5deg);
+          }
+        }
+      `}</style>
+      
       {/* Jet-Black Background with Starfield */}
       <div className="absolute inset-0">
         {/* Luxury starfield pattern */}
@@ -191,14 +218,40 @@ export function HeroSection() {
             transition={{ delay: 1.4 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-20"
           >
-            {/* Primary CTA - Gold Shimmer */}
+            {/* Primary CTA - 3D Ripple Effect */}
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
               className="relative group"
             >
               <Button
-                onClick={handleCTAClick}
+                onClick={(e) => {
+                  // 3D Ripple Effect
+                  const button = e.currentTarget;
+                  const rect = button.getBoundingClientRect();
+                  const ripple = document.createElement('div');
+                  const size = Math.max(rect.width, rect.height) * 2;
+                  const x = e.clientX - rect.left - size / 2;
+                  const y = e.clientY - rect.top - size / 2;
+                  
+                  ripple.style.cssText = `
+                    position: absolute;
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${x}px;
+                    top: ${y}px;
+                    border-radius: 50%;
+                    background: radial-gradient(circle, rgba(212,175,55,0.4) 0%, rgba(212,175,55,0.1) 50%, transparent 100%);
+                    transform: scale(0);
+                    animation: executive-ripple 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+                    pointer-events: none;
+                    z-index: 5;
+                  `;
+                  
+                  button.appendChild(ripple);
+                  setTimeout(() => ripple.remove(), 800);
+                  handleCTAClick();
+                }}
                 className="relative min-w-[320px] h-16 bg-gradient-champagne text-jetBlack font-semibold text-lg rounded-2xl border-0 shadow-champagne-glow overflow-hidden transition-all duration-500"
               >
                 <Crown className="w-6 h-6 mr-3 group-hover:animate-pulse" />
@@ -207,6 +260,10 @@ export function HeroSection() {
                 
                 {/* Gold shimmer animation */}
                 <div className="absolute inset-0 -skew-x-12 bg-gradient-to-r from-transparent via-white/40 to-transparent opacity-0 group-hover:opacity-100 translate-x-[-200%] group-hover:translate-x-[200%] transition-all duration-1000" />
+                
+                {/* 3D Depth layers */}
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-champagneGold/20 via-transparent to-cognacLeather/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute inset-0 rounded-2xl shadow-[inset_0_1px_0_rgba(255,255,255,0.2)] group-hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] transition-shadow duration-300" />
                 
                 {/* Luxury glow pulse */}
                 <div className="absolute inset-0 rounded-2xl bg-champagneGold opacity-20 animate-pulse" />
