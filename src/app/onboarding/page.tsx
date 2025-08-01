@@ -44,7 +44,7 @@ export default function OnboardingPage() {
   // Redirect to step1 by default
   useEffect(() => {
     router.push('/onboarding/step1')
-  }, [])
+  }, [router])
   
   // Zustand store
   const {

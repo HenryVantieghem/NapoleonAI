@@ -242,11 +242,34 @@ export default function RootLayout({
     >
       <html lang="en" className="scroll-smooth">
         <head>
+          {/* Critical Resource hints for performance */}
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+          <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+          <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+          
+          {/* Preload critical fonts */}
+          <link rel="preload" href="https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiA.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+          
+          {/* Critical CSS inline styles for LCP */}
+          <style dangerouslySetInnerHTML={{
+            __html: `
+              .bg-gradient-gold { background: linear-gradient(135deg, #D4AF37 0%, #E8BE35 100%); }
+              .text-navy-900 { color: #1B2951; }
+              .text-gold { color: #D4AF37; }
+              .text-gold-200 { color: #FBEDC3; }
+              .shadow-gold-lg { box-shadow: 0 10px 40px rgba(212, 175, 55, 0.3); }
+            `
+          }} />
+          
+          {/* Icons */}
           <link rel="icon" href="/favicon.ico" />
           <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
           <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
           <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
           <link rel="manifest" href="/site.webmanifest" />
+          
+          {/* App metadata */}
           <meta name="theme-color" content="#1B2951" />
           <meta name="apple-mobile-web-app-capable" content="yes" />
           <meta name="apple-mobile-web-app-status-bar-style" content="default" />

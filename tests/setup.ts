@@ -56,10 +56,14 @@ vi.mock('next/server', () => ({
 }))
 
 // Mock crypto for UUID generation
-global.crypto = {
-  randomUUID: () => 'test-uuid-' + Math.random().toString(36).substr(2, 9),
-  // Add other crypto methods as needed
-} as any
+Object.defineProperty(global, 'crypto', {
+  value: {
+    randomUUID: () => 'test-uuid-' + Math.random().toString(36).substr(2, 9),
+    // Add other crypto methods as needed
+  },
+  writable: true,
+  configurable: true,
+})
 
 // Mock console methods to reduce test noise (optional)
 global.console = {

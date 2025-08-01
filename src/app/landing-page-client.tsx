@@ -1,39 +1,33 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { motion, useScroll, useTransform } from "framer-motion"
-import { Crown, Shield, Clock, ChevronDown, CheckCircle, Star, TrendingUp, Users, Mail, MessageSquare, Sparkles, ArrowRight } from "lucide-react"
+import { motion } from "framer-motion"
+import { Crown, ChevronDown, CheckCircle, Star, Users, ArrowRight } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 
 export default function LandingPageClient() {
   const [isAnnual, setIsAnnual] = useState(false)
-  const { scrollY } = useScroll()
-  const heroOpacity = useTransform(scrollY, [0, 300], [1, 0])
-  const heroScale = useTransform(scrollY, [0, 300], [1, 0.95])
 
-  // Testimonials data
+  // Testimonials data - Optimized without avatars
   const testimonials = [
     {
       quote: "Napoleon AI transformed how I handle communications. I never miss critical board messages, and I've reclaimed 3+ hours daily for strategic thinking.",
       name: "Victoria Chen",
       title: "CEO, TechVentures Inc.",
-      company: "Fortune 500",
-      avatar: "/avatars/ceo-1.jpg"
+      company: "Fortune 500"
     },
     {
       quote: "It's like having a world-class Chief of Staff managing my inbox. The AI prioritization is uncannily accurate - it knows what matters to me.",
       name: "Marcus Thompson",
       title: "CFO, Global Finance Corp",
-      company: "S&P 500",
-      avatar: "/avatars/cfo-1.jpg"
+      company: "S&P 500"
     },
     {
       quote: "The ROI is immediate. Within a week, I was saving 2+ hours daily. The VIP tracking ensures I never miss investor communications.",
       name: "Sarah Williams",
       title: "Founder & CEO, InnovateTech",
-      company: "Series C Unicorn",
-      avatar: "/avatars/founder-1.jpg"
+      company: "Series C Unicorn"
     }
   ]
 
@@ -48,135 +42,52 @@ export default function LandingPageClient() {
 
   return (
     <div className="min-h-screen bg-cream">
-      {/* Hero Section */}
-      <motion.section 
-        style={{ opacity: heroOpacity, scale: heroScale }}
-        className="min-h-screen relative flex items-center justify-center px-4 bg-gradient-to-br from-navy-900 via-navy-800 to-navy-700 overflow-hidden"
-      >
-        {/* Animated background elements */}
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.3, 0.5, 0.3],
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-          className="absolute top-1/4 right-1/4 w-96 h-96 bg-gold/10 rounded-full blur-3xl"
-        />
-        
+      {/* Hero Section - Optimized for Performance */}
+      <section className="min-h-screen relative flex items-center justify-center px-4 bg-gradient-to-br from-navy-900 via-navy-800 to-navy-700">
         <div className="relative z-10 text-center max-w-5xl mx-auto">
-          {/* Crown logo with luxury animation */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="mb-16"
-          >
-            <motion.div
-              animate={{
-                rotate: [0, 5, -5, 0],
-                scale: [1, 1.05, 1]
-              }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-              className="w-24 h-24 bg-gradient-gold rounded-full flex items-center justify-center mx-auto mb-8 shadow-gold-lg ring-4 ring-gold/20"
-            >
+          {/* Simple Crown logo */}
+          <div className="mb-16">
+            <div className="w-24 h-24 bg-gradient-gold rounded-full flex items-center justify-center mx-auto mb-8 shadow-gold-lg">
               <Crown className="w-12 h-12 text-navy-900" />
-            </motion.div>
-            
-            {/* Floating sparkles */}
-            {[...Array(3)].map((_, i) => (
-              <motion.div
-                key={i}
-                animate={{
-                  y: [0, -10, 0],
-                  opacity: [0.5, 1, 0.5],
-                  scale: [0.8, 1.2, 0.8]
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  delay: i * 0.7,
-                  ease: "easeInOut"
-                }}
-                className="absolute"
-                style={{
-                  top: `${-20 + i * 20}px`,
-                  left: `${45 + (i % 2 ? 15 : -15)}%`
-                }}
-              >
-                <Sparkles className="w-4 h-4 text-gold-400" />
-              </motion.div>
-            ))}
-          </motion.div>
+            </div>
+          </div>
 
-          {/* Hero headline with staggered animation */}
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-5xl sm:text-7xl md:text-8xl font-serif font-bold text-white mb-6 tracking-tight leading-[0.95]"
-          >
+          {/* Hero headline - Static for better performance */}
+          <h1 className="text-5xl sm:text-7xl md:text-8xl font-serif font-bold text-white mb-6 tracking-tight leading-[0.95]">
             Transform Communication Chaos
             <br />
             <span className="text-gold">into Strategic Clarity</span>
-          </motion.h1>
+          </h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-2xl text-gold-200 mb-12 font-light max-w-3xl mx-auto"
-          >
+          <p className="text-2xl text-gold-200 mb-12 font-light max-w-3xl mx-auto">
             The luxury AI platform that unifies Gmail, Slack & Teams for C-suite executives. 
             Save 2+ hours daily with intelligence amplification.
-          </motion.p>
+          </p>
 
-          {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
-          >
+          {/* CTA Buttons - Simplified */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link
               href="/auth/signup"
-              className="group relative px-12 py-6 bg-gradient-gold text-navy-900 rounded-xl text-lg font-semibold shadow-gold-lg hover:shadow-gold-xl transition-all duration-300 transform hover:scale-105 overflow-hidden"
+              className="px-12 py-6 bg-gradient-gold text-navy-900 rounded-xl text-lg font-semibold shadow-gold-lg hover:shadow-gold-xl transition-shadow duration-300"
             >
-              <span className="relative z-10">Take Command Now</span>
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-gold-600 to-gold-400"
-                initial={{ x: "100%" }}
-                whileHover={{ x: 0 }}
-                transition={{ duration: 0.3 }}
-              />
+              Take Command Now
             </Link>
             
             <Link
               href="/contact"
-              className="group px-12 py-6 border-2 border-gold text-gold rounded-xl text-lg font-semibold hover:bg-gold hover:text-navy-900 transition-all duration-300"
+              className="px-12 py-6 border-2 border-gold text-gold rounded-xl text-lg font-semibold hover:bg-gold hover:text-navy-900 transition-colors duration-300"
             >
               Request Concierge
-              <ArrowRight className="inline-block ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
+              <ArrowRight className="inline-block ml-2 w-5 h-5" />
             </Link>
-          </motion.div>
+          </div>
 
-          {/* Scroll indicator */}
-          <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
-          >
+          {/* Scroll indicator - Static */}
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
             <ChevronDown className="w-8 h-8 text-gold-400" />
-          </motion.div>
+          </div>
         </div>
-      </motion.section>
+      </section>
 
       {/* How It Works Section */}
       <section className="py-32 px-4 bg-white relative overflow-hidden">
@@ -191,16 +102,10 @@ export default function LandingPageClient() {
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-24"
-          >
+          <div className="text-center mb-24">
             <h2 className="text-5xl md:text-6xl font-serif font-bold text-navy-900 mb-6">How It Works</h2>
             <p className="text-2xl text-navy-600 font-light">Executive simplicity in three steps</p>
-          </motion.div>
+          </div>
 
           <div className="grid md:grid-cols-3 gap-12">
             {[

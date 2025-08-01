@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useUser } from '@clerk/nextjs'
 import { Card } from '@/components/ui/luxury-card'
 import { Typography } from '@/components/ui/typography'
@@ -59,25 +59,24 @@ export default function AdminStatsPage() {
   const [refreshing, setRefreshing] = useState(false)
   const [timeRange, setTimeRange] = useState('7d')
 
-  useEffect(() => {
-    fetchStats()
-  }, [timeRange])
-
-  const fetchStats = async () => {
+  const fetchStats = useCallback(async () => {
     try {
       setRefreshing(true)
       const response = await fetch(`/api/admin/stats?range=${timeRange}`)
       if (!response.ok) throw new Error('Failed to fetch stats')
-      
       const data = await response.json()
       setStats(data)
     } catch (error) {
-      console.error('Error fetching admin stats:', error)
+      console.error('Failed to fetch admin stats:', error)
     } finally {
-      setLoading(false)
       setRefreshing(false)
+      setLoading(false)
     }
-  }
+  }, [timeRange])
+
+  useEffect(() => {
+    fetchStats()
+  }, [fetchStats, timeRange])
 
   const formatNumber = (num: number) => {
     if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`

@@ -63,7 +63,11 @@
       "Bash(npx playwright install:*)",
       "Bash(./scripts/test-infrastructure-verify.sh:*)",
       "WebFetch(domain:napoleon-nhedoc9ag-napoleon.vercel.app)",
-      "WebFetch(domain:napoleon-10agvcmpx-napoleon.vercel.app)"
+      "WebFetch(domain:napoleon-10agvcmpx-napoleon.vercel.app)",
+      "Bash(npm test:*)",
+      "mcp__git-commands__git_diff_unstaged",
+      "Bash(lighthouse:*)",
+      "Bash(python3:*)"
     ],
     "deny": []
   }

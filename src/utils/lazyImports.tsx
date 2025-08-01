@@ -103,16 +103,16 @@ export function useIntersectionObserver(
   callback: () => void,
   options: IntersectionObserverInit = {}
 ) {
-  const defaultOptions: IntersectionObserverInit = {
-    threshold: 0.1,
-    rootMargin: '50px',
-    ...options
-  }
-
   const observerRef = useRef<IntersectionObserver | null>(null)
   const elementRef = useRef<HTMLElement | null>(null)
 
   const setElement = useCallback((element: HTMLElement | null) => {
+    const defaultOptions: IntersectionObserverInit = {
+      threshold: 0.1,
+      rootMargin: '50px',
+      ...options
+    }
+
     if (elementRef.current && observerRef.current) {
       observerRef.current.unobserve(elementRef.current)
     }
@@ -136,7 +136,7 @@ export function useIntersectionObserver(
         observerRef.current.observe(element)
       }
     }
-  }, [callback, defaultOptions])
+  }, [callback, options])
 
   useEffect(() => {
     return () => {

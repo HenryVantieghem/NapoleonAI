@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -74,9 +74,9 @@ export function MetricsDashboard() {
 
   useEffect(() => {
     fetchMetrics()
-  }, [timeframe, selectedOperation])
+  }, [timeframe, selectedOperation, fetchMetrics])
 
-  const fetchMetrics = async () => {
+  const fetchMetrics = useCallback(async () => {
     setLoading(true)
     setError(null)
     try {
@@ -97,7 +97,7 @@ export function MetricsDashboard() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [timeframe, selectedOperation])
 
   const refresh = () => {
     fetchMetrics()

@@ -1,5 +1,5 @@
 import { Metadata } from "next"
-import LandingPageClient from "./landing-page-client"
+import MinimalLanding from "./minimal-landing"
 
 export const metadata: Metadata = {
   title: "Executive Intelligence Platform | Napoleon AI",
@@ -41,5 +41,5 @@ export const metadata: Metadata = {
 }
 
 export default function HomePage() {
-  return <LandingPageClient />
+  return <MinimalLanding />
 }

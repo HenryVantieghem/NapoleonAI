@@ -57,7 +57,7 @@ export function useAccessibility() {
       // Apply settings to document
       applySettingsToDocument(settings)
     }
-  }, [settings, mounted])
+  }, [settings, mounted, applySettingsToDocument])
 
   const applySettingsToDocument = useCallback((settings: AccessibilitySettings) => {
     const root = document.documentElement

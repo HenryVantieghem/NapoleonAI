@@ -6,11 +6,13 @@ import '@testing-library/jest-dom'
 // Mock framer-motion
 jest.mock('framer-motion', () => ({
   motion: {
-    button: React.forwardRef(({ children, onClick, className, ...props }: any, ref) => (
-      <button ref={ref} onClick={onClick} className={className} {...props}>
-        {children}
-      </button>
-    ))
+    button: React.forwardRef<HTMLButtonElement, any>(function MockMotionButton({ children, onClick, className, ...props }, ref) {
+      return (
+        <button ref={ref} onClick={onClick} className={className} {...props}>
+          {children}
+        </button>
+      )
+    })
   }
 }))
 

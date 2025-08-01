@@ -71,7 +71,7 @@ export function useGestures(
 
     // Light haptic feedback on drag start
     triggerHaptic(10)
-  }, [handlers.onLongPress, fullConfig.longPressDelay, triggerHaptic])
+  }, [handlers, fullConfig.longPressDelay, triggerHaptic])
 
   // Handle drag motion
   const handleDrag = useCallback((event: any, info: PanInfo) => {
@@ -134,9 +134,7 @@ export function useGestures(
       isDragging: false
     }
   }, [
-    handlers.onSwipeLeft, 
-    handlers.onSwipeRight, 
-    handlers.onTap,
+    handlers,
     fullConfig.swipeThreshold,
     fullConfig.velocityThreshold,
     triggerHaptic
