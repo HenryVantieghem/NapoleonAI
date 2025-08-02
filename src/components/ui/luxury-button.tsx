@@ -37,44 +37,45 @@ export const LuxuryButton = forwardRef<HTMLButtonElement, MotionButtonProps>(
     const baseStyles = "relative inline-flex items-center justify-center font-medium transition-all duration-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden"
     
     const variants = {
-      primary: "bg-gradient-to-r from-midnightBlue to-jetBlack text-warmIvory hover:from-midnightBlue/90 hover:to-jetBlack/80 focus:ring-champagneGold/50 shadow-luxury",
-      secondary: "bg-warmIvory text-jetBlack border-2 border-platinumSilver/30 hover:bg-platinumSilver/20 hover:border-champagneGold/40 focus:ring-champagneGold/50",
-      ghost: "bg-transparent text-jetBlack hover:bg-platinumSilver/20 hover:text-jetBlack focus:ring-champagneGold/30",
-      luxury: "bg-gradient-to-br from-jetBlack via-midnightBlue to-jetBlack/80 text-warmIvory shadow-luxury hover:shadow-luxury-lg focus:ring-champagneGold/50 border border-champagneGold/20",
-      outline: "bg-transparent text-midnightBlue border-2 border-platinumSilver/40 hover:bg-warmIvory/30 hover:border-champagneGold/50 focus:ring-champagneGold/50"
+      primary: "bg-gradient-champagne text-jetBlack hover:shadow-champagne-glow focus:ring-champagneGold/50 shadow-champagne transition-all duration-300",
+      secondary: "bg-jetBlack/20 backdrop-blur-glass border-2 border-champagneGold/50 text-champagneGold hover:bg-champagneGold/10 hover:border-champagneGold focus:ring-champagneGold/50",
+      ghost: "bg-transparent text-champagneGold hover:bg-champagneGold/10 hover:text-champagneGold focus:ring-champagneGold/30",
+      luxury: "bg-gradient-executive text-warmIvory shadow-executive hover:shadow-champagne-glow focus:ring-champagneGold/50 border border-champagneGold/30",
+      outline: "bg-transparent text-champagneGold border-2 border-champagneGold/40 hover:bg-champagneGold/10 hover:border-champagneGold focus:ring-champagneGold/50"
     }
     
     const sizes = {
-      sm: "px-3 py-2 text-sm gap-1.5",
-      md: "px-4 py-2.5 text-base gap-2",
-      lg: "px-6 py-3 text-lg gap-2.5",
-      xl: "px-8 py-4 text-xl gap-3"
+      sm: "px-4 py-3 text-sm gap-2 min-h-[44px]", // WCAG minimum touch target
+      md: "px-6 py-4 text-base gap-2.5 min-h-[48px]",
+      lg: "px-8 py-5 text-lg gap-3 min-h-[56px]", // Executive touch target 
+      xl: "px-12 py-6 text-xl gap-4 min-h-[64px]"
     }
 
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-      // Haptic feedback for mobile devices
+      // Enhanced haptic feedback patterns for executives
       if (haptic && 'vibrate' in navigator) {
-        navigator.vibrate(10)
+        // Executive success pattern: [50, 25, 50, 25, 100]
+        navigator.vibrate([50, 25, 50, 25, 100])
       }
       
-      // Ripple effect
+      // Enhanced 3D champagne gold ripple effect
       const button = e.currentTarget
       const ripple = document.createElement("span")
       const rect = button.getBoundingClientRect()
-      const size = Math.max(rect.width, rect.height)
+      const size = Math.max(rect.width, rect.height) * 2.5
       const x = e.clientX - rect.left - size / 2
       const y = e.clientY - rect.top - size / 2
       
       ripple.style.width = ripple.style.height = size + "px"
       ripple.style.left = x + "px"
       ripple.style.top = y + "px"
-      ripple.classList.add("ripple")
+      ripple.classList.add("luxury-ripple")
       
       button.appendChild(ripple)
       
       setTimeout(() => {
         ripple.remove()
-      }, 600)
+      }, 800)
       
       onClick?.(e)
     }
@@ -82,18 +83,34 @@ export const LuxuryButton = forwardRef<HTMLButtonElement, MotionButtonProps>(
     return (
       <>
         <style jsx>{`
-          .ripple {
+          .luxury-ripple {
             position: absolute;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.6);
+            background: radial-gradient(circle, 
+              rgba(212, 175, 55, 0.8) 0%, 
+              rgba(212, 175, 55, 0.4) 40%, 
+              rgba(212, 175, 55, 0.1) 70%, 
+              transparent 100%
+            );
             transform: scale(0);
-            animation: ripple-animation 0.6s ease-out;
+            animation: luxury-ripple-animation 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             pointer-events: none;
+            box-shadow: 
+              0 0 20px rgba(212, 175, 55, 0.6),
+              inset 0 0 15px rgba(212, 175, 55, 0.3);
           }
           
-          @keyframes ripple-animation {
-            to {
-              transform: scale(4);
+          @keyframes luxury-ripple-animation {
+            0% {
+              transform: scale(0) rotate(0deg);
+              opacity: 1;
+            }
+            50% {
+              transform: scale(0.6) rotate(180deg);
+              opacity: 0.8;
+            }
+            100% {
+              transform: scale(1) rotate(360deg);
               opacity: 0;
             }
           }
@@ -106,17 +123,46 @@ export const LuxuryButton = forwardRef<HTMLButtonElement, MotionButtonProps>(
             height: 100%;
             background: linear-gradient(
               90deg,
-              transparent,
-              rgba(255, 255, 255, 0.3),
-              transparent
+              transparent 0%,
+              rgba(212, 175, 55, 0.6) 30%,
+              rgba(246, 246, 244, 0.4) 50%,
+              rgba(212, 175, 55, 0.6) 70%,
+              transparent 100%
             );
-            animation: shimmer 2s infinite;
+            animation: champagne-shimmer 2.5s ease-in-out infinite;
+            pointer-events: none;
           }
           
-          @keyframes shimmer {
-            to {
-              left: 100%;
+          @keyframes champagne-shimmer {
+            0% { 
+              left: -100%; 
+              transform: skewX(-45deg);
             }
+            100% { 
+              left: 100%; 
+              transform: skewX(-45deg);
+            }
+          }
+          
+          .luxury-glow {
+            position: absolute;
+            inset: -2px;
+            border-radius: inherit;
+            background: linear-gradient(45deg, 
+              rgba(212, 175, 55, 0.4) 0%,
+              transparent 25%,
+              transparent 75%,
+              rgba(212, 175, 55, 0.4) 100%
+            );
+            opacity: 0;
+            animation: luxury-glow-pulse 2s ease-in-out infinite;
+            filter: blur(4px);
+            pointer-events: none;
+          }
+          
+          @keyframes luxury-glow-pulse {
+            0%, 100% { opacity: 0; transform: scale(0.95); }
+            50% { opacity: 1; transform: scale(1.05); }
           }
         `}</style>
         
@@ -135,6 +181,11 @@ export const LuxuryButton = forwardRef<HTMLButtonElement, MotionButtonProps>(
           onClick={handleClick}
           {...props}
         >
+          {/* Luxury glow effect */}
+          {glow && !disabled && (
+            <span className="luxury-glow" />
+          )}
+          
           {/* Shimmer effect for luxury variant */}
           {variant === "luxury" && !disabled && (
             <span className="shimmer" />
