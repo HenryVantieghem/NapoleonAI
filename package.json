@@ -36,15 +36,12 @@
   "dependencies": {
     "@clerk/nextjs": "^6.25.4",
     "@hookform/resolvers": "^5.2.1",
-    "@microsoft/microsoft-graph-client": "^3.0.7",
     "@radix-ui/react-dialog": "^1.1.14",
     "@radix-ui/react-select": "^2.2.5",
     "@radix-ui/react-separator": "^1.1.7",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-switch": "^1.2.5",
-    "@segment/analytics-node": "^2.1.2",
     "@sentry/nextjs": "^8.43.0",
-    "@slack/web-api": "^7.9.3",
     "@supabase/ssr": "^0.4.0",
     "@supabase/supabase-js": "^2.45.1",
     "@types/canvas-confetti": "^1.9.0",
@@ -66,7 +63,6 @@
     "react-hook-form": "^7.61.1",
     "react-window": "^1.8.8",
     "sharp": "^0.33.5",
-    "svix": "^1.69.0",
     "tailwind-merge": "^2.4.0",
     "zustand": "^5.0.7"
   },
