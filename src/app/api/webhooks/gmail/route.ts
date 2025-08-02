@@ -76,10 +76,8 @@ export async function POST(request: NextRequest) {
       console.log(`Processing ${history.messages.length} new Gmail messages for user ${userIntegration.user_id}`)
       
       // Fetch and store messages with AI analysis
-      await unifiedMessageService.fetchAllMessages(userIntegration.user_id, {
-        channels: ['gmail'],
+      await unifiedMessageService.fetchMessages(userIntegration.user_id, {
         limit: history.messages.length,
-        includeAnalysis: true,
         saveToDB: true
       })
 

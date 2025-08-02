@@ -15,6 +15,8 @@ interface ExecutiveTouchTargetProps extends Omit<MotionProps, 'children'> {
   disabled?: boolean
   loading?: boolean
   executiveMode?: boolean // Enhanced 56px touch targets for C-suite
+  onClick?: (event: React.MouseEvent<HTMLDivElement>) => void
+  onTap?: () => void
 }
 
 const sizeMap = {

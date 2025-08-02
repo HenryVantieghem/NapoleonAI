@@ -311,56 +311,6 @@ export class GmailAPI {
     }
   }
 
-  /**
-   * Send a new email
-   */
-  async sendEmail(options: {
-    to: string
-    subject: string
-    content: string
-    cc?: string[]
-    bcc?: string[]
-  }): Promise<{
-    success: boolean
-    messageId?: string
-    error?: string
-  }> {
-    try {
-      const { to, subject, content, cc, bcc } = options
-      
-      // Create email content
-      const email = [
-        `To: ${to}`,
-        cc?.length ? `Cc: ${cc.join(', ')}` : '',
-        bcc?.length ? `Bcc: ${bcc.join(', ')}` : '',
-        `Subject: ${subject}`,
-        '',
-        content
-      ].filter(line => line !== '').join('\n')
-
-      // Encode the email
-      const encodedEmail = Buffer.from(email).toString('base64url')
-
-      // Send the email
-      const response = await this.gmail.users.messages.send({
-        userId: 'me',
-        requestBody: {
-          raw: encodedEmail
-        }
-      })
-
-      return {
-        success: true,
-        messageId: response.data.id || undefined
-      }
-    } catch (error) {
-      console.error('Failed to send email:', error)
-      return {
-        success: false,
-        error: (error as Error).message
-      }
-    }
-  }
 
   /**
    * Send a reply to an existing message
@@ -479,6 +429,108 @@ export class GmailAPI {
     }
 
     return count
+  }
+
+  /**
+   * Generate OAuth URL for Gmail authentication
+   */
+  getAuthUrl(): string {
+    const scopes = [
+      'https://www.googleapis.com/auth/gmail.readonly',
+      'https://www.googleapis.com/auth/gmail.send',
+      'https://www.googleapis.com/auth/userinfo.email',
+      'https://www.googleapis.com/auth/userinfo.profile'
+    ]
+
+    return this.oauth2Client.generateAuthUrl({
+      access_type: 'offline',
+      scope: scopes,
+      prompt: 'consent'
+    })
+  }
+
+  /**
+   * Exchange authorization code for tokens
+   */
+  async exchangeCodeForTokens(code: string): Promise<{
+    access_token: string
+    refresh_token?: string
+    expires_in: number
+  }> {
+    try {
+      const { tokens } = await this.oauth2Client.getToken(code)
+      return {
+        access_token: tokens.access_token!,
+        refresh_token: tokens.refresh_token || undefined,
+        expires_in: tokens.expiry_date ? Math.floor((tokens.expiry_date - Date.now()) / 1000) : 3600
+      }
+    } catch (error) {
+      console.error('Failed to exchange code for tokens:', error)
+      throw new Error('Failed to exchange authorization code for tokens')
+    }
+  }
+
+  /**
+   * Get user info from Google
+   */
+  async getUserInfo(): Promise<{
+    email: string
+    name: string
+  }> {
+    try {
+      const oauth2 = google.oauth2({ version: 'v2', auth: this.oauth2Client })
+      const { data } = await oauth2.userinfo.get()
+      
+      return {
+        email: data.email || '',
+        name: data.name || ''
+      }
+    } catch (error) {
+      console.error('Failed to get user info:', error)
+      throw new Error('Failed to get user information')
+    }
+  }
+
+  /**
+   * Send a simple email
+   */
+  async sendEmail(options: {
+    to: string
+    subject: string
+    content: string
+  }): Promise<{
+    success: boolean
+    messageId?: string
+    error?: string
+  }> {
+    try {
+      const email = [
+        `To: ${options.to}`,
+        `Subject: ${options.subject}`,
+        '',
+        options.content
+      ].join('\n')
+
+      const encodedEmail = Buffer.from(email).toString('base64url')
+
+      const response = await this.gmail.users.messages.send({
+        userId: 'me',
+        requestBody: {
+          raw: encodedEmail
+        }
+      })
+
+      return {
+        success: true,
+        messageId: response.data.id || undefined
+      }
+    } catch (error) {
+      console.error('Failed to send email:', error)
+      return {
+        success: false,
+        error: (error as Error).message
+      }
+    }
   }
 }
 

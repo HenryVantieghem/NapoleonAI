@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import { IntegrationService } from '@/lib/integrations/integration-service'
+import { gmailAPI } from '@/lib/integrations/gmail-api'
+import { createClient } from '@/lib/supabase/server'
 
 export const dynamic = 'force-dynamic'
 
@@ -30,73 +31,53 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    // Exchange code for tokens
-    const tokenUrl = 'https://oauth2.googleapis.com/token'
-    const tokenResponse = await fetch(tokenUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        code,
-        client_id: process.env.GOOGLE_CLIENT_ID!,
-        client_secret: process.env.GOOGLE_CLIENT_SECRET!,
-        redirect_uri: `${process.env.NEXT_PUBLIC_APP_URL}/api/integrations/callback/gmail`,
-        grant_type: 'authorization_code',
-      }),
-    })
+    try {
+      // Exchange code for tokens
+      const tokens = await gmailAPI.exchangeCodeForTokens(code)
+      
+      // Get user info from Gmail
+      gmailAPI.setAccessToken(tokens.access_token, tokens.refresh_token)
+      const userInfo = await gmailAPI.getUserInfo()
 
-    if (!tokenResponse.ok) {
-      const error = await tokenResponse.text()
-      console.error('Token exchange failed:', error)
+      // Store the connection in database
+      const supabase = createClient()
+      const { error: dbError } = await supabase
+        .from('connected_accounts')
+        .upsert({
+          user_id: userId,
+          provider: 'gmail' as const,
+          account_id: userInfo.email,
+          account_email: userInfo.email,
+          account_name: userInfo.name,
+          status: 'active' as const,
+          access_token: tokens.access_token,
+          refresh_token: tokens.refresh_token,
+          expires_at: new Date(Date.now() + tokens.expires_in * 1000).toISOString()
+        }, {
+          onConflict: 'user_id,provider'
+        })
+
+      if (dbError) {
+        console.error('Database error storing Gmail connection:', dbError)
+        return NextResponse.redirect(
+          new URL('/dashboard/integrations?error=storage_failed', request.url)
+        )
+      }
+
+      // Success - redirect to integrations page
       return NextResponse.redirect(
-        new URL('/dashboard/integrations?error=token_exchange_failed', request.url)
+        new URL('/dashboard/integrations?success=gmail_connected', request.url)
+      )
+    } catch (error) {
+      console.error('Error exchanging Gmail code:', error)
+      return NextResponse.redirect(
+        new URL('/dashboard/integrations?error=exchange_failed', request.url)
       )
     }
-
-    const tokens = await tokenResponse.json()
-
-    // Get user info
-    const userInfoResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
-      headers: {
-        Authorization: `Bearer ${tokens.access_token}`,
-      },
-    })
-
-    if (!userInfoResponse.ok) {
-      console.error('Failed to get user info')
-      return NextResponse.redirect(
-        new URL('/dashboard/integrations?error=user_info_failed', request.url)
-      )
-    }
-
-    const userInfo = await userInfoResponse.json()
-
-    // Store tokens in database
-    await IntegrationService.storeIntegrationTokens(
-      'gmail',
-      {
-        access_token: tokens.access_token,
-        refresh_token: tokens.refresh_token,
-        expires_at: Math.floor(Date.now() / 1000) + tokens.expires_in,
-        scope: tokens.scope,
-      },
-      {
-        account_id: userInfo.id,
-        account_email: userInfo.email,
-        account_name: userInfo.name,
-      },
-      userId
-    )
-
-    // Redirect back to integrations page with success
-    return NextResponse.redirect(
-      new URL('/dashboard/integrations?success=gmail_connected', request.url)
-    )
   } catch (error) {
-    console.error('Gmail OAuth callback error:', error)
+    console.error('Gmail callback error:', error)
     return NextResponse.redirect(
-      new URL('/dashboard/integrations?error=unexpected_error', request.url)
+      new URL('/dashboard/integrations?error=unknown', request.url)
     )
   }
 }

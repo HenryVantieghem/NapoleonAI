@@ -174,8 +174,8 @@ export class UnifiedMessageService {
 
     return {
       connected: true,
-      email: integration.provider_account_id,
-      lastSync: integration.last_sync_at ? new Date(integration.last_sync_at) : undefined
+      email: integration.account_email,
+      lastSync: new Date(integration.updated_at)
     }
   }
 
